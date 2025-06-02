@@ -16,6 +16,7 @@ junit = "4.13.2"
 kotlin = "2.1.20"
 jetbrainsKotlinJvm = "2.1.20"
 kotlinStdlib = "2.1.20"
+kotlinxCoroutinesCore = "1.9.0"
 runner = "1.5.2"
 core = "1.5.0"
 koin = "4.0.0"
@@ -46,6 +47,7 @@ koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
 koin-compose-viewmodel-navigation = { module = "io.insert-koin:koin-compose-viewmodel-navigation", version.ref = "koin" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 
 [bundles]
 koin-compose = ["koin-compose", "koin-compose-viewmodel", "koin-compose-viewmodel-navigation"]

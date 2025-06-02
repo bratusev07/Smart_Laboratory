@@ -1,3 +1,4 @@
+import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -32,6 +33,8 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
+
+            implementation(libs.kotlinx.coroutines.core)
         }
     }
 }
