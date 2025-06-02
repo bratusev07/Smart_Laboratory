@@ -35,3 +35,4 @@ include(":domain:core")
 
 
 include(":feature:home")
+include(":feature:settings")

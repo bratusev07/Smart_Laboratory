@@ -1,4 +1,4 @@
-package ru.bratusev.smartlab.feature_home
+package ru.bratusev.smartlab.feature_settings
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -7,15 +7,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.koin.compose.viewmodel.koinViewModel
-import ru.bratusev.smartlab.feature_home.models.Event
+import ru.bratusev.smartlab.feature_settings.models.Event
 import ru.bratusev.smartlab.ui.core.components.CustomButton
 import ru.bratusev.smartlab.ui.core.models.CustomButtonUi
 
 @Composable
-fun HomeScreen(
-    onNavigateToSettings: () -> Unit
+fun SettingsScreen(
+    onNavigateBack: () -> Unit
 ) {
-    val vm: HomeViewModel = koinViewModel()
+    val vm: SettingsViewModel = koinViewModel()
     val state = vm.uiState.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -23,7 +23,7 @@ fun HomeScreen(
             modifier = Modifier.align(Alignment.Center),
             customButtonUi = CustomButtonUi(state.value.screenName, 300)
         ) {
-            onNavigateToSettings()
+            onNavigateBack()
         }
     }
 }
