@@ -8,14 +8,14 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import ru.bratusev.smartlab.domain.core.usecase.GetButtonTextUseCase
 import ru.bratusev.smartlab.feature_settings.models.Event
 import ru.bratusev.smartlab.feature_settings.models.SettingsState
 
-class SettingsViewModel(
-    getButtonTextUseCase: GetButtonTextUseCase
-) : ViewModel(), KoinComponent {
+class SettingsViewModel() : ViewModel(), KoinComponent {
 
+    private val getButtonTextUseCase by inject<GetButtonTextUseCase>()
 
     private val _uiState = MutableStateFlow(SettingsState())
     val uiState: StateFlow<SettingsState> = _uiState

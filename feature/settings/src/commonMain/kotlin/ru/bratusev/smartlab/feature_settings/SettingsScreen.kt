@@ -15,7 +15,7 @@ import ru.bratusev.smartlab.ui.core.models.CustomButtonUi
 fun SettingsScreen(
     onNavigateBack: () -> Unit
 ) {
-    val vm: SettingsViewModel = koinViewModel()
+    val vm = SettingsViewModel()
     val state = vm.uiState.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {

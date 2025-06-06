@@ -15,7 +15,7 @@ import ru.bratusev.smartlab.ui.core.models.CustomButtonUi
 fun HomeScreen(
     onNavigateToSettings: () -> Unit
 ) {
-    val vm: HomeViewModel = koinViewModel()
+    val vm = HomeViewModel()
     val state = vm.uiState.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
