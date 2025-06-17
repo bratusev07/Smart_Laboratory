@@ -5,5 +5,5 @@ import ru.bratusev.smartlab.domain.core.usecase.GetButtonTextUseCase
 
 val domainModule = module {
 
-    factory { GetButtonTextUseCase(buttonTextRepository = get()) }
+    factory<GetButtonTextUseCase> { GetButtonTextUseCase(buttonTextRepository = get()) }
 }

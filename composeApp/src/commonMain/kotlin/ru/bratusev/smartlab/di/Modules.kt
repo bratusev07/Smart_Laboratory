@@ -1,4 +1,4 @@
-package ru.bratusev.smartlab
+package ru.bratusev.smartlab.di
 
 import org.koin.dsl.module
 import ru.bratusev.smartlab.feature_home.homeModule

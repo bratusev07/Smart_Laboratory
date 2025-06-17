@@ -7,15 +7,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.koin.compose.viewmodel.koinViewModel
-import ru.bratusev.smartlab.feature_home.models.Event
 import ru.bratusev.smartlab.ui.core.components.CustomButton
 import ru.bratusev.smartlab.ui.core.models.CustomButtonUi
 
 @Composable
 fun HomeScreen(
+    vm: HomeViewModel = koinViewModel(),
     onNavigateToSettings: () -> Unit
 ) {
-    val vm = HomeViewModel()
     val state = vm.uiState.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {

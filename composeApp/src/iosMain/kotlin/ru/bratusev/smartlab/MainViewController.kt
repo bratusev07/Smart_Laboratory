@@ -1,11 +1,11 @@
 package ru.bratusev.smartlab
 
 import androidx.compose.ui.window.ComposeUIViewController
-import org.koin.core.context.startKoin
+import ru.bratusev.smartlab.di.initKoin
 
-fun MainViewController() = ComposeUIViewController {
-    startKoin {
-        modules(appModule)
+
+fun MainViewController() = ComposeUIViewController(
+    configure = {
+        initKoin()
     }
-    App()
-}
+) { App() }

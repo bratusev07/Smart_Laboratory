@@ -7,15 +7,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.koin.compose.viewmodel.koinViewModel
-import ru.bratusev.smartlab.feature_settings.models.Event
 import ru.bratusev.smartlab.ui.core.components.CustomButton
 import ru.bratusev.smartlab.ui.core.models.CustomButtonUi
 
 @Composable
 fun SettingsScreen(
+    vm: SettingsViewModel = koinViewModel(),
     onNavigateBack: () -> Unit
 ) {
-    val vm = SettingsViewModel()
     val state = vm.uiState.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
