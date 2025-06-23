@@ -1,6 +1,7 @@
 package ru.bratusev.smartlab.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,18 +21,26 @@ fun AppNavigation(navController: NavHostController) {
     ) {
         composable(Screen.Home.route) {
             HomeScreen(
-                onNavigateToSettings = {
-                    navController.navigate(Screen.Settings.route)
+                navigateTo = {
+                    navController.navigate(it)
                 }
             )
         }
-        
+
         composable(Screen.Settings.route) {
             SettingsScreen(
-                onNavigateBack = {
-                    navController.popBackStack()
+                navigateTo = {
+                    navController.navigate(it)
                 }
             )
         }
     }
-} 
+}
+
+private fun NavController.navigate(route: String?) {
+    if(route == null) {
+        this.popBackStack()
+    } else {
+        this.navigate(route)
+    }
+}

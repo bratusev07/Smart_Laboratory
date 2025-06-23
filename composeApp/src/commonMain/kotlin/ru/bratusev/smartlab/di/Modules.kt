@@ -1,12 +1,8 @@
 package ru.bratusev.smartlab.di
 
 import org.koin.dsl.module
-import ru.bratusev.smartlab.feature_home.homeModule
-import ru.bratusev.smartlab.feature_settings.settingsModule
+import ru.bratusev.smartlab.navigation.navigationModule
 
 val appModule = module {
-    includes(
-        homeModule,
-        settingsModule
-    )
+    includes(navigationModule)
 }

@@ -13,7 +13,7 @@ import ru.bratusev.smartlab.ui.core.models.CustomButtonUi
 @Composable
 fun HomeScreen(
     vm: HomeViewModel = koinViewModel(),
-    onNavigateToSettings: () -> Unit
+    navigateTo: (String?) -> Unit
 ) {
     val state = vm.uiState.collectAsState()
 
@@ -22,7 +22,7 @@ fun HomeScreen(
             modifier = Modifier.align(Alignment.Center),
             customButtonUi = CustomButtonUi(state.value.screenName, 300)
         ) {
-            onNavigateToSettings()
+            navigateTo("settings")
         }
     }
 }

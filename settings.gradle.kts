@@ -34,5 +34,6 @@ include(":data:core")
 include(":domain:core")
 
 
+include(":feature:navigation")
 include(":feature:home")
 include(":feature:settings")
