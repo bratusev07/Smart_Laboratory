@@ -1,14 +1,34 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+# Название проекта
+Smart Laboratory App
 
-* `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - `commonMain` is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    `iosMain` would be the right folder for such calls.
+## Описание
+Цифровой интерфейс умной производственной лаборатории в виде кросплатформенного мобильного приложения для Android и iOS.
+Данное приложение базируется на Home Assistant API.
 
-* `/iosApp` contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform, 
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+## Установка и запуск
+Для установки проекта необходимо:
+1) клонировать репозиторий на своё устройство любым удобным способом;
+2) открыть проект в среде разработки (например Android Studio или XCode);
+3) дождаться окончания сборки проекта средой разработки;
+4) запустить приложение на физическом Android-устройстве или его эмуляторе (для запуска на своём устройстве необходимо разрешить отладку по usb или wi-fi)
 
+## Структура проекта
+*все пакеты в списке ниже располагаются в каталоге ru.bratusev.smartlab.*
+1) ComposeApp модуль - основной модуль приложения, в который интегрируется модуль навигации и инициализируется Application и DI
+2) Data моудль - модуль для работы с хранилищем (удаленным или локальным)
+3) Domanin модуль - модуль, описывающий usecase-ы и интерфейсы репозитория с данными
+4) Feature модуль - модуль, включающий модули для каждого отдельного экрана приложения
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+Каждый Feature модуль включает в себя:
+1) Screen компоненту для отрисовки одного конкретного экрана
+2) ViewModel для обработки Event и хранения состояния экрана
+3) Module для настройки DI компаненты
+4) Mapper для маппинга данных из Domain представления в UI
+5) Models хранит объект состояния экрана и прочие UI модели для отображения
+
+## Ветки
+Ветка dev - ветка, в которую сливаются все фича ветки перед попаданием в release
+Ветки feature/имя_фичи - ветка для отдельной фичи/задачи
+Ветка release - ветка с релизной версией приложения
+
+Безответственный: Братусев Денис Витальевич  
