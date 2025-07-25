@@ -9,4 +9,6 @@ plugins {
     alias(libs.plugins.kotlinAndroid) apply false
     alias(libs.plugins.jetbrainsKotlinJvm) apply false
     alias(libs.plugins.androidKotlinMultiplatformLibrary) apply false
+
+    id("com.google.gms.google-services") version "4.4.3" apply false
 }

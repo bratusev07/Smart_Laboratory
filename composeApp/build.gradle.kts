@@ -1,4 +1,3 @@
-import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -7,6 +6,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+
+    id("com.google.gms.google-services")
 }
 
 kotlin {
@@ -35,6 +36,9 @@ kotlin {
             implementation(libs.androidx.activity.compose)
 
             implementation(libs.koin.android)
+
+            implementation(project.dependencies.platform("com.google.firebase:firebase-bom:34.0.0"))
+            implementation("com.google.firebase:firebase-analytics-ktx:22.5.0")
         }
         commonMain.dependencies {
             implementation(projects.feature.navigation)
@@ -52,6 +56,10 @@ kotlin {
             implementation(libs.bundles.koin.compose)
         }
     }
+}
+
+dependencies {
+    implementation(libs.firebase.common.ktx)
 }
 
 android {

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "138902625740",
+    "project_id": "smart-laboratory-mobile",
+    "storage_bucket": "smart-laboratory-mobile.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:138902625740:android:6e3bf1370da4481e29d169",
+        "android_client_info": {
+          "package_name": "ru.bratusev.smartlab"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCacFAN_vamiZUoKFyxFcPEt40YzfKPloc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
