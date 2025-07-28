@@ -42,6 +42,7 @@ kotlin {
 
             implementation(projects.feature.home)
             implementation(projects.feature.settings)
+            implementation(projects.feature.login)
         }
     }
 }

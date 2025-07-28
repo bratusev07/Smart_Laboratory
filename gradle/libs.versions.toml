@@ -1,26 +1,28 @@
 [versions]
-agp = "8.9.3"
+agp = "8.11.1"
 android-compileSdk = "35"
 android-minSdk = "24"
 android-targetSdk = "35"
 androidx-activityCompose = "1.10.1"
-androidx-appcompat = "1.7.0"
+androidx-appcompat = "1.7.1"
 androidx-constraintlayout = "2.2.1"
 androidx-core-ktx = "1.16.0"
 androidx-espresso-core = "3.6.1"
-androidx-lifecycle = "2.8.4"
+androidx-lifecycle = "2.9.1"
 androidx-material = "1.12.0"
 androidx-test-junit = "1.2.1"
-androidx-navigation = "2.7.7"
-compose-multiplatform = "1.7.3"
+androidx-navigation = "2.9.2"
+compose-multiplatform = "1.8.2"
 junit = "4.13.2"
-kotlin = "2.1.20"
-jetbrainsKotlinJvm = "2.1.20"
-kotlinStdlib = "2.1.20"
-kotlinxCoroutinesCore = "1.9.0"
-runner = "1.5.2"
-core = "1.5.0"
-koin = "4.0.0"
+kotlin = "2.2.0"
+jetbrainsKotlinJvm = "2.2.0"
+kotlinStdlib = "2.2.0"
+kotlinxCoroutinesCore = "1.10.2"
+ktorClientDarwin = "3.2.2"
+ktorClientAndroid = "3.2.2"
+runner = "1.6.2"
+core = "1.6.1"
+koin = "4.1.0"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -47,9 +49,16 @@ android-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
+koin-ktor = { module = "io.insert-koin:koin-ktor", version.ref = "koin" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
 koin-compose-viewmodel-navigation = { module = "io.insert-koin:koin-compose-viewmodel-navigation", version.ref = "koin" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
+ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktorClientAndroid" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorClientDarwin" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktorClientDarwin" }
+ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktorClientDarwin" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktorClientDarwin" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktorClientDarwin" }
 
 [bundles]
 koin-compose = ["koin-compose", "koin-compose-viewmodel", "koin-compose-viewmodel-navigation"]
@@ -63,3 +72,4 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 jetbrainsKotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 androidKotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
+kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

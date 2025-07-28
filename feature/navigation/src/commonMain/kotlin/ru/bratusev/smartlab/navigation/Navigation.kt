@@ -6,9 +6,11 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import ru.bratusev.smartlab.feature_home.HomeScreen
+import ru.bratusev.smartlab.feature_login.LoginScreen
 import ru.bratusev.smartlab.feature_settings.SettingsScreen
 
 sealed class Screen(val route: String) {
+    object Login : Screen("login")
     object Home : Screen("home")
     object Settings : Screen("settings")
 }
@@ -17,8 +19,16 @@ sealed class Screen(val route: String) {
 fun AppNavigation(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Home.route
+        startDestination = Screen.Login.route
     ) {
+        composable(Screen.Login.route) {
+            LoginScreen(
+                navigateTo = {
+                    navController.navigate(it)
+                }
+            )
+        }
+
         composable(Screen.Home.route) {
             HomeScreen(
                 navigateTo = {

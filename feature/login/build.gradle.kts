@@ -6,7 +6,6 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.kotlinx.serialization)
 }
 
 kotlin {
@@ -23,41 +22,33 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "DataCore"
+            baseName = "FeatureHome"
             isStatic = true
         }
     }
 
     sourceSets {
+
         commonMain.dependencies {
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material)
+            implementation(compose.ui)
+            implementation(compose.components.resources)
+            implementation(compose.components.uiToolingPreview)
+
             implementation(libs.koin.core)
             implementation(libs.bundles.koin.compose)
-            implementation(libs.koin.ktor)
-            implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.content.negotiation)
-            implementation(libs.ktor.serialization.kotlinx.json)
-            implementation(libs.ktor.client.logging)
 
             implementation(projects.domain.core)
-
-            // DataStore library
-            implementation("androidx.datastore:datastore:1.1.7")
-            // The Preferences DataStore library
-            implementation("androidx.datastore:datastore-preferences:1.1.7")
-        }
-
-        androidMain.dependencies {
-            implementation(libs.ktor.client.android)
-        }
-
-        iosMain.dependencies {
-            implementation(libs.ktor.client.darwin)
+            implementation(projects.data.core)
+            implementation(projects.ui.core)
         }
     }
 }
 
 android {
-    namespace = "ru.bratusev.smartlab.data.core"
+    namespace = "ru.bratusev.smartlab.feature.home"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
