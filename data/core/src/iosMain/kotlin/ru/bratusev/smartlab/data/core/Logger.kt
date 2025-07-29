@@ -4,14 +4,14 @@ import platform.Foundation.NSLog
 
 actual class Logger {
     actual fun d(tag: String?, description: String) {
-        NSLog("[${tag}] [$tag] $description")
+        println("[$tag] $description")
     }
 
     actual fun w(tag: String?, description: String) {
-        NSLog("[${tag}] [$tag] $description")
+        NSLog("[$tag] $description")
     }
 
     actual fun e(tag: String?, description: String) {
-        NSLog("[${tag}] [$tag] $description")
+        NSLog("[$tag] $description")
     }
 }
