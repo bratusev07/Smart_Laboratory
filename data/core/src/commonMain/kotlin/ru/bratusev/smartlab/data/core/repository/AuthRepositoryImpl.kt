@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
+import ru.bratusev.smartlab.data.core.model.connectSocket
 import ru.bratusev.smartlab.domain.core.model.Device
 import ru.bratusev.smartlab.domain.core.repository.AuthRepository
 
@@ -100,6 +101,7 @@ class AuthRepositoryImpl(
             .toString()
             .replace("\"", "")
 
+        connectSocket(token)
         return token
     }
 

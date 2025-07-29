@@ -36,6 +36,8 @@ kotlin {
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
+            implementation("io.ktor:ktor-client-cio:3.2.2")
+            implementation("io.ktor:ktor-client-websocket:2.3.12")
             implementation(libs.ktor.client.logging)
 
             implementation(projects.domain.core)
