@@ -7,6 +7,9 @@ val iosModule = module {
     single<DataStoreFactory> {
         DataStoreFactory()
     }
+    single<Logger>{
+        Logger()
+    }
 }
 
 actual val platformModule = iosModule

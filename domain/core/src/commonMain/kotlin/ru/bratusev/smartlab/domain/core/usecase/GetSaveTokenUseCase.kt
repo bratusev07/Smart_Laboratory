@@ -2,10 +2,9 @@ package ru.bratusev.smartlab.domain.core.usecase
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import ru.bratusev.smartlab.domain.core.model.Device
 import ru.bratusev.smartlab.domain.core.repository.AuthRepository
 
-class SaveTokenUseCase(private val authRepository: AuthRepository) {
+class GetSaveTokenUseCase(private val authRepository: AuthRepository) {
     operator fun invoke(token: String): Flow<Result<String>> =
         flow {
             try {
