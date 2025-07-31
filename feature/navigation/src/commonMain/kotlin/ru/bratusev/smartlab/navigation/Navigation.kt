@@ -17,38 +17,36 @@ sealed class Screen(val route: String) {
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
-    NavHost(
-        navController = navController,
-        startDestination = Screen.Login.route
-    ) {
-        composable(Screen.Login.route) {
-            LoginScreen(
-                navigateTo = {
-                    navController.navigate(it)
-                }
-            )
-        }
+    //AppTheme {
+        NavHost(
+            navController = navController, startDestination = Screen.Login.route
+        ) {
+            composable(Screen.Login.route) {
+                LoginScreen(
+                    navigateTo = {
+                        navController.navigate(it)
+                    })
+            }
 
-        composable(Screen.Home.route) {
-            HomeScreen(
-                navigateTo = {
-                    navController.navigate(it)
-                }
-            )
-        }
+            composable(Screen.Home.route) {
+                HomeScreen(
+                    navigateTo = {
+                        navController.navigate(it)
+                    })
+            }
 
-        composable(Screen.Settings.route) {
-            SettingsScreen(
-                navigateTo = {
-                    navController.navigate(it)
-                }
-            )
+            composable(Screen.Settings.route) {
+                SettingsScreen(
+                    navigateTo = {
+                        navController.navigate(it)
+                    })
+        //    }
         }
     }
 }
 
 private fun NavController.navigate(route: String?) {
-    if(route == null) {
+    if (route == null) {
         this.popBackStack()
     } else {
         this.navigate(route)

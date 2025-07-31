@@ -4,10 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.rememberNavController
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ru.bratusev.smartlab.navigation.AppNavigation
+import ru.bratusev.smartlab.ui.core.theme.AppTheme
 
 @Composable
 @Preview
 fun App() {
-    val navController = rememberNavController()
-    AppNavigation(navController = navController)
+    AppTheme {
+        val navController = rememberNavController()
+        AppNavigation(navController = navController)
+    }
 }
