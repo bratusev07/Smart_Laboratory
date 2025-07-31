@@ -9,6 +9,9 @@ val androidModule = module {
             context = get()
         )
     }
+    single<Logger> {
+        Logger()
+    }
 }
 
 actual val platformModule = androidModule

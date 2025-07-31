@@ -7,18 +7,20 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import ru.bratusev.smartlab.domain.core.usecase.GetLoggerUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetTokenUseCase
 import ru.bratusev.smartlab.domain.core.model.Device as DomainDevice
-import ru.bratusev.smartlab.domain.core.usecase.LoginUseCase
-import ru.bratusev.smartlab.domain.core.usecase.SaveTokenUseCase
+import ru.bratusev.smartlab.domain.core.usecase.GetLoginUseCase
+import ru.bratusev.smartlab.domain.core.usecase.GetSaveTokenUseCase
 import ru.bratusev.smartlab.feature_login.models.Device
 import ru.bratusev.smartlab.feature_login.models.Event
 import ru.bratusev.smartlab.feature_login.models.LoginState
 
 class LoginViewModel(
-    private val loginUseCase: LoginUseCase,
-    private val saveTokenUseCase: SaveTokenUseCase,
+    private val loginUseCase: GetLoginUseCase,
+    private val saveTokenUseCase: GetSaveTokenUseCase,
     private val getTokenUseCase: GetTokenUseCase,
+    private val logger: GetLoggerUseCase,
     val device: Device
 ) : ViewModel() {
 
@@ -40,23 +42,23 @@ class LoginViewModel(
         // TODO: выглядит ну прям так себе
         loginUseCase.invoke(uiState.value.login, uiState.value.password, device).onEach { result ->
             result.fold(onSuccess = { token ->
-                println("loginUseCase returned success with token: $token")
+                logger.d("viewModel","loginUseCase returned success with token: $token")
                 saveTokenUseCase.invoke(token).onEach { result ->
                     result.fold(onSuccess = {
-                        println("Token saved checking it's existence")
+                        logger.d("viewModel","Token saved checking it's existence")
                         getTokenUseCase.invoke().onEach { result ->
                             result.fold(onSuccess = { token ->
-                                println("Got token after saving: $token")
+                                logger.d("viewModel","Got token after saving: $token")
                             }, onFailure = { error ->
-                                println("Error: token was saved, but couldn't be gotten. Error message is: $error")
+                                logger.d("viewModel","Error: token was saved, but couldn't be gotten. Error message is: $error")
                             })
                         }.launchIn(viewModelScope)
                     }, onFailure = {
-                        println("Error during token saving")
+                        logger.d("viewModel","Error during token saving")
                     })
                 }.launchIn(viewModelScope)
             }, onFailure = { error ->
-                println("loginUseCase returned failure. Error is $error")
+                logger.d("viewModel","loginUseCase returned failure. Error is $error")
             })
         }.launchIn(viewModelScope)
     }
@@ -64,8 +66,8 @@ class LoginViewModel(
     private fun checkToken() {
         getTokenUseCase.invoke().onEach { result ->
             result.fold(
-                onSuccess = { token -> println("Checked token. It is $token") },
-                onFailure = { error -> println("Error during checking token. Error is $error") })
+                onSuccess = { token -> logger.d("viewModel","Checked token. It is $token") },
+                onFailure = { error -> logger.d("viewModel","Error during checking token. Error is $error") })
         }.launchIn(viewModelScope)
     }
 
