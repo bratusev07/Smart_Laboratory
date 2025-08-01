@@ -12,15 +12,16 @@ import ru.bratusev.smartlab.ui.core.models.CustomButtonUi
 
 @Composable
 fun HomeScreen(
-    vm: HomeViewModel = koinViewModel(),
-    navigateTo: (String?) -> Unit
+    vm: HomeViewModel = koinViewModel(), navigateTo: (String?) -> Unit
 ) {
     val state = vm.uiState.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         CustomButton(
-            modifier = Modifier.align(Alignment.Center),
-            customButtonUi = CustomButtonUi(state.value.screenName, 300)
+            modifier = Modifier.align(Alignment.Center), customButtonUi = CustomButtonUi(
+                state.value.screenName,
+                fontWeight = 50,
+            )
         ) {
             navigateTo("settings")
         }

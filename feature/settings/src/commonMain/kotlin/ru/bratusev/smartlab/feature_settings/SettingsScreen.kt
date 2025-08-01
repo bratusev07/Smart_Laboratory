@@ -20,7 +20,10 @@ fun SettingsScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         CustomButton(
             modifier = Modifier.align(Alignment.Center),
-            customButtonUi = CustomButtonUi(state.value.screenName, 300)
+            customButtonUi = CustomButtonUi(
+                state.value.screenName,
+                fontWeight = 50
+            )
         ) {
             navigateTo(null)
         }
