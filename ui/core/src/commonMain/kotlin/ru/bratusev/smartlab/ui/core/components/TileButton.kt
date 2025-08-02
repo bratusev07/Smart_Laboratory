@@ -4,7 +4,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -29,7 +30,7 @@ fun TileButton(modifier: Modifier = Modifier, tileButtonUi: TileButtonUi, onClic
     Button(
         onClick = onClick,
         shape = RoundedCornerShape(10.dp),
-        modifier = modifier.fillMaxWidth().aspectRatio(1f),
+        modifier = modifier.fillMaxSize().aspectRatio(1f),
         colors = ButtonColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
             contentColor = MaterialTheme.colorScheme.onSurface,
@@ -40,19 +41,13 @@ fun TileButton(modifier: Modifier = Modifier, tileButtonUi: TileButtonUi, onClic
             defaultElevation = 5.dp, pressedElevation = 1.dp
         )
     ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            when (tileButtonUi) {
-                is TileButtonUi.LightBulb -> {
-                    LightBulbContent(tileButtonUi = tileButtonUi)
-                }
+        when (tileButtonUi) {
+            is TileButtonUi.LightBulb -> {
+                LightBulbContent(tileButtonUi = tileButtonUi)
+            }
 
-                is TileButtonUi.Thermometer -> {
-                    ThermometerContent(tileButtonUi = tileButtonUi)
-                }
+            is TileButtonUi.Thermometer -> {
+                ThermometerContent(tileButtonUi = tileButtonUi)
             }
         }
     }
@@ -65,17 +60,23 @@ private fun LightBulbContent(tileButtonUi: TileButtonUi.LightBulb) {
         tileButtonUi.isOn -> TileButtonColors.LightBulb.On
         else -> TileButtonColors.LightBulb.Off
     }
-    Image(
-        painter = painterResource(tileButtonUi.resource),
-        colorFilter = ColorFilter.tint(colorTint),
-        contentDescription = null
-    )
-    Text(
-        modifier = Modifier.fillMaxWidth(),
-        overflow = TextOverflow.Ellipsis,
-        text = tileButtonUi.location,
-        textAlign = TextAlign.Center
-    )
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            painter = painterResource(tileButtonUi.resource),
+            colorFilter = ColorFilter.tint(colorTint),
+            contentDescription = null
+        )
+        Text(
+            modifier = Modifier.wrapContentHeight(),
+            overflow = TextOverflow.Ellipsis,
+            text = tileButtonUi.location,
+            textAlign = TextAlign.Center
+        )
+    }
 }
 
 @Composable
@@ -86,27 +87,34 @@ fun ThermometerContent(tileButtonUi: TileButtonUi.Thermometer) {
         tileButtonUi.temperature >= 15f -> TileButtonColors.Thermometer.hot
         else -> TileButtonColors.Thermometer.cold
     }
-    Image(
-        painter = painterResource(tileButtonUi.resource),
-        colorFilter = ColorFilter.tint(colorTint),
-        contentDescription = null
-    )
-    Text(
-        overflow = TextOverflow.Visible,
-        text = tileButtonUi.temperature.toString() + " ℃",
-        textAlign = TextAlign.Center,
-        style = MaterialTheme.typography.labelLarge
-    )
-
-    Text(
-        overflow = TextOverflow.Ellipsis,
-        text = tileButtonUi.location,
-        textAlign = TextAlign.Center
-    )
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            painter = painterResource(tileButtonUi.resource),
+            colorFilter = ColorFilter.tint(colorTint),
+            contentDescription = null
+        )
+        Text(
+            modifier = Modifier.wrapContentHeight(),
+            overflow = TextOverflow.Visible,
+            text = tileButtonUi.temperature.toString() + " ℃",
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.labelLarge
+        )
+        Text(
+            modifier = Modifier.wrapContentHeight(),
+            overflow = TextOverflow.Ellipsis,
+            text = tileButtonUi.location,
+            textAlign = TextAlign.Center
+        )
+    }
 }
 
 @Preview(
-    group = "TileButton", name = "LightBulb", showBackground = true, widthDp = 120, heightDp = 120
+    group = "TileButton", name = "LightBulb", showBackground = true, widthDp = 250, heightDp = 250
 )
 @Composable
 private fun TileButtonPreviewLightBulb() {

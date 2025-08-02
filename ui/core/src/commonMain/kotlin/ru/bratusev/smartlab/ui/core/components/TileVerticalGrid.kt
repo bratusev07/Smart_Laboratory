@@ -1,8 +1,8 @@
 package ru.bratusev.smartlab.ui.core.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -35,11 +35,12 @@ fun TileVerticalGrid(
     LazyVerticalGrid(
         modifier = modifier,
         columns = GridCells.Fixed(columnsAmount),
-        horizontalArrangement = Arrangement.Center,
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
         content = {
             stickyHeader {
                 Row(
-                    horizontalArrangement = Arrangement.SpaceAround,
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
@@ -53,9 +54,11 @@ fun TileVerticalGrid(
                     }
                 }
             }
-            items(data.reversedIf(isReversed)) {
+            items(data.reversedIf(isReversed), key = { it.hashCode() }) {
                 TileButton(
-                    modifier = Modifier.padding(10.dp), tileButtonUi = it, onClick = {})
+                    modifier = Modifier.animateItem(),
+                    tileButtonUi = it,
+                    onClick = {})
             }
         })
 }
@@ -142,8 +145,8 @@ fun ManyGridsPreview() {
     }
 
     AppTheme {
-        Row {
-            Text(modifier = Modifier.width(100.dp), text = "Боковое менб")
+        Row(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+            Text(modifier = Modifier.width(100.dp), text = "Боковое меню")
             LazyRow(
                 modifier = Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(20.dp)
             ) {
