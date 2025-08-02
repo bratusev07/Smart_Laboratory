@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -13,36 +14,34 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import ru.bratusev.smartlab.ui.core.models.TileButtonUi
+import ru.bratusev.smartlab.ui.core.theme.AppTheme
 import ru.bratusev.smartlab.ui.core.theme.TileButtonColors
-import smartlaboratory.ui.core.generated.resources.Res
-import smartlaboratory.ui.core.generated.resources.light_bulb
-import smartlaboratory.ui.core.generated.resources.thermometer
 
 @Composable
 fun TileButton(modifier: Modifier = Modifier, tileButtonUi: TileButtonUi, onClick: () -> Unit) {
     Button(
         onClick = onClick,
         shape = RoundedCornerShape(10.dp),
-        modifier = modifier.aspectRatio(1f),
+        modifier = modifier.fillMaxWidth().aspectRatio(1f),
         colors = ButtonColors(
-            containerColor = Color.White,
-            contentColor = Color.Gray,
-            disabledContainerColor = Color.White,
-            disabledContentColor = Color.Gray
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+            disabledContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+            disabledContentColor = MaterialTheme.colorScheme.onSurface,
         ),
         elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = 5.dp,
-            pressedElevation = 1.dp
+            defaultElevation = 5.dp, pressedElevation = 1.dp
         )
     ) {
         Column(
-            modifier = modifier,
+            modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -67,11 +66,16 @@ private fun LightBulbContent(tileButtonUi: TileButtonUi.LightBulb) {
         else -> TileButtonColors.LightBulb.Off
     }
     Image(
-        painter = painterResource(Res.drawable.light_bulb),
+        painter = painterResource(tileButtonUi.resource),
         colorFilter = ColorFilter.tint(colorTint),
         contentDescription = null
     )
-    Text(text = tileButtonUi.location, textAlign = TextAlign.Center)
+    Text(
+        modifier = Modifier.fillMaxWidth(),
+        overflow = TextOverflow.Ellipsis,
+        text = tileButtonUi.location,
+        textAlign = TextAlign.Center
+    )
 }
 
 @Composable
@@ -83,15 +87,34 @@ fun ThermometerContent(tileButtonUi: TileButtonUi.Thermometer) {
         else -> TileButtonColors.Thermometer.cold
     }
     Image(
-        painter = painterResource(Res.drawable.thermometer),
+        painter = painterResource(tileButtonUi.resource),
         colorFilter = ColorFilter.tint(colorTint),
         contentDescription = null
     )
     Text(
+        overflow = TextOverflow.Visible,
         text = tileButtonUi.temperature.toString() + " ℃",
         textAlign = TextAlign.Center,
         style = MaterialTheme.typography.labelLarge
     )
-    Text(text = tileButtonUi.location, textAlign = TextAlign.Center)
+
+    Text(
+        overflow = TextOverflow.Ellipsis,
+        text = tileButtonUi.location,
+        textAlign = TextAlign.Center
+    )
+}
+
+@Preview(
+    group = "TileButton", name = "LightBulb", showBackground = true, widthDp = 120, heightDp = 120
+)
+@Composable
+private fun TileButtonPreviewLightBulb() {
+    AppTheme {
+        TileButton(
+            tileButtonUi = TileButtonUi.LightBulb(
+                location = "Previesdfsdfw Preview", isOn = true
+            ), onClick = {})
+    }
 }
 

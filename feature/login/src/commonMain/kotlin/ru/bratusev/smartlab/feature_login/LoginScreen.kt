@@ -1,5 +1,6 @@
 package ru.bratusev.smartlab.feature_login
 
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,7 +21,7 @@ import ru.bratusev.smartlab.ui.core.models.TileButtonUi
 
 @Composable
 fun LoginScreen(
-    vm: LoginViewModel = koinViewModel(), navigateTo: (String?) -> Unit
+    vm: LoginViewModel = koinViewModel(), navigateTo: (String?) -> Unit,
 ) {
     val state = vm.uiState.collectAsState()
 
@@ -36,7 +37,7 @@ fun LoginScreen(
             modifier = Modifier.size(150.dp), tileButtonUi = TileButtonUi.LightBulb(
                 location = state.value.screenName,
                 isOn = isLightOn,
-                isEnabled = true
+                isEnabled = false
             )
         ) {
             isLightOn = !isLightOn
