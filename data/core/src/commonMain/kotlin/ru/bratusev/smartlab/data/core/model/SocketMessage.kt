@@ -1,184 +1,152 @@
 package ru.bratusev.smartlab.data.core.model
 
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.plugins.websocket.WebSockets
-import io.ktor.client.plugins.websocket.webSocketSession
-import io.ktor.serialization.kotlinx.KotlinxWebsocketSerializationConverter
-import io.ktor.websocket.Frame
-import io.ktor.websocket.close
-import io.ktor.websocket.readText
-import kotlinx.coroutines.delay
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.booleanOrNull
-import kotlinx.serialization.json.decodeFromJsonElement
-import kotlinx.serialization.json.intOrNull
-import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
 
 @Serializable
-data class HaMessage(
-    val type: String,
-    @SerialName("id") val id: Int? = null,
-    @SerialName("access_token") val accessToken: String? = null,
-    @SerialName("event_type") val eventType: String? = null,
-    //@SerialName("event_data") val eventData: Map<String, Any>? = null,
-    @SerialName("service") val service: String? = null,
-    @SerialName("domain") val domain: String? = null,
-    //@SerialName("service_data") val serviceData: Map<String, Any>? = null,
-    //@SerialName("target") val target: Map<String, Any>? = null,
-    @SerialName("return_response") val returnResponse: Boolean? = null,
-    @SerialName("features") val features: Map<String, Int>? = null,
-    //@SerialName("trigger") val trigger: Map<String, Any>? = null,
-    @SerialName("subscription") val subscription: Int? = null,
-    val success: Boolean? = null,
+sealed class WebSocketResponse {
+    abstract val type: String
+    abstract val id: Int?
+}
+
+@Serializable
+data class PongResponseMsg(override val id: Int) : WebSocketResponse() {
+    override val type: String = "pong"
+}
+
+@Serializable
+data class TriggerResponseMsg(
+    override val id: Int,
+    val event: TriggerEventData
+) : WebSocketResponse() {
+    override val type: String = "event"
+}
+
+@Serializable
+data class EventResponseMsg(
+    override val id: Int,
+    val event: EventData
+) : WebSocketResponse() {
+    override val type: String = "event"
+}
+
+@Serializable
+data class AuthRequiredResponseMsg(
+    @SerialName("ha_version") val haVersion: String? = null
+) : WebSocketResponse() {
+    override val type: String = "auth_required"
+    override val id: Int? = null
+}
+
+@Serializable
+data class AuthOkResponseMsg(
+    @SerialName("ha_version") val haVersion: String
+) : WebSocketResponse() {
+    override val type: String = "auth_ok"
+    override val id: Int? = null
+}
+
+@Serializable
+data class AuthInvalidResponseMsg(val message: String) : WebSocketResponse() {
+    override val type: String = "auth_invalid"
+    override val id: Int? = null
+}
+
+@Serializable
+data class ResultResponseMsg(
+    override val id: Int,
+    val success: Boolean,
     val result: JsonElement? = null,
-    val error: HaError? = null,
-    val event: HaEvent? = null
-)
+    val error: ApiError? = null
+) : WebSocketResponse() {
+    override val type: String = "result"
+}
 
 @Serializable
-data class HaError(
+data class ApiError(
     val code: String,
-    val message: String
+    val message: String,
+    val translation_key: String? = null,
+    val translation_domain: String? = null,
+    val translation_placeholders: Map<String, String>? = null
 )
 
 @Serializable
-data class HaEvent(
-    val event_type: String,
-    //val data: Map<String, Any>? = null,
-    val time_fired: String,
-    val origin: String,
-    val context: Map<String, String?>? = null
+data class EventData(
+    @SerialName("event_type") val eventType: String,
+    val data: Map<String, JsonElement>? = null,
+    val origin: String? = null,
+    @SerialName("time_fired") val timeFired: String,
+    val context: Context? = null
 )
 
-suspend fun connectSocket(token: String) {
-    val client = HttpClient(CIO) {
-        install(WebSockets) {
-            contentConverter = KotlinxWebsocketSerializationConverter(Json {
-                ignoreUnknownKeys = true
-                explicitNulls = false
-            })
+@Serializable
+data class TriggerEventData(
+    val variables: Map<String, JsonElement>,
+    val description: String
+)
+
+@Serializable
+data class Context(
+    val id: String? = null,
+    @SerialName("parent_id") val parentId: String? = null,
+    @SerialName("user_id") val userId: String? = null
+)
+
+@Serializable
+data class ServiceData(
+    @SerialName("entity_id") val entityId: String
+)
+
+@Serializable
+data class ServiceEntity(
+    @SerialName("s") val state: JsonElement? = null,
+    @SerialName("a") val attributes: JsonElement? = null,
+    val c: JsonElement? = null,
+    val id: String? = null,
+    val domain: String? = null,
+    @SerialName("lu") val lastUpdate: String? = null,
+    @SerialName("lc") val lastChange: String? = null
+)
+
+// === WebSocket Messages ===
+
+@Serializable
+sealed class SocketMessage {
+
+    @Serializable
+    data class AuthMsg(
+        @SerialName("type") val type: String = "auth",
+        @SerialName("access_token") val accessToken: String
+    ) : SocketMessage() {
+
+        override fun toString(): String {
+            return """{"type": "$type", "access_token" : "$accessToken"}"""
         }
     }
 
-    val host = "http://10.131.170.254:8123"
-    val wsUrl = "ws://$host/api/websocket"
+    @Serializable
+    data class PingMsg(val type: String = "ping", val id: Int) : SocketMessage()
 
-    client.webSocketSession(wsUrl).let { session ->
-        println("Соединение установлено")
+    @Serializable
+    data class SubEntitiesMsg(
+        val type: String = "subscribe_entities",
+        val id: Int
+    ) : SocketMessage() {
 
-        var authenticated = false
-        var nextId = 1
-
-        while (true) {
-            val frame = try {
-                session.incoming.receive()
-            } catch (e: Exception) {
-                println("Соединение закрыто: ${e.message}")
-                break
-            }
-
-            if (frame is Frame.Text) {
-                val text = frame.readText()
-                println("Получено: $text")
-
-                val json = Json.decodeFromString<JsonObject>(text)
-                val type = json["type"]?.jsonPrimitive?.content ?: continue
-
-                when {
-                    type == "auth_required" -> {
-                        // Шаг 1: Отправляем токен
-                        val authMsg = HaMessage(type = "auth", accessToken = token)
-                        session.send(Frame.Text(Json.encodeToString(authMsg)))
-                        println("Отправлено: $authMsg")
-                    }
-
-                    type == "auth_ok" -> {
-                        println("✅ Аутентификация успешна")
-                        authenticated = true
-
-                        // После аутентификации — можно отправлять команды
-                        // Например: включить фичу coalesce_messages
-                        val featuresMsg = HaMessage(
-                            id = nextId++,
-                            type = "supported_features",
-                            features = mapOf("coalesce_messages" to 1)
-                        )
-                        session.send(Frame.Text(Json.encodeToString(featuresMsg)))
-                        println("Отправлено: $featuresMsg")
-
-                        // Подписываемся на события изменения состояния
-                        val subscribeMsg = HaMessage(
-                            id = nextId++,
-                            type = "subscribe_events",
-                            eventType = "state_changed"
-                        )
-                        session.send(Frame.Text(Json.encodeToString(subscribeMsg)))
-                        println("Подписались на state_changed")
-
-                        // Вызов сервиса: включить свет (пример)
-                        val callServiceMsg = HaMessage(
-                            id = nextId++,
-                            type = "call_service",
-                            domain = "light",
-                            service = "turn_on",
-                            //serviceData = mapOf("brightness" to 100),
-                            //target = mapOf("entity_id" to "light.bed_light"),
-                            returnResponse = true
-                        )
-                        session.send(Frame.Text(Json.encodeToString(callServiceMsg)))
-                        println("Вызван сервис: light.turn_on")
-
-                        // Пинг для проверки соединения
-                        delay(10_000)
-                        val pingMsg = HaMessage(id = nextId++, type = "ping")
-                        session.send(Frame.Text(Json.encodeToString(pingMsg)))
-                    }
-
-                    type == "auth_invalid" -> {
-                        println("❌ Ошибка аутентификации: ${json["message"]}")
-                        session.close()
-                        break
-                    }
-
-                    type == "result" -> {
-                        val id = json["id"]?.jsonPrimitive?.intOrNull
-                        val success = json["success"]?.jsonPrimitive?.booleanOrNull ?: false
-                        val errorMsg = json["error"]?.jsonObject
-
-                        if (success) {
-                            println("✅ Результат команды $id: Успешно")
-                            if (json["result"] != null) {
-                                println("Данные: ${json["result"]}")
-                            }
-                        } else {
-                            val error = errorMsg?.let {
-                                Json.decodeFromJsonElement<HaError>(it)
-                            }
-                            println("❌ Ошибка в команде $id: ${error?.code} — ${error?.message}")
-                        }
-                    }
-
-                    type == "event" -> {
-                        val eventId = json["id"]?.jsonPrimitive?.intOrNull
-                        val haEvent = Json.decodeFromJsonElement<HaEvent>(json["event"]!!)
-                        println("🔔 Событие $eventId: ${haEvent.event_type} | Данные: $")
-                    }
-
-                    type == "pong" -> {
-                        println("🏓 Получен pong")
-                    }
-
-                    else -> {
-                        println("⚠️ Неизвестный тип сообщения: $type")
-                    }
-                }
-            }
+        override fun toString(): String {
+            return """{"type": "$type", "id" : $id}"""
         }
     }
+
+    @Serializable
+    data class SwitchMsg(
+        val type: String = "call_service",
+        val domain: String = "switch",
+        val service: String = "turn_off",
+        @SerialName("return_response") val returnResponse: Boolean = false,
+        @SerialName("service_data") val serviceData: ServiceData,
+        val id: Int
+    ) : SocketMessage()
 }

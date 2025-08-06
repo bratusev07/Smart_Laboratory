@@ -21,7 +21,9 @@ val dataModule = module {
 
     single<AuthRepository> {
         AuthRepositoryImpl(
-            client = get(), dataStore = get()
+            client = get(),
+            socketClient = get(),
+            dataStore = get()
         )
     }
 
@@ -40,6 +42,10 @@ val dataModule = module {
 
     single<DataStore<Preferences>> {
         get<DataStoreFactory>().createDataStore()
+    }
+
+    single<HomeAssistantWebSocketClient> {
+        HomeAssistantWebSocketClient()
     }
 }
 expect val platformModule: Module

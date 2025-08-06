@@ -18,8 +18,10 @@ kotlin = "2.2.0"
 jetbrainsKotlinJvm = "2.2.0"
 kotlinStdlib = "2.2.0"
 kotlinxCoroutinesCore = "1.10.2"
+kotlinxSerializationJson = "1.8.1"
 ktorClientDarwin = "3.2.2"
 ktorClientAndroid = "3.2.2"
+ktorClientOkhttp = "3.2.2"
 runner = "1.6.2"
 core = "1.6.1"
 koin = "4.1.0"
@@ -53,11 +55,16 @@ koin-ktor = { module = "io.insert-koin:koin-ktor", version.ref = "koin" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
 koin-compose-viewmodel-navigation = { module = "io.insert-koin:koin-compose-viewmodel-navigation", version.ref = "koin" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 ktor-client-android = { module = "io.ktor:ktor-client-android", version.ref = "ktorClientAndroid" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktorClientDarwin" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorClientDarwin" }
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktorClientDarwin" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktorClientDarwin" }
 ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktorClientDarwin" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktorClientOkhttp" }
+ktor-client-websockets = { module = "io.ktor:ktor-client-websockets", version.ref = "ktorClientDarwin" }
+ktor-client-serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktorClientDarwin" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktorClientDarwin" }
 
 [bundles]

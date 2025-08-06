@@ -12,7 +12,6 @@ class GetLoginUseCase(private val authRepository: AuthRepository) {
             val token = authRepository.login(login, password)
             emit(Result.success(token))
 
-            authRepository.registrations(token, device)
         } catch (e: Exception) {
             emit(Result.failure(e))
         }
