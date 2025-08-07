@@ -13,23 +13,18 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.booleanOrNull
-import kotlinx.serialization.json.decodeFromJsonElement
-import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import ru.bratusev.smartlab.data.core.model.ApiError
-import ru.bratusev.smartlab.data.core.model.AuthInvalidResponseMsg
-import ru.bratusev.smartlab.data.core.model.AuthOkResponseMsg
-import ru.bratusev.smartlab.data.core.model.AuthRequiredResponseMsg
-import ru.bratusev.smartlab.data.core.model.EventResponseMsg
-import ru.bratusev.smartlab.data.core.model.ResultResponseMsg
-import ru.bratusev.smartlab.data.core.model.SocketMessage
-import ru.bratusev.smartlab.data.core.model.TriggerResponseMsg
+import ru.bratusev.smartlab.data.core.model.ServiceEntity
+import ru.bratusev.smartlab.data.core.message.HomeAssistantMessageHandlers
+import ru.bratusev.smartlab.data.core.message.HomeAssistantMessageHandlersImpl
+import ru.bratusev.smartlab.data.core.message.HomeAssistantMessageSender
+import ru.bratusev.smartlab.data.core.message.HomeAssistantMessageSenderImpl
 
 
 class HomeAssistantWebSocketClient() {
@@ -40,13 +35,43 @@ class HomeAssistantWebSocketClient() {
         install(WebSockets)
     }
 
-    private val json = Json { ignoreUnknownKeys = true }
-    private val messageId = 1
+    private val json = Json {
+        ignoreUnknownKeys = true
+        encodeDefaults = true
+    }
+    private var messageId = 1
 
     private var session: DefaultClientWebSocketSession? = null
     private var job: Job? = null
 
-    fun setToken(newToken: String): HomeAssistantWebSocketClient {
+    private val _socketErrorsFlow = MutableSharedFlow<List<Error>>()
+    val socketErrorsFlow: SharedFlow<List<Error>> = _socketErrorsFlow
+
+    private val _serviceEntitiesFlow = MutableSharedFlow<List<ServiceEntity>>(replay = 1)
+    private var _serviceEntityCopy: List<ServiceEntity> = emptyList()
+    val serviceEntitiesFlow: SharedFlow<List<ServiceEntity>> = _serviceEntitiesFlow
+
+    private val messageHandlers: HomeAssistantMessageHandlers by lazy {
+        HomeAssistantMessageHandlersImpl(
+            json = json,
+            session = session,
+            errorFlow = _socketErrorsFlow
+        )
+    }
+
+    private val messageSender: HomeAssistantMessageSender by lazy {
+        HomeAssistantMessageSenderImpl(
+            json = json,
+            session = { session },
+            messageId = { messageId },
+            incrementMessageId = { messageId++ },
+            errorFlow = _socketErrorsFlow
+        )
+    }
+
+    internal val sender: HomeAssistantMessageSender get() = messageSender
+
+    internal fun setToken(newToken: String): HomeAssistantWebSocketClient {
         accessToken = newToken
         return this
     }
@@ -64,88 +89,53 @@ class HomeAssistantWebSocketClient() {
                 }
             } catch (e: Exception) {
                 println("WebSocket error: $e")
+                _socketErrorsFlow.tryEmit(listOf(Error("WebSocket error: ${e.message ?: e.toString()}")))
             } finally {
+                disconnect()
                 session = null
             }
         }
     }
 
-    suspend fun disconnect() {
+    private suspend fun disconnect() {
         job?.cancel()
         session?.close(CloseReason(CloseReason.Codes.NORMAL, "Closed by client"))
-    }
-
-    private suspend fun send(msg: SocketMessage) {
-        session?.send(Frame.Text(msg.toString()))
     }
 
     private fun handleTextMessage(text: String) {
         try {
             val jsonElement = json.parseToJsonElement(text)
             val type = jsonElement.jsonObject["type"]?.jsonPrimitive?.content ?: return
+            println("type is $type")
+
             when (type) {
-                "auth_required" -> handleAuthRequired(jsonElement)
-                "auth_ok" -> handleAuthOk(jsonElement)
-                "auth_invalid" -> handleAuthInvalid(jsonElement)
-                "result" -> handleResult(jsonElement)
-                "event" -> handleEvent(jsonElement)
-                "pong" -> handlePong(jsonElement)
-                else -> println("Unknown message type: $type")
+                "auth_required" -> messageHandlers.handleAuthRequired(
+                    jsonElement = jsonElement,
+                    accessToken = accessToken
+                )
+                "auth_ok" -> messageHandlers.handleAuthOk(
+                    jsonElement = jsonElement,
+                    getMessageId = { messageId },
+                    setMessageId = { newId -> messageId = newId }
+                )
+                "auth_invalid" -> messageHandlers.handleAuthInvalid(jsonElement = jsonElement)
+                "result" -> messageHandlers.handleResult(jsonElement = jsonElement)
+                "event" -> messageHandlers.handleEvent(
+                    jsonElement = jsonElement,
+                    getServiceEntitiesCopy = { _serviceEntityCopy },
+                    setServiceEntitiesCopy = { list -> _serviceEntityCopy = list },
+                    emitServiceEntities = { list -> _serviceEntitiesFlow.tryEmit(list) }
+                )
+                "pong" -> messageHandlers.handlePong(jsonElement = jsonElement)
+                else -> {
+                    println("Unknown message type: $type")
+                    _socketErrorsFlow.tryEmit(listOf(Error("Unknown message type: $type")))
+                }
             }
         } catch (e: Exception) {
             println("Parse error: $e")
+            _socketErrorsFlow.tryEmit(listOf(Error("Parse error: ${e.message ?: e.toString()}")))
         }
-    }
-
-    private fun handleEvent(jsonElement: JsonElement) {
-        val eventObj = jsonElement.jsonObject
-        if (eventObj["event"]?.jsonObject?.get("event_type") != null) {
-            val eventMsg = json.decodeFromJsonElement<EventResponseMsg>(jsonElement)
-        } else if (eventObj["event"]?.jsonObject?.get("variables") != null) {
-            val triggerMsg = json.decodeFromJsonElement<TriggerResponseMsg>(jsonElement)
-        }
-        parseToServiceEntityMap(jsonElement.toString())
-    }
-
-    private fun handleResult(jsonElement: JsonElement) {
-        val id = jsonElement.jsonObject["id"]?.jsonPrimitive?.intOrNull ?: return
-        val success = jsonElement.jsonObject["success"]?.jsonPrimitive?.booleanOrNull ?: false
-        val error = jsonElement.jsonObject["error"]?.let {
-            json.decodeFromJsonElement<ApiError>(it)
-        }
-        val result = jsonElement.jsonObject["result"]
-        val resultResponseMsg = ResultResponseMsg(id, success, result, error)
-        if (!success) {
-            println("Command failed [${resultResponseMsg.id}]: ${resultResponseMsg.error?.message}")
-        }
-    }
-
-    private fun handleAuthRequired(jsonElement: JsonElement) {
-        val msg = json.decodeFromJsonElement<AuthRequiredResponseMsg>(jsonElement)
-        println("Auth required. HA version: ${msg.haVersion}")
-        CoroutineScope(Dispatchers.IO).launch {
-            accessToken?.let {
-                session?.send(Frame.Text(SocketMessage.AuthMsg(type = "auth", accessToken = it).toString()))
-            }
-        }
-    }
-
-    private fun handleAuthOk(jsonElement: JsonElement) {
-        val msg = json.decodeFromJsonElement<AuthOkResponseMsg>(jsonElement)
-        println("Authenticated successfully. HA version: ${msg.haVersion}")
-        CoroutineScope(Dispatchers.IO).launch {
-            session?.send(Frame.Text(SocketMessage.SubEntitiesMsg(type = "subscribe_entities", id = messageId.getAndIncrement()).toString()))
-        }
-    }
-
-    private fun handleAuthInvalid(jsonElement: JsonElement) {
-        val msg = json.decodeFromJsonElement<AuthInvalidResponseMsg>(jsonElement)
-        println("Auth failed: ${msg.message}")
-    }
-
-    private fun handlePong(jsonElement: JsonElement) {
-        val id = jsonElement.jsonObject["id"]?.jsonPrimitive?.intOrNull ?: return
-        println("Pong received: $id")
     }
 
 }
