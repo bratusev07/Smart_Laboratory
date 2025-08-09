@@ -8,18 +8,18 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import ru.bratusev.smartlab.domain.core.usecase.GetTokenUseCase
-import ru.bratusev.smartlab.domain.core.model.Device as DomainDevice
 import ru.bratusev.smartlab.domain.core.usecase.LoginUseCase
 import ru.bratusev.smartlab.domain.core.usecase.SaveTokenUseCase
 import ru.bratusev.smartlab.feature_login.models.Device
 import ru.bratusev.smartlab.feature_login.models.Event
 import ru.bratusev.smartlab.feature_login.models.LoginState
+import ru.bratusev.smartlab.domain.core.model.Device as DomainDevice
 
 class LoginViewModel(
     private val loginUseCase: LoginUseCase,
     private val saveTokenUseCase: SaveTokenUseCase,
     private val getTokenUseCase: GetTokenUseCase,
-    val device: Device
+    val device: Device,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginState())
@@ -38,12 +38,15 @@ class LoginViewModel(
             deviceId = device.deviceId
         )
         // TODO: выглядит ну прям так себе
+        updateState(_uiState.value.copy(loginStage = LoginStage.START_1))
         loginUseCase.invoke(uiState.value.login, uiState.value.password, device).onEach { result ->
             result.fold(onSuccess = { token ->
+                updateState(_uiState.value.copy(loginStage = LoginStage.FIRST_SUCCESS_2))
                 println("loginUseCase returned success with token: $token")
                 saveTokenUseCase.invoke(token).onEach { result ->
                     result.fold(onSuccess = {
-                        println("Token saved checking it's existence")
+                        ("Token saved checking it's existence")
+
                         getTokenUseCase.invoke().onEach { result ->
                             result.fold(onSuccess = { token ->
                                 println("Got token after saving: $token")
@@ -82,4 +85,12 @@ class LoginViewModel(
             Event.OnCheckTokenButtonClicked -> checkToken()
         }
     }
+}
+
+enum class LoginStage {
+    START_1,
+    FIRST_SUCCESS_2,
+    SAVING_TOKEN_3,
+    COMPLETED_4,
+    FAILED,
 }
