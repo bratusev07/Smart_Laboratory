@@ -16,8 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
 import ru.bratusev.smartlab.feature_login.models.Event
-import ru.bratusev.smartlab.ui.core.components.TileButton
-import ru.bratusev.smartlab.ui.core.models.TileButtonUi
+import ru.bratusev.smartlab.ui.core.components.tileButton.TileButton
+import ru.bratusev.smartlab.ui.core.models.tileButton.TileButtonUi
 
 @Composable
 fun LoginScreen(

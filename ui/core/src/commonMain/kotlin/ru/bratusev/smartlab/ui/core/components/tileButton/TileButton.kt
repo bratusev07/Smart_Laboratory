@@ -1,4 +1,4 @@
-package ru.bratusev.smartlab.ui.core.components
+package ru.bratusev.smartlab.ui.core.components.tileButton
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -21,7 +21,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import ru.bratusev.smartlab.ui.core.models.TileButtonUi
+import ru.bratusev.smartlab.ui.core.models.tileButton.TileButtonUi
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
 import ru.bratusev.smartlab.ui.core.theme.TileButtonColors
 

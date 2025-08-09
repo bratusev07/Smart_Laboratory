@@ -1,4 +1,4 @@
-package ru.bratusev.smartlab.ui.core.models
+package ru.bratusev.smartlab.ui.core.models.tileButton
 
 import org.jetbrains.compose.resources.DrawableResource
 import smartlaboratory.ui.core.generated.resources.Res
