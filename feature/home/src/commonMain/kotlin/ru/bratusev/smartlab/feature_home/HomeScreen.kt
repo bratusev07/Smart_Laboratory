@@ -6,13 +6,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.context.startKoin
 import ru.bratusev.smartlab.ui.core.components.CustomButton
 import ru.bratusev.smartlab.ui.core.models.CustomButtonUi
+import ru.bratusev.smartlab.ui.core.theme.AppTheme
 
 @Composable
 fun HomeScreen(
-    vm: HomeViewModel = koinViewModel(), navigateTo: (String?) -> Unit
+    vm: HomeViewModel = koinViewModel(), navigateTo: (String?) -> Unit,
 ) {
     val state = vm.uiState.collectAsState()
 
@@ -25,5 +28,18 @@ fun HomeScreen(
         ) {
             navigateTo("settings")
         }
+    }
+}
+
+@Preview
+@Composable
+private fun HomeScreenPreview() {
+    startKoin {
+        modules(homeModulePreview)
+    }
+    AppTheme {
+        HomeScreen(
+            navigateTo = {}
+        )
     }
 }

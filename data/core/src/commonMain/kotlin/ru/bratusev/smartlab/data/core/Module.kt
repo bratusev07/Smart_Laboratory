@@ -6,8 +6,12 @@ import io.ktor.client.HttpClient
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import ru.bratusev.smartlab.data.core.dataStore.DataStoreFactory
+import ru.bratusev.smartlab.data.core.dataStore.preview.DataStoreFactoryPreview
+import ru.bratusev.smartlab.data.core.preview.KtorClientFactoryPreview
 import ru.bratusev.smartlab.data.core.repository.AuthRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.ButtonTextRepositoryImpl
+import ru.bratusev.smartlab.data.core.repository.preview.AuthRepositoryPreview
+import ru.bratusev.smartlab.data.core.repository.preview.ButtonTextRepositoryPreview
 import ru.bratusev.smartlab.domain.core.repository.AuthRepository
 import ru.bratusev.smartlab.domain.core.repository.ButtonTextRepository
 
@@ -37,4 +41,32 @@ val dataModule = module {
         get<DataStoreFactory>().createDataStore()
     }
 }
+
+val dataModulePreview = module {
+
+    single<ButtonTextRepository> {
+        ButtonTextRepositoryPreview()
+    }
+
+    single<AuthRepository> {
+        AuthRepositoryPreview(
+            client = get(),
+            dataStore = get()
+        )
+    }
+
+    single<KtorClientFactoryPreview> {
+        KtorClientFactoryPreview()
+    }
+
+    single<HttpClient> {
+        get<KtorClientFactoryPreview>().createClient()
+    }
+    includes(platformModule)
+
+    single<DataStore<Preferences>> {
+        get<DataStoreFactoryPreview>().createDataStore()
+    }
+}
 expect val platformModule: Module
+expect val platformModulePreview: Module
