@@ -5,14 +5,13 @@ import kotlinx.coroutines.flow.flow
 import ru.bratusev.smartlab.domain.core.model.Device
 import ru.bratusev.smartlab.domain.core.repository.AuthRepository
 
-class LoginUseCase(private val authRepository: AuthRepository) {
+class GetLoginUseCase(private val authRepository: AuthRepository) {
 
     operator fun invoke(login: String, password: String, device: Device): Flow<Result<String>> = flow {
         try {
             val token = authRepository.login(login, password)
             emit(Result.success(token))
 
-            authRepository.registrations(token, device)
         } catch (e: Exception) {
             emit(Result.failure(e))
         }

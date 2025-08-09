@@ -12,8 +12,10 @@ import ru.bratusev.smartlab.data.core.repository.AuthRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.ButtonTextRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.preview.AuthRepositoryPreview
 import ru.bratusev.smartlab.data.core.repository.preview.ButtonTextRepositoryPreview
+import ru.bratusev.smartlab.data.core.repository.LoggerRepositoryImpl
 import ru.bratusev.smartlab.domain.core.repository.AuthRepository
 import ru.bratusev.smartlab.domain.core.repository.ButtonTextRepository
+import ru.bratusev.smartlab.domain.core.repository.LoggerRepository
 
 val dataModule = module {
 
@@ -22,10 +24,11 @@ val dataModule = module {
     }
 
     single<AuthRepository> {
-        AuthRepositoryImpl(
-            client = get(),
-            dataStore = get()
-        )
+        AuthRepositoryImpl(get())
+    }
+
+    single<LoggerRepository> {
+        LoggerRepositoryImpl(get())
     }
 
     single<KtorClientFactory> {
@@ -39,6 +42,10 @@ val dataModule = module {
 
     single<DataStore<Preferences>> {
         get<DataStoreFactory>().createDataStore()
+    }
+
+    single<HomeAssistantWebSocketClient> {
+        HomeAssistantWebSocketClient()
     }
 }
 

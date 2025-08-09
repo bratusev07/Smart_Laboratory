@@ -33,12 +33,15 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.bundles.koin.compose)
             implementation(libs.koin.ktor)
-            implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.content.negotiation)
-            implementation(libs.ktor.serialization.kotlinx.json)
-            implementation(libs.ktor.client.logging)
 
             implementation(projects.domain.core)
+
+            implementation(libs.ktor.client.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.client.logging)
+            implementation(libs.ktor.client.cio)
+            implementation(libs.ktor.client.websockets)
+            implementation(libs.ktor.serialization.kotlinx.json)
 
             // DataStore library
             implementation("androidx.datastore:datastore:1.1.7")

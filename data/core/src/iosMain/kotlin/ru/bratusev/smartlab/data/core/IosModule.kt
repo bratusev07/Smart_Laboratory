@@ -8,6 +8,9 @@ val iosModule = module {
     single<DataStoreFactory> {
         DataStoreFactory()
     }
+    single<Logger>{
+        Logger()
+    }
 }
 
 val iosModulePreview = module {

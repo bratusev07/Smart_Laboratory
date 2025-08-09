@@ -22,15 +22,16 @@ import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
+import ru.bratusev.smartlab.data.core.Constants.BASE_URL
+import ru.bratusev.smartlab.data.core.HomeAssistantWebSocketClient
 import ru.bratusev.smartlab.domain.core.model.Device
 import ru.bratusev.smartlab.domain.core.repository.AuthRepository
 
 class AuthRepositoryImpl(
     private val client: HttpClient,
+    private val socketClient: HomeAssistantWebSocketClient,
     private val dataStore: DataStore<Preferences>
 ) : AuthRepository {
-
-    private val BASE_URL = "http://10.131.170.254:8123"
 
     override suspend fun login(login: String, password: String): String {
         return auth(login, password)
@@ -100,6 +101,7 @@ class AuthRepositoryImpl(
             .toString()
             .replace("\"", "")
 
+        socketClient.setToken(token).connect()
         return token
     }
 
