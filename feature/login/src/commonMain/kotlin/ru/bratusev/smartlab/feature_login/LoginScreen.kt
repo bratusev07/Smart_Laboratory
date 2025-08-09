@@ -1,54 +1,85 @@
 package ru.bratusev.smartlab.feature_login
 
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
 import ru.bratusev.smartlab.feature_login.models.Event
-import ru.bratusev.smartlab.ui.core.components.tileButton.TileButton
-import ru.bratusev.smartlab.ui.core.models.tileButton.TileButtonUi
+import ru.bratusev.smartlab.ui.core.components.CustomButton
+import ru.bratusev.smartlab.ui.core.models.CustomButtonUi
 
 @Composable
 fun LoginScreen(
-    vm: LoginViewModel = koinViewModel(), navigateTo: (String?) -> Unit,
+    vm: LoginViewModel = koinViewModel(), navigateToHome: () -> Unit,
 ) {
     val state = vm.uiState.collectAsState()
+    val currentStageText: String by remember {
+        derivedStateOf {
+            when (state.value.loginStage) {
+                // TODO: Временно просто текст
+                LoginStage.NOTHING_0 -> "Авторизация еще не началась"
+                LoginStage.START_1 -> "Авторизация началась"
+                LoginStage.SAVING_TOKEN_2 -> "Сохранение токена"
+                LoginStage.CHECKING_TOKEN_3 -> "Проверка токена"
+                LoginStage.COMPLETED_4 -> {
+                    "Авторизация успешно завершена"
+                }
+
+                LoginStage.FAILED_DURING_LOGIN -> "Ошибка во время авторизации"
+                LoginStage.FAILED_DURING_TOKEN -> "Ошибка во время сохранения токена"
+            }
+        }
+    }
+    LaunchedEffect(state.value.loginStage) {
+        if (state.value.loginStage == LoginStage.COMPLETED_4) {
+            navigateToHome()
+        }
+    }
 
     println(vm.device.toString())
 
-    var isLightOn by rememberSaveable { mutableStateOf(false) }
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        TileButton(
-            modifier = Modifier.size(150.dp), tileButtonUi = TileButtonUi.LightBulb(
-                location = state.value.screenName,
-                isOn = isLightOn,
-                isEnabled = false
-            )
+        CustomButton(
+            customButtonUi = CustomButtonUi(
+                title = "Авторизация", fontWeight = 20
+            ),
         ) {
-            isLightOn = !isLightOn
             vm.handleEvent(Event.OnCustomButtonClicked)
         }
-        TileButton(
-            modifier = Modifier.size(168.dp), tileButtonUi = TileButtonUi.Thermometer(
-                location = "Check token", temperature = 127.3f, isEnabled = true
+        CustomButton(
+            customButtonUi = CustomButtonUi(
+                title = "Проверить токен", fontWeight = 20
             )
         ) {
             vm.handleEvent(Event.OnCheckTokenButtonClicked)
+        }
+        AnimatedVisibility(
+            modifier = Modifier.width(IntrinsicSize.Min),
+            visible = state.value.loginStage !in listOf(
+                LoginStage.NOTHING_0, LoginStage.FAILED_DURING_TOKEN, LoginStage.FAILED_DURING_LOGIN
+            )
+        ) {
+            Text(maxLines = 1, text = "Текущий этап: $currentStageText")
+            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
         }
     }
 }

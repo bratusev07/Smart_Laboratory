@@ -10,9 +10,10 @@ import ru.bratusev.smartlab.data.core.dataStore.preview.DataStoreFactoryPreview
 import ru.bratusev.smartlab.data.core.preview.KtorClientFactoryPreview
 import ru.bratusev.smartlab.data.core.repository.AuthRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.ButtonTextRepositoryImpl
+import ru.bratusev.smartlab.data.core.repository.LoggerRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.preview.AuthRepositoryPreview
 import ru.bratusev.smartlab.data.core.repository.preview.ButtonTextRepositoryPreview
-import ru.bratusev.smartlab.data.core.repository.LoggerRepositoryImpl
+import ru.bratusev.smartlab.data.core.repository.preview.LoggerRepositoryPreview
 import ru.bratusev.smartlab.domain.core.repository.AuthRepository
 import ru.bratusev.smartlab.domain.core.repository.ButtonTextRepository
 import ru.bratusev.smartlab.domain.core.repository.LoggerRepository
@@ -24,7 +25,7 @@ val dataModule = module {
     }
 
     single<AuthRepository> {
-        AuthRepositoryImpl(get())
+        AuthRepositoryImpl(get(), get(), get())
     }
 
     single<LoggerRepository> {
@@ -38,15 +39,16 @@ val dataModule = module {
     single<HttpClient> {
         get<KtorClientFactory>().createClient()
     }
-    includes(platformModule)
+
+    single<HomeAssistantWebSocketClient> {
+        HomeAssistantWebSocketClient()
+    }
 
     single<DataStore<Preferences>> {
         get<DataStoreFactory>().createDataStore()
     }
 
-    single<HomeAssistantWebSocketClient> {
-        HomeAssistantWebSocketClient()
-    }
+    includes(platformModule)
 }
 
 val dataModulePreview = module {
@@ -57,9 +59,12 @@ val dataModulePreview = module {
 
     single<AuthRepository> {
         AuthRepositoryPreview(
-            client = get(),
-            dataStore = get()
+            client = get(), dataStore = get()
         )
+    }
+
+    single<LoggerRepository> {
+        LoggerRepositoryPreview(get())
     }
 
     single<KtorClientFactoryPreview> {
@@ -69,11 +74,16 @@ val dataModulePreview = module {
     single<HttpClient> {
         get<KtorClientFactoryPreview>().createClient()
     }
-    includes(platformModule)
 
     single<DataStore<Preferences>> {
         get<DataStoreFactoryPreview>().createDataStore()
     }
+
+    single<HomeAssistantWebSocketClient> {
+        HomeAssistantWebSocketClient()
+    }
+
+    includes(platformModule)
 }
 expect val platformModule: Module
 expect val platformModulePreview: Module

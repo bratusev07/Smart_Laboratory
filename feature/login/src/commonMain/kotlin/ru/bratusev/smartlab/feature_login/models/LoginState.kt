@@ -1,14 +1,16 @@
 package ru.bratusev.smartlab.feature_login.models
 
+import ru.bratusev.smartlab.feature_login.LoginStage
+
 data class LoginState(
     val screenName: String = "Login Screen",
-    val login: String = "denis", //"admin",
-    val password: String = "V+5G5]Aw2uK4HsW" //"tXRzB034gYgAH6"
-    val loginStage: LoginStage = LoginStage.START_1
+    val login: String = "admin",
+    val password: String = "tXRzB034gYgAH6",
+    val loginStage: LoginStage = LoginStage.NOTHING_0,
 )
 
 sealed class Event {
-    data object OnBackClicked: Event()
+    data object OnBackClicked : Event()
     data object OnCustomButtonClicked : Event()
-    data object OnCheckTokenButtonClicked: Event()
+    data object OnCheckTokenButtonClicked : Event()
 }

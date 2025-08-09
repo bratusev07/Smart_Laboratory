@@ -23,8 +23,8 @@ fun AppNavigation(navController: NavHostController) {
         ) {
             composable(Screen.Login.route) {
                 LoginScreen(
-                    navigateTo = {
-                        navController.navigate(it)
+                    navigateToHome = {
+                        navController.navigate(Screen.Home)
                     })
             }
 
