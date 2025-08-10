@@ -14,4 +14,5 @@ expect class Device {
     val deviceId: String
 }
 
-expect val platformModule: Module
+expect val platformLoginModule: Module
+expect val platformLoginModulePreview: Module

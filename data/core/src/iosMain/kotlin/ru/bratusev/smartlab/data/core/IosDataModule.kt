@@ -4,24 +4,23 @@ import org.koin.dsl.module
 import ru.bratusev.smartlab.data.core.dataStore.DataStoreFactory
 import ru.bratusev.smartlab.data.core.dataStore.preview.DataStoreFactoryPreview
 
-val androidModule = module {
+val iosDataModule = module {
     single<DataStoreFactory> {
-        DataStoreFactory(
-            context = get()
-        )
+        DataStoreFactory()
     }
     single<Logger> {
         Logger()
     }
 }
 
-val androidModulePreview = module {
+val iosDataModulePreview = module {
     single<DataStoreFactoryPreview> {
-        DataStoreFactoryPreview(
-            context = get()
-        )
+        DataStoreFactoryPreview()
+    }
+    single<Logger> {
+        Logger()
     }
 }
 
-actual val platformModule = androidModule
-actual val platformModulePreview = androidModulePreview
+actual val platformDataModule = iosDataModule
+actual val platformDataModulePreview = iosDataModulePreview

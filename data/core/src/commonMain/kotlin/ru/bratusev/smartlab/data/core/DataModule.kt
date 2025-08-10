@@ -48,7 +48,7 @@ val dataModule = module {
         get<DataStoreFactory>().createDataStore()
     }
 
-    includes(platformModule)
+    includes(platformDataModule)
 }
 
 val dataModulePreview = module {
@@ -83,7 +83,7 @@ val dataModulePreview = module {
         HomeAssistantWebSocketClient()
     }
 
-    includes(platformModule)
+    includes(platformDataModulePreview)
 }
-expect val platformModule: Module
-expect val platformModulePreview: Module
+expect val platformDataModule: Module
+expect val platformDataModulePreview: Module

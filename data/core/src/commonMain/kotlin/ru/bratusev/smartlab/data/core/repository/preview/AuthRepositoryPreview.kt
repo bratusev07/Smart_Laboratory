@@ -2,26 +2,9 @@ package ru.bratusev.smartlab.data.core.repository.preview
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import io.ktor.client.HttpClient
-import io.ktor.client.request.get
-import io.ktor.client.request.header
-import io.ktor.client.request.post
-import io.ktor.client.request.request
-import io.ktor.client.request.setBody
-import io.ktor.client.statement.bodyAsText
-import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpMethod
-import io.ktor.http.Parameters
-import io.ktor.http.contentType
-import io.ktor.http.formUrlEncode
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.jsonObject
 import ru.bratusev.smartlab.domain.core.model.Device
 import ru.bratusev.smartlab.domain.core.repository.AuthRepository
 
@@ -30,101 +13,37 @@ class AuthRepositoryPreview(
     private val dataStore: DataStore<Preferences>
 ) : AuthRepository {
 
-    private val BASE_URL = "http://10.131.170.254:8123"
+    private val BASE_URL = "http://10.131.170.254:8123/preview"
 
     override suspend fun login(login: String, password: String): String {
+        println("⚠️ Preview: login started 1/4")
         return auth(login, password)
     }
 
     private suspend fun providers() {
-        val response = client.get("$BASE_URL/auth/providers")
-        println(response.bodyAsText())
     }
 
     private suspend fun auth(login: String, password: String): String {
-        val requestBody = LoginFlowRequestBody(
-            client_id = "https://home-assistant.io/android",
-            handler = listOf("homeassistant", null),
-            redirect_uri = "homeassistant://auth-callback"
-        )
-
-        val response = client.post("$BASE_URL/auth/login_flow") {
-            contentType(ContentType.Application.Json)
-            setBody(requestBody)
-        }
-
+        println("⚠️ Preview: login auth method 2/4")
         return authFlow(
-            flowId = Json.parseToJsonElement(response.bodyAsText())
-                .jsonObject["flow_id"]
-                .toString()
-                .replace("\"", ""),
+            flowId = "previewFlowId",
             login = login,
             password = password,
         )
     }
 
     private suspend fun authFlow(flowId: String, login: String, password: String): String {
-        val requestBody = LoginFlowRequestBodyWithId(
-            client_id = "https://home-assistant.io/android",
-            username = login,
-            password = password
-        )
-
-        val response = client.post("$BASE_URL/auth/login_flow/$flowId") {
-            contentType(ContentType.Application.Json)
-            setBody(requestBody)
-        }
-
-        return token(
-            code = Json.parseToJsonElement(response.bodyAsText())
-                .jsonObject["result"]
-                .toString()
-                .replace("\"", ""),
-        )
+        println("⚠️ Preview: login authFlow 3/4")
+        return token("previewToken")
     }
 
     private suspend fun token(code: String): String {
-        val requestBody = Parameters.build {
-            append("grant_type", "authorization_code")
-            append("code", code)
-            append("client_id", "https://home-assistant.io/android")
-        }.formUrlEncode()
-
-        val response = client.post("$BASE_URL/auth/token") {
-            contentType(ContentType.Application.FormUrlEncoded)
-            setBody(requestBody)
-        }
-
-        val token = Json.parseToJsonElement(response.bodyAsText())
-            .jsonObject["access_token"]
-            .toString()
-            .replace("\"", "")
-
-        return token
+        println("✅ Preview: login reached token 4/4")
+        return "somePreviewToken"
     }
 
     // To Auth interface
-    @Deprecated("Не работает GET запрос с Body")
-    override suspend fun config(token: String) {
-        val requestBody = ConfigRequestBody(
-            client_id = "https://hass.io",
-            handler = listOf("homeassistant", null),
-            redirect_uri = "https://hass.io",
-            type = "authorize"
-        )
-
-        try {
-            val response = client.request("$BASE_URL/api/config") {
-                method = HttpMethod("GET")
-                header(HttpHeaders.Authorization, "Bearer $token")
-                contentType(ContentType.Application.Json)
-                setBody(requestBody)
-            }
-            println(response.bodyAsText())
-        } catch (e: Exception) {
-            e
-        }
-    }
+    override suspend fun config(token: String) {}
 
     // To Auth interface
     override suspend fun registrations(token: String, device: Device) {
@@ -145,29 +64,13 @@ class AuthRepositoryPreview(
             ),
             device_id = device.deviceId
         )
-
-        val response = client.post("$BASE_URL/api/mobile_app/registrations") {
-            header(HttpHeaders.Authorization, "Bearer $token")
-            contentType(ContentType.Application.Json)
-            setBody(requestBody)
-        }
-
-        val webhookId = Json.parseToJsonElement(response.bodyAsText())
-            .jsonObject["webhook_id"]
-            .toString()
-            .replace("\"", "")
     }
 
     override suspend fun saveToken(token: String) {
-        dataStore.edit { preferences ->
-            preferences[TOKEN_KEY] = token
-        }
     }
 
     override suspend fun getToken(): String? {
-        return dataStore.data.map { preferences ->
-            preferences[TOKEN_KEY]
-        }.first()
+        return "somePreviewToken"
     }
 
     private companion object {

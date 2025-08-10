@@ -1,9 +1,9 @@
 package ru.bratusev.smartlab.data.core.repository.preview
 
-import ru.bratusev.smartlab.data.core.Logger
+import ru.bratusev.smartlab.data.core.preview.LoggerPreview
 import ru.bratusev.smartlab.domain.core.repository.LoggerRepository
 
-class LoggerRepositoryPreview(private val logger: Logger) : LoggerRepository {
+class LoggerRepositoryPreview(private val logger: LoggerPreview) : LoggerRepository {
     override fun d(tag: String?, description: String) {
         logger.d(tag, description)
     }

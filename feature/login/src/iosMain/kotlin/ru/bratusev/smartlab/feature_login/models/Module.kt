@@ -2,8 +2,13 @@ package ru.bratusev.smartlab.feature_login.models
 
 import org.koin.dsl.module
 
-val iosModule = module {
+val iosLoginModule = module {
     single { Device() }
 }
 
-actual val platformModule = iosModule
+val iosLoginModulePreview = module {
+    single {Device()}
+}
+
+actual val platformLoginModule = iosLoginModule
+actual val platformLoginModulePreview = iosLoginModulePreview
