@@ -1,85 +1,79 @@
 package ru.bratusev.smartlab.feature_login
 
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
+import ru.bratusev.smartlab.feature_login.components.InputFieldBlock
 import ru.bratusev.smartlab.feature_login.models.Event
-import ru.bratusev.smartlab.ui.core.components.CustomButton
-import ru.bratusev.smartlab.ui.core.models.CustomButtonUi
+import ru.bratusev.smartlab.feature_login.models.LoginStage
+import ru.bratusev.smartlab.ui.core.components.AnimatedLoadComponent
+import ru.bratusev.smartlab.ui.core.resources.StringsRes
 
 @Composable
 fun LoginScreen(
     vm: LoginViewModel = koinViewModel(), navigateToHome: () -> Unit,
 ) {
     val state = vm.uiState.collectAsState()
-    val currentStageText: String by remember {
-        derivedStateOf {
-            when (state.value.loginStage) {
-                // TODO: Временно просто текст
-                LoginStage.NOTHING_0 -> "Авторизация еще не началась"
-                LoginStage.START_1 -> "Авторизация началась"
-                LoginStage.SAVING_TOKEN_2 -> "Сохранение токена"
-                LoginStage.CHECKING_TOKEN_3 -> "Проверка токена"
-                LoginStage.COMPLETED_4 -> {
-                    "Авторизация успешно завершена"
-                }
 
-                LoginStage.FAILED_DURING_LOGIN -> "Ошибка во время авторизации"
-                LoginStage.FAILED_DURING_TOKEN -> "Ошибка во время сохранения токена"
-            }
-        }
-    }
     LaunchedEffect(state.value.loginStage) {
         if (state.value.loginStage == LoginStage.COMPLETED_4) {
             navigateToHome()
         }
     }
 
-    println(vm.device.toString())
-
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(vertical = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Top
     ) {
-        CustomButton(
-            customButtonUi = CustomButtonUi(
-                title = "Авторизация", fontWeight = 20
-            ),
-        ) {
-            vm.handleEvent(Event.OnCustomButtonClicked)
-        }
-        CustomButton(
-            customButtonUi = CustomButtonUi(
-                title = "Проверить токен", fontWeight = 20
-            )
-        ) {
-            vm.handleEvent(Event.OnCheckTokenButtonClicked)
-        }
-        AnimatedVisibility(
-            modifier = Modifier.width(IntrinsicSize.Min),
-            visible = state.value.loginStage !in listOf(
-                LoginStage.NOTHING_0, LoginStage.FAILED_DURING_TOKEN, LoginStage.FAILED_DURING_LOGIN
-            )
-        ) {
-            Text(maxLines = 1, text = "Текущий этап: $currentStageText")
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-        }
+        Spacer(modifier = Modifier.weight(1f))
+
+        Text(
+            text = StringsRes.AUTH,
+            style = MaterialTheme.typography.headlineSmall,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        InputFieldBlock(
+            state.value,
+            onLoginChanged = { login ->
+                vm.handleEvent(Event.OnLoginChanged(login))
+            },
+            onPasswordChanged = { password ->
+                vm.handleEvent(Event.OnPasswordChanged(password))
+            },
+            onLoginClicked = {
+                vm.handleEvent(Event.OnLoginClicked)
+            }
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        AnimatedLoadComponent(
+            Modifier
+                .width(IntrinsicSize.Min)
+                .padding(horizontal = 24.dp, vertical = 16.dp),
+            state.value.animatedLoadUi
+        )
     }
 }
