@@ -38,11 +38,9 @@ fun LoginScreen(
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(vertical = 24.dp),
+        modifier = Modifier.fillMaxSize().padding(vertical = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Center
     ) {
         Spacer(modifier = Modifier.weight(1f))
 
@@ -54,26 +52,23 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        InputFieldBlock(
-            state.value,
-            onLoginChanged = { login ->
-                vm.handleEvent(Event.OnLoginChanged(login))
-            },
-            onPasswordChanged = { password ->
-                vm.handleEvent(Event.OnPasswordChanged(password))
-            },
-            onLoginClicked = {
-                vm.handleEvent(Event.OnLoginClicked)
-            }
-        )
+        InputFieldBlock(state.value, onLoginChanged = { login ->
+            vm.handleEvent(Event.OnLoginChanged(login))
+        }, onPasswordChanged = { password ->
+            vm.handleEvent(Event.OnPasswordChanged(password))
+        }, onLoginClicked = {
+            vm.handleEvent(Event.OnLoginClicked)
+        })
 
-        Spacer(modifier = Modifier.weight(1f))
-
-        AnimatedLoadComponent(
-            Modifier
-                .width(IntrinsicSize.Min)
-                .padding(horizontal = 24.dp, vertical = 16.dp),
-            state.value.animatedLoadUi
-        )
+        Column(
+            modifier = Modifier.weight(1f),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Bottom
+        ) {
+            AnimatedLoadComponent(
+                Modifier.width(IntrinsicSize.Min).padding(horizontal = 24.dp, vertical = 16.dp),
+                state.value.animatedLoadUi
+            )
+        }
     }
 }

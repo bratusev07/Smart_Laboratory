@@ -17,10 +17,10 @@ sealed class Screen(val route: String) {
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
-    //AppTheme {
         NavHost(
             navController = navController, startDestination = Screen.Login.route
         ) {
+
             composable(Screen.Login.route) {
                 LoginScreen(
                     navigateToHome = {
@@ -40,9 +40,8 @@ fun AppNavigation(navController: NavHostController) {
                     navigateTo = {
                         navController.navigate(it)
                     })
-        //    }
+            }
         }
-    }
 }
 
 private fun NavController.navigate(route: String?) {

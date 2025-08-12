@@ -2,16 +2,11 @@ package ru.bratusev.smartlab.ui.core.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
-
-@Immutable
-data class ExtendedColorScheme(
-    val customColor1: ColorFamily,
-)
 
 private val lightScheme = lightColorScheme(
     primary = primaryLight,
@@ -239,60 +234,6 @@ private val highContrastDarkColorScheme = darkColorScheme(
     surfaceContainer = surfaceContainerDarkHighContrast,
     surfaceContainerHigh = surfaceContainerHighDarkHighContrast,
     surfaceContainerHighest = surfaceContainerHighestDarkHighContrast,
-)
-
-val extendedLight = ExtendedColorScheme(
-    customColor1 = ColorFamily(
-        customColor1Light,
-        onCustomColor1Light,
-        customColor1ContainerLight,
-        onCustomColor1ContainerLight,
-    ),
-)
-
-val extendedDark = ExtendedColorScheme(
-    customColor1 = ColorFamily(
-        customColor1Dark,
-        onCustomColor1Dark,
-        customColor1ContainerDark,
-        onCustomColor1ContainerDark,
-    ),
-)
-
-val extendedLightMediumContrast = ExtendedColorScheme(
-    customColor1 = ColorFamily(
-        customColor1LightMediumContrast,
-        onCustomColor1LightMediumContrast,
-        customColor1ContainerLightMediumContrast,
-        onCustomColor1ContainerLightMediumContrast,
-    ),
-)
-
-val extendedLightHighContrast = ExtendedColorScheme(
-    customColor1 = ColorFamily(
-        customColor1LightHighContrast,
-        onCustomColor1LightHighContrast,
-        customColor1ContainerLightHighContrast,
-        onCustomColor1ContainerLightHighContrast,
-    ),
-)
-
-val extendedDarkMediumContrast = ExtendedColorScheme(
-    customColor1 = ColorFamily(
-        customColor1DarkMediumContrast,
-        onCustomColor1DarkMediumContrast,
-        customColor1ContainerDarkMediumContrast,
-        onCustomColor1ContainerDarkMediumContrast,
-    ),
-)
-
-val extendedDarkHighContrast = ExtendedColorScheme(
-    customColor1 = ColorFamily(
-        customColor1DarkHighContrast,
-        onCustomColor1DarkHighContrast,
-        customColor1ContainerDarkHighContrast,
-        onCustomColor1ContainerDarkHighContrast,
-    ),
 )
 
 @Immutable
