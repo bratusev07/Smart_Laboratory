@@ -50,7 +50,7 @@ fun InputFieldBlock(
 
     CustomButton(
         modifier = textFieldModifier,
-        customButtonUi = CustomButtonUi(title = StringsRes.AUTH, fontWeight = 20)
+        customButtonUi = CustomButtonUi(title = StringsRes.AUTH, fontWeight = 100)
     ) {
         onLoginClicked()
     }

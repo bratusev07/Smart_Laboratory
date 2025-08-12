@@ -46,7 +46,8 @@ fun AppNavigation(navController: NavHostController) {
 
 private fun NavController.navigate(route: String?) {
     if (route == null) {
-        this.popBackStack()
+        // TODO: пока уберу. Вызывает баг, если много раз нажать на переход
+        //  this.popBackStack()
     } else {
         this.navigate(route)
     }
