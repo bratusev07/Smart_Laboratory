@@ -25,8 +25,10 @@ ktorClientOkhttp = "3.2.2"
 runner = "1.6.2"
 core = "1.6.1"
 koin = "4.1.0"
+uiBackhandler = "1.9.0-beta01"
 
 [libraries]
+ui-backhandler = { module = "org.jetbrains.compose.ui:ui-backhandler", version.ref = "uiBackhandler" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

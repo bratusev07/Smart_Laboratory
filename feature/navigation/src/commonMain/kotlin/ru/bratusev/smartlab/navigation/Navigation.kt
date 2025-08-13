@@ -8,9 +8,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.backhandler.BackHandler
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import kotlinx.coroutines.launch
 import ru.bratusev.smartlab.feature_home.HomeScreen
 import ru.bratusev.smartlab.feature_login.LoginScreen
@@ -23,15 +26,19 @@ sealed class Screen(val route: String) {
 }
 
 // TODO: кол-во фич = кол-во багов
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AppNavigation(navController: NavHostController) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val drawerScope = rememberCoroutineScope()
     var isDrawerHidden by rememberSaveable { mutableStateOf(true) }
-    var currentScreenRoute: String by rememberSaveable { mutableStateOf(Screen.Home.route) }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     fun navigateTo(screen: Screen) {
-        currentScreenRoute = screen.route
+        isDrawerHidden = when (screen) {
+            Screen.Login -> true
+            else -> false
+        }
         navController.navigate(screen.route)
     }
 
@@ -42,19 +49,18 @@ fun AppNavigation(navController: NavHostController) {
         navigateTo = {
             navigateTo(it)
         },
-        selectedScreenRoute = currentScreenRoute,
+        selectedScreenRoute = navBackStackEntry?.destination?.route ?: "",
     ) {
         NavHost(
-            navController = navController,
-            startDestination = Screen.Login.route
+            navController = navController, startDestination = Screen.Login.route
         ) {
 
             composable(Screen.Login.route) {
+                BackHandler(true) { /* Отключаем кнопку назад и т.п */ }
                 LoginScreen(
                     navigateToHome = {
                         drawerScope.launch {
                             drawerState.close()
-                            isDrawerHidden = false
                             navigateTo(Screen.Home)
                         }
                     })
