@@ -72,11 +72,17 @@ fun NavigationDrawer(
                             )
                         }
                         HorizontalDivider()
+                        // TODO сделать получше
                         NavigationDrawerItems.entries.forEach {
+                            if (it == NavigationDrawerItems.Login){
+                                Spacer(modifier = Modifier.weight(1f))
+                                HorizontalDivider()
+                            }
                             NavigationDrawerItem(
                                 label = { Text(it.label) },
                                 selected = it.screen.route == selectedScreenRoute,
-                                onClick = { navigateTo(it.screen) }
+                                onClick = { navigateTo(it.screen) },
+                                icon = { Icon(it.icon, contentDescription = null) }
                             )
                         }
                     }
