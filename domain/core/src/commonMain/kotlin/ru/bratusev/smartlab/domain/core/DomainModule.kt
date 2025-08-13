@@ -2,6 +2,7 @@ package ru.bratusev.smartlab.domain.core
 
 import org.koin.dsl.module
 import ru.bratusev.smartlab.domain.core.usecase.GetButtonTextUseCase
+import ru.bratusev.smartlab.domain.core.usecase.GetLogcatMessagesUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetLoggerUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetLoginUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetSaveTokenUseCase
@@ -15,6 +16,7 @@ val domainModule = module {
     factory<GetSaveTokenUseCase> { GetSaveTokenUseCase(get()) }
     factory<GetLoginUseCase> { GetLoginUseCase(get()) }
     factory<GetLoggerUseCase> { GetLoggerUseCase(get()) }
+    factory<GetLogcatMessagesUseCase> { GetLogcatMessagesUseCase(get()) }
 }
 
 val domainModulePreview = module {
@@ -24,4 +26,5 @@ val domainModulePreview = module {
     factory<GetSaveTokenUseCase> { GetSaveTokenUseCase(get()) }
     factory<GetLoginUseCase> { GetLoginUseCase(get()) }
     factory<GetLoggerUseCase> { GetLoggerUseCase(get()) }
+    factory<GetLogcatMessagesUseCase> { GetLogcatMessagesUseCase(get()) }
 }
