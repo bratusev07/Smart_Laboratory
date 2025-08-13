@@ -1,19 +1,17 @@
 package ru.bratusev.smartlab.navigation
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Menu
-import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,18 +22,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import ru.bratusev.smartlab.navigation.api.Screen
-
+import ru.bratusev.smartlab.navigation.models.NavigationDrawerItems
+import ru.bratusev.smartlab.ui.core.resources.StringsRes
+import ru.bratusev.smartlab.ui.core.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,91 +43,99 @@ fun NavigationDrawer(
     drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed),
     scope: CoroutineScope = rememberCoroutineScope(),
     isHidden: Boolean = false,
-    navigate: (Screen) -> Unit,
-    content: @Composable (PaddingValues) -> Unit,
+    navigateTo: (Screen) -> Unit,
+    currentScreenRoute: String,
+    content: @Composable () -> Unit,
 ) {
     ModalNavigationDrawer(
-        gesturesEnabled = !isHidden, drawerContent = {
+        modifier = Modifier.wrapContentWidth(), gesturesEnabled = !isHidden, drawerContent = {
             if (!isHidden) {
                 ModalDrawerSheet {
                     Column(
-                        modifier = Modifier.fillMaxHeight().padding(horizontal = 16.dp)
-                            .verticalScroll(rememberScrollState())
+                        modifier = Modifier.fillMaxHeight().verticalScroll(rememberScrollState())
                     ) {
                         Spacer(Modifier.height(12.dp))
-                        Text(
-                            "Drawer Title",
-                            modifier = Modifier.padding(16.dp),
-                            style = MaterialTheme.typography.titleLarge
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            IconButton(onClick = {
+                                scope.launch {
+                                    drawerState.close()
+                                }
+                            }) {
+                                Icon(Icons.Default.Close, contentDescription = null)
+                            }
+                            Text(
+                                StringsRes.DRAWER_TITLE,
+                                modifier = Modifier.padding(vertical = 16.dp),
+                                style = MaterialTheme.typography.titleLarge
+                            )
+                        }
+                        HorizontalDivider()
+                        NavigationDrawerItemComponent(
+                            NavigationDrawerItems.Home,
+                            currentScreenRoute = currentScreenRoute,
+                            navigateTo = navigateTo
+                        )
+                        NavigationDrawerItemComponent(
+                            NavigationDrawerItems.Logs,
+                            currentScreenRoute = currentScreenRoute,
+                            navigateTo = navigateTo
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                        NavigationDrawerItemComponent(
+                            NavigationDrawerItems.Settings,
+                            currentScreenRoute = currentScreenRoute,
+                            navigateTo = navigateTo
                         )
                         HorizontalDivider()
-
-                        Text(
-                            "Section 1",
-                            modifier = Modifier.padding(16.dp),
-                            style = MaterialTheme.typography.titleMedium
+                        NavigationDrawerItemComponent(
+                            NavigationDrawerItems.Notifications,
+                            currentScreenRoute = currentScreenRoute,
+                            navigateTo = navigateTo
                         )
-                        NavigationDrawerItem(
-                            label = { Text("Item 1") },
-                            selected = false,
-                            onClick = { /* Handle click */ })
-                        NavigationDrawerItem(
-                            label = { Text("Item 2") },
-                            selected = false,
-                            onClick = { /* Handle click */ })
-
-                        HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-
-                        Text(
-                            "Section 2",
-                            modifier = Modifier.padding(16.dp),
-                            style = MaterialTheme.typography.titleMedium
-                        )
-                        NavigationDrawerItem(
-                            label = { Text("Settings") },
-                            selected = false,
-                            icon = { Icon(Icons.Outlined.Settings, contentDescription = null) },
-                            badge = { Text("20") }, // Placeholder
-                            onClick = { /* Handle click */ })
-                        NavigationDrawerItem(
-                            label = { Text("Logcat") },
-                            selected = false,
-                            icon = { Icon(Icons.Outlined.Info, contentDescription = null) },
-                            badge = { Text("20") }, // Placeholder
-                            onClick = { navigate(Screen.Logcat) })
-                        Spacer(Modifier.weight(1f))
-                        NavigationDrawerItem(
-                            label = { Text("To auth screen") },
-                            selected = false,
-                            icon = { Icon(Icons.Outlined.Menu, contentDescription = null) },
-                            onClick = { navigate(Screen.Login) },
+                        NavigationDrawerItemComponent(
+                            NavigationDrawerItems.Profile,
+                            currentScreenRoute = currentScreenRoute,
+                            navigateTo = navigateTo
                         )
                     }
                 }
             }
         }, drawerState = drawerState
     ) {
-        if (!isHidden) {
-            Scaffold(
-                topBar = {
-                    TopAppBar(title = { Text("Navigation Drawer Example") }, navigationIcon = {
-                        IconButton(onClick = {
-                            scope.launch {
-                                if (drawerState.isClosed) {
-                                    drawerState.open()
-                                } else {
-                                    drawerState.close()
-                                }
-                            }
-                        }) {
-                            Icon(Icons.Default.Menu, contentDescription = "Menu")
-                        }
-                    })
-                }) { innerPadding ->
-                content(innerPadding)
-            }
-        } else {
-            content(PaddingValues(0.dp))
+        content()
+    }
+}
+
+@Composable
+private fun NavigationDrawerItemComponent(
+    item: NavigationDrawerItems,
+    currentScreenRoute: String,
+    navigateTo: (Screen) -> Unit,
+) {
+    NavigationDrawerItem(
+        label = { Text(item.label) },
+        selected = currentScreenRoute == item.screen.route,
+        onClick = { navigateTo(item.screen) },
+        icon = { Icon(item.icon, contentDescription = null) })
+}
+
+@Preview(
+    widthDp = 700, showBackground = true
+)
+@Composable
+private fun NavigationDrawerPreview() {
+    val drawerState = rememberDrawerState(DrawerValue.Open)
+
+    AppTheme {
+        NavigationDrawer(
+            drawerState = drawerState,
+            navigateTo = {},
+            currentScreenRoute = Screen.Home.route,
+        ) {
+            Text(text = "Контент. Очень длинный контент. Прям чтобы его было видно. Нужно прям много контента.")
         }
     }
 }

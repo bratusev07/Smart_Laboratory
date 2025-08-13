@@ -1,68 +1,79 @@
 package ru.bratusev.smartlab.navigation
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.backhandler.BackHandler
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import kotlinx.coroutines.launch
+import androidx.navigation.compose.currentBackStackEntryAsState
 import ru.bratusev.smartlab.feature_home.HomeScreen
 import ru.bratusev.smartlab.feature_logcat.LogcatScreen
 import ru.bratusev.smartlab.feature_login.LoginScreen
 import ru.bratusev.smartlab.feature_settings.SettingsScreen
+import ru.bratusev.smartlab.navigation.api.NavigationApi
 import ru.bratusev.smartlab.navigation.api.Screen
-import ru.bratusev.smartlab.navigation.NavigationDrawer
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val drawerScope = rememberCoroutineScope()
-    var isDrawerHidden by rememberSaveable { mutableStateOf(true) }
     val navigationApi = NavigationApiImpl(navController)
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
 
+    val isDrawerHidden by remember {
+        derivedStateOf {
+            when (navBackStackEntry?.destination?.route) {
+                Screen.Login.route -> true
+                else -> false
+            }
+        }
+    }
     NavigationDrawer(
         scope = drawerScope,
         drawerState = drawerState,
         isHidden = isDrawerHidden,
-        navigate = { screen ->
-            navigationApi.navigateTo(screen)
-            drawerScope.launch {
-                drawerState.close()
-            }
+        navigateTo = { screen ->
+            navigationApi.navigateTo(screen = screen)
         },
-    ) { paddingValues ->
-        NavHost(
-            modifier = Modifier.padding(paddingValues),
-            navController = navController,
-            startDestination = Screen.Login.route
-        ) {
+        currentScreenRoute = navBackStackEntry?.destination?.route ?: "",
+    ) {
+        AppNavHost(navController, navigationApi)
+    }
+}
 
-            composable(Screen.Login.route) {
-                isDrawerHidden = true
-                LoginScreen(navigationApi = navigationApi)
-            }
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+private fun AppNavHost(
+    navController: NavHostController,
+    navigationApi: NavigationApi,
+) {
+    NavHost(
+        navController = navController, startDestination = Screen.Login.route
+    ) {
 
-            composable(Screen.Home.route) {
-                isDrawerHidden = false
-                HomeScreen(navigationApi = navigationApi)
-            }
+        composable(Screen.Login.route) {
+            BackHandler(true) { /* Отключаем кнопку назад и т.п */ }
+            LoginScreen(
+                navigateToHome = { navigationApi.navigateToHome() })
+        }
 
-            composable(Screen.Settings.route) {
-                SettingsScreen(navigationApi = navigationApi)
-            }
+        composable(Screen.Home.route) {
+            HomeScreen(navigationApi = navigationApi)
+        }
 
-            composable(Screen.Logcat.route) {
-                LogcatScreen(navigationApi = navigationApi)
-            }
+        composable(Screen.Settings.route) {
+            SettingsScreen(navigationApi = navigationApi)
+        }
+
+        composable(Screen.Logcat.route) {
+            LogcatScreen(navigationApi = navigationApi)
         }
     }
 }

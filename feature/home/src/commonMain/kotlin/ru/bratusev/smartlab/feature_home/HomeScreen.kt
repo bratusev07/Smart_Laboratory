@@ -17,7 +17,7 @@ import ru.bratusev.smartlab.ui.core.theme.AppTheme
 
 @Composable
 fun HomeScreen(
-    vm: HomeViewModel = koinViewModel(), 
+    vm: HomeViewModel = koinViewModel(),
     navigationApi: NavigationApi,
 ) {
     val state = vm.uiState.collectAsState()

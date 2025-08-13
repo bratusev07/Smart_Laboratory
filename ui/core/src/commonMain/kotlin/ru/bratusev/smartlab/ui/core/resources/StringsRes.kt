@@ -17,4 +17,8 @@ object StringsRes {
     val LOGIN = "Логин"
     val PASSWORD = "Пароль"
 
+    // -----------NAVIGATION DRAWER--------------------
+
+    val DRAWER_TITLE = "Умная лаборатория"
+
 }
