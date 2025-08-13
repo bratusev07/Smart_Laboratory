@@ -13,7 +13,6 @@ import ru.bratusev.smartlab.ui.core.models.CustomButtonUi
 @Composable
 fun SettingsScreen(
     vm: SettingsViewModel = koinViewModel(),
-    navigateTo: (String?) -> Unit
 ) {
     val state = vm.uiState.collectAsState()
 
@@ -25,7 +24,7 @@ fun SettingsScreen(
                 fontWeight = 50
             )
         ) {
-            navigateTo(null)
+            // t o d o
         }
     }
 }

@@ -22,7 +22,6 @@ kotlinxSerializationJson = "1.8.1"
 ktorClientDarwin = "3.2.2"
 ktorClientAndroid = "3.2.2"
 ktorClientOkhttp = "3.2.2"
-materialIconsCore = "1.7.3"
 runner = "1.6.2"
 core = "1.6.1"
 koin = "4.1.0"
@@ -67,7 +66,6 @@ ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "kto
 ktor-client-websockets = { module = "io.ktor:ktor-client-websockets", version.ref = "ktorClientDarwin" }
 ktor-client-serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktorClientDarwin" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktorClientDarwin" }
-material-icons-core = { module = "org.jetbrains.compose.material:material-icons-core", version.ref = "materialIconsCore" }
 
 [bundles]
 koin-compose = ["koin-compose", "koin-compose-viewmodel", "koin-compose-viewmodel-navigation"]

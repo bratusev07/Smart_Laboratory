@@ -33,7 +33,7 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
-            implementation(libs.material.icons.core)
+            implementation(compose.materialIconsExtended)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
@@ -44,6 +44,7 @@ kotlin {
             implementation(projects.feature.home)
             implementation(projects.feature.settings)
             implementation(projects.feature.login)
+            implementation(projects.ui.core)
         }
     }
 }

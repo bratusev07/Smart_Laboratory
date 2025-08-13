@@ -15,7 +15,7 @@ import ru.bratusev.smartlab.ui.core.theme.AppTheme
 
 @Composable
 fun HomeScreen(
-    vm: HomeViewModel = koinViewModel(), navigateTo: (String?) -> Unit,
+    vm: HomeViewModel = koinViewModel()
 ) {
     val state = vm.uiState.collectAsState()
 
@@ -26,7 +26,7 @@ fun HomeScreen(
                 fontWeight = 50,
             )
         ) {
-            navigateTo("settings")
+           // t o d o
         }
     }
 }
@@ -38,8 +38,6 @@ private fun HomeScreenPreview() {
         modules(homeModulePreview)
     }
     AppTheme {
-        HomeScreen(
-            navigateTo = {}
-        )
+        HomeScreen()
     }
 }
