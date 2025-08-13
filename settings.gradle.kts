@@ -34,8 +34,10 @@ include(":data:core")
 include(":domain:core")
 
 
+include(":feature:navigation-api")
 include(":feature:navigation")
 include(":feature:home")
 include(":feature:settings")
 include(":feature:login")
+include(":feature:logcat")
 include(":shared")

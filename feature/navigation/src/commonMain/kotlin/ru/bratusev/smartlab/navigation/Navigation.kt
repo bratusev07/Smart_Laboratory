@@ -16,31 +16,30 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import kotlinx.coroutines.launch
 import ru.bratusev.smartlab.feature_home.HomeScreen
-import ru.bratusev.smartlab.feature_home.NavigationDrawer
+import ru.bratusev.smartlab.feature_logcat.LogcatScreen
 import ru.bratusev.smartlab.feature_login.LoginScreen
 import ru.bratusev.smartlab.feature_settings.SettingsScreen
+import ru.bratusev.smartlab.navigation.api.Screen
+import ru.bratusev.smartlab.navigation.NavigationDrawer
 
-sealed class Screen(val route: String) {
-    object Login : Screen("login")
-    object Home : Screen("home")
-    object Settings : Screen("settings")
-}
-
-// TODO: кол-во фич = кол-во багов
 @Composable
 fun AppNavigation(navController: NavHostController) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val drawerScope = rememberCoroutineScope()
     var isDrawerHidden by rememberSaveable { mutableStateOf(true) }
+    val navigationApi = NavigationApiImpl(navController)
 
     NavigationDrawer(
         scope = drawerScope,
         drawerState = drawerState,
         isHidden = isDrawerHidden,
-        navigateToAuthScreen = {
-            navController.navigate(Screen.Login.route)
-            isDrawerHidden = true
-        }) { paddingValues ->
+        navigate = { screen ->
+            navigationApi.navigateTo(screen)
+            drawerScope.launch {
+                drawerState.close()
+            }
+        },
+    ) { paddingValues ->
         NavHost(
             modifier = Modifier.padding(paddingValues),
             navController = navController,
@@ -48,40 +47,22 @@ fun AppNavigation(navController: NavHostController) {
         ) {
 
             composable(Screen.Login.route) {
-                LoginScreen(
-                    navigateToHome = {
-                        drawerScope.launch {
-                            drawerState.close()
-                            isDrawerHidden = false
-                            navController.navigate(Screen.Home.route)
-                        }
-                    })
+                isDrawerHidden = true
+                LoginScreen(navigationApi = navigationApi)
             }
 
             composable(Screen.Home.route) {
-                HomeScreen(
-                    navigateTo = {
-                        navController.navigate(it)
-                    })
+                isDrawerHidden = false
+                HomeScreen(navigationApi = navigationApi)
             }
 
             composable(Screen.Settings.route) {
-                SettingsScreen(
-                    navigateTo = {
-                        navController.navigate(it)
-                    })
+                SettingsScreen(navigationApi = navigationApi)
+            }
+
+            composable(Screen.Logcat.route) {
+                LogcatScreen(navigationApi = navigationApi)
             }
         }
-    }
-}
-
-fun mutableStateOf(bool: Boolean) {}
-
-private fun NavController.navigate(route: String?) {
-    if (route == null) {
-        // TODO: пока уберу. Вызывает баг, если много раз нажать на переход
-        //  this.popBackStack()
-    } else {
-        this.navigate(route)
     }
 }

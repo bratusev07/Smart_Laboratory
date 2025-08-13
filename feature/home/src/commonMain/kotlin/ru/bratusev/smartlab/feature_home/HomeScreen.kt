@@ -9,13 +9,16 @@ import androidx.compose.ui.Modifier
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.context.startKoin
+import ru.bratusev.smartlab.navigation.api.NavigationApi
+import ru.bratusev.smartlab.navigation.api.Screen
 import ru.bratusev.smartlab.ui.core.components.CustomButton
 import ru.bratusev.smartlab.ui.core.models.CustomButtonUi
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
 
 @Composable
 fun HomeScreen(
-    vm: HomeViewModel = koinViewModel(), navigateTo: (String?) -> Unit,
+    vm: HomeViewModel = koinViewModel(), 
+    navigationApi: NavigationApi,
 ) {
     val state = vm.uiState.collectAsState()
 
@@ -26,7 +29,7 @@ fun HomeScreen(
                 fontWeight = 50,
             )
         ) {
-            navigateTo("settings")
+            navigationApi.navigateTo(Screen.Settings)
         }
     }
 }
@@ -39,7 +42,14 @@ private fun HomeScreenPreview() {
     }
     AppTheme {
         HomeScreen(
-            navigateTo = {}
+            navigationApi = object : NavigationApi {
+                override fun navigateTo(screen: Screen) {}
+                override fun navigateToHome() {}
+                override fun navigateToLogin() {}
+                override fun navigateToSettings() {}
+                override fun navigateToLogcat() {}
+                override fun popBackStack() {}
+            }
         )
     }
 }

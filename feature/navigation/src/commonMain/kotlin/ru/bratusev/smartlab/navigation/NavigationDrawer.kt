@@ -1,4 +1,4 @@
-package ru.bratusev.smartlab.feature_home
+package ru.bratusev.smartlab.navigation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Menu
@@ -33,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import ru.bratusev.smartlab.navigation.api.Screen
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,7 +43,7 @@ fun NavigationDrawer(
     drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed),
     scope: CoroutineScope = rememberCoroutineScope(),
     isHidden: Boolean = false,
-    navigateToAuthScreen: () -> Unit,
+    navigate: (Screen) -> Unit,
     content: @Composable (PaddingValues) -> Unit,
 ) {
     ModalNavigationDrawer(
@@ -88,17 +90,17 @@ fun NavigationDrawer(
                             badge = { Text("20") }, // Placeholder
                             onClick = { /* Handle click */ })
                         NavigationDrawerItem(
-                            label = { Text("Help and feedback") },
+                            label = { Text("Logcat") },
                             selected = false,
                             icon = { Icon(Icons.Outlined.Info, contentDescription = null) },
-                            onClick = { /* Handle click */ },
-                        )
+                            badge = { Text("20") }, // Placeholder
+                            onClick = { navigate(Screen.Logcat) })
                         Spacer(Modifier.weight(1f))
                         NavigationDrawerItem(
                             label = { Text("To auth screen") },
                             selected = false,
                             icon = { Icon(Icons.Outlined.Menu, contentDescription = null) },
-                            onClick = { navigateToAuthScreen() },
+                            onClick = { navigate(Screen.Login) },
                         )
                     }
                 }
