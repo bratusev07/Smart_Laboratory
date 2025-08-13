@@ -30,7 +30,6 @@ kotlin {
     sourceSets {
 
         commonMain.dependencies {
-
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -43,6 +42,7 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.bundles.koin.compose)
 
+            implementation(projects.feature.navigationApi)
             implementation(projects.feature.home)
             implementation(projects.feature.settings)
             implementation(projects.feature.login)

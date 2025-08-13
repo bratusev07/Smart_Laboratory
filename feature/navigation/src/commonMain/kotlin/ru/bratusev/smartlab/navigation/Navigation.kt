@@ -18,20 +18,15 @@ import kotlinx.coroutines.launch
 import ru.bratusev.smartlab.feature_home.HomeScreen
 import ru.bratusev.smartlab.feature_login.LoginScreen
 import ru.bratusev.smartlab.feature_settings.SettingsScreen
+import ru.bratusev.smartlab.navigation.api.Screen
+import ru.bratusev.smartlab.navigation.NavigationDrawer
 
-sealed class Screen(val route: String) {
-    object Login : Screen("login")
-    object Home : Screen("home")
-    object Settings : Screen("settings")
-}
-
-// TODO: кол-во фич = кол-во багов
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun AppNavigation(navController: NavHostController) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val drawerScope = rememberCoroutineScope()
     var isDrawerHidden by rememberSaveable { mutableStateOf(true) }
+    val navigationApi = NavigationApiImpl(navController)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     fun navigateTo(screen: Screen) {
@@ -47,7 +42,7 @@ fun AppNavigation(navController: NavHostController) {
         drawerState = drawerState,
         isHidden = isDrawerHidden,
         navigateTo = {
-            navigateTo(it)
+            navigationApi.navigateTo(screen)
         },
         selectedScreenRoute = navBackStackEntry?.destination?.route ?: "",
     ) {
@@ -66,16 +61,18 @@ fun AppNavigation(navController: NavHostController) {
                     })
             }
 
-
             composable(Screen.Home.route) {
-                HomeScreen()
+                isDrawerHidden = false
+                HomeScreen(navigationApi = navigationApi)
             }
 
             composable(Screen.Settings.route) {
-                SettingsScreen()
+                SettingsScreen(navigationApi = navigationApi)
+            }
+
+            composable(Screen.Logcat.route) {
+                LogcatScreen(navigationApi = navigationApi)
             }
         }
     }
 }
-
-

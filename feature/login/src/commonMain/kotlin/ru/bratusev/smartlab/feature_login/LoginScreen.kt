@@ -24,19 +24,21 @@ import org.koin.compose.viewmodel.koinViewModel
 import ru.bratusev.smartlab.feature_login.components.InputFieldBlock
 import ru.bratusev.smartlab.feature_login.models.Event
 import ru.bratusev.smartlab.feature_login.models.LoginStage
+import ru.bratusev.smartlab.navigation.api.NavigationApi
 import ru.bratusev.smartlab.ui.core.components.AnimatedLoadComponent
 import ru.bratusev.smartlab.ui.core.resources.StringsRes
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
 
 @Composable
 fun LoginScreen(
-    vm: LoginViewModel = koinViewModel(), navigateToHome: () -> Unit,
+    vm: LoginViewModel = koinViewModel(), 
+    navigationApi: NavigationApi,
 ) {
     val state = vm.uiState.collectAsState()
 
     LaunchedEffect(state.value.loginStage) {
         if (state.value.loginStage == LoginStage.COMPLETED_4) {
-            navigateToHome()
+            navigationApi.navigateToHome()
         }
     }
 

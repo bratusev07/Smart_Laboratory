@@ -43,6 +43,7 @@ kotlin {
 
             implementation(projects.domain.core)
             implementation(projects.data.core)
+            implementation(projects.feature.navigationApi)
             implementation(projects.ui.core)
         }
     }

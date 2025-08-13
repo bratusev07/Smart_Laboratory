@@ -22,7 +22,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "FeatureHome"
+            baseName = "FeatureSettings"
             isStatic = true
         }
     }
@@ -33,7 +33,7 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
-            implementation(compose.materialIconsExtended)
+            implementation(libs.material.icons.core)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
@@ -50,7 +50,7 @@ kotlin {
 }
 
 android {
-    namespace = "ru.bratusev.smartlab.feature.home"
+    namespace = "ru.bratusev.smartlab.feature.settings"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
