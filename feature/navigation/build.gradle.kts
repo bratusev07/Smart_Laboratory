@@ -47,6 +47,7 @@ kotlin {
             implementation(projects.feature.settings)
             implementation(projects.feature.login)
             implementation(projects.ui.core)
+            implementation(projects.feature.logcat)
         }
     }
 }

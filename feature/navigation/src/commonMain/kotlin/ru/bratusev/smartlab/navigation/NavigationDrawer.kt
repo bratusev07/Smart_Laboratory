@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import ru.bratusev.smartlab.navigation.api.Screen
 import ru.bratusev.smartlab.navigation.models.NavigationDrawerItems
 import ru.bratusev.smartlab.ui.core.resources.StringsRes
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
@@ -43,7 +44,7 @@ fun NavigationDrawer(
     scope: CoroutineScope = rememberCoroutineScope(),
     isHidden: Boolean = false,
     navigateTo: (Screen) -> Unit,
-    selectedScreenRoute: String,
+    currentScreenRoute: String,
     content: @Composable () -> Unit,
 ) {
     ModalNavigationDrawer(
@@ -72,19 +73,33 @@ fun NavigationDrawer(
                             )
                         }
                         HorizontalDivider()
-                        // TODO сделать получше
-                        NavigationDrawerItems.entries.forEach {
-                            if (it == NavigationDrawerItems.Login){
-                                Spacer(modifier = Modifier.weight(1f))
-                                HorizontalDivider()
-                            }
-                            NavigationDrawerItem(
-                                label = { Text(it.label) },
-                                selected = it.screen.route == selectedScreenRoute,
-                                onClick = { navigateTo(it.screen) },
-                                icon = { Icon(it.icon, contentDescription = null) }
-                            )
-                        }
+                        NavigationDrawerItemComponent(
+                            NavigationDrawerItems.Home,
+                            currentScreenRoute = currentScreenRoute,
+                            navigateTo = navigateTo
+                        )
+                        NavigationDrawerItemComponent(
+                            NavigationDrawerItems.Logs,
+                            currentScreenRoute = currentScreenRoute,
+                            navigateTo = navigateTo
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                        NavigationDrawerItemComponent(
+                            NavigationDrawerItems.Settings,
+                            currentScreenRoute = currentScreenRoute,
+                            navigateTo = navigateTo
+                        )
+                        HorizontalDivider()
+                        NavigationDrawerItemComponent(
+                            NavigationDrawerItems.Notifications,
+                            currentScreenRoute = currentScreenRoute,
+                            navigateTo = navigateTo
+                        )
+                        NavigationDrawerItemComponent(
+                            NavigationDrawerItems.Profile,
+                            currentScreenRoute = currentScreenRoute,
+                            navigateTo = navigateTo
+                        )
                     }
                 }
             }
@@ -92,6 +107,19 @@ fun NavigationDrawer(
     ) {
         content()
     }
+}
+
+@Composable
+private fun NavigationDrawerItemComponent(
+    item: NavigationDrawerItems,
+    currentScreenRoute: String,
+    navigateTo: (Screen) -> Unit,
+) {
+    NavigationDrawerItem(
+        label = { Text(item.label) },
+        selected = currentScreenRoute == item.screen.route,
+        onClick = { navigateTo(item.screen) },
+        icon = { Icon(item.icon, contentDescription = null) })
 }
 
 @Preview(
@@ -105,7 +133,7 @@ private fun NavigationDrawerPreview() {
         NavigationDrawer(
             drawerState = drawerState,
             navigateTo = {},
-            selectedScreenRoute = Screen.Home.route,
+            currentScreenRoute = Screen.Home.route,
         ) {
             Text(text = "Контент. Очень длинный контент. Прям чтобы его было видно. Нужно прям много контента.")
         }
