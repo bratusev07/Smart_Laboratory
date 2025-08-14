@@ -20,7 +20,7 @@ class LogcatViewModel(
     val uiState: StateFlow<LogcatState> = _uiState
 
     init {
-        getLogcatMessagesUseCase.invoke(listOf("e", "d")).onEach {
+        getLogcatMessagesUseCase.invoke(listOf("e", "d", "w")).onEach {
             it.fold(
                 onSuccess = { updateState(uiState.value.copy(messages = it.map { it.mapToUi() })) },
                 onFailure = {  }

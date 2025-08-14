@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
@@ -49,10 +50,8 @@ fun LogcatComponent(modifier: Modifier = Modifier, logcatMessageUi: LogcatMessag
                 verticalAlignment = Alignment.Top,
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                // Тип лога с иконкой и цветом
                 LogTypeIndicator(logcatMessageUi.type)
                 
-                // Основная информация
                 Column(
                     modifier = Modifier.weight(1f)
                 ) {
@@ -73,7 +72,6 @@ fun LogcatComponent(modifier: Modifier = Modifier, logcatMessageUi: LogcatMessag
                     )
                 }
                 
-                // Дата и время
                 DateTimeComponent(
                     time = logcatMessageUi.time,
                     date = logcatMessageUi.date
@@ -91,7 +89,6 @@ private fun LogTypeIndicator(type: String) {
     val textColor: Color
 
     when (type.lowercase()) {
-        // TODO Update icons
         "e", "error" -> {
             icon = Icons.Filled.Warning
             backgroundColor = Color(0xFFD32F2F)
@@ -105,14 +102,14 @@ private fun LogTypeIndicator(type: String) {
             label = "WARN"
         }
         "d", "debug" -> {
-            icon = Icons.Filled.Info
-            backgroundColor = Color(0xFF2196F3)
+            icon = Icons.Filled.BugReport
+            backgroundColor = Color(0xFF4CAF50)
             textColor = Color.White
             label = "DEBUG"
         }
         "i", "info" -> {
             icon = Icons.Filled.Info
-            backgroundColor = Color(0xFF4CAF50)
+            backgroundColor = Color(0xFF2196F3)
             textColor = Color.White
             label = "INFO"
         }
