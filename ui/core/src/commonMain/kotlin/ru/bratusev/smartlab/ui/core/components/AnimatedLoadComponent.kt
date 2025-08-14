@@ -24,7 +24,7 @@ fun AnimatedLoadComponent(modifier: Modifier, animatedLoadUi: AnimatedLoadUi) {
         Column(modifier = Modifier.fillMaxWidth()) {
             Text(
                 maxLines = 1,
-                text = "${StringsRes.CURRENT_STAGE}: ${animatedLoadUi.stageName}",
+                text = "${StringsRes.CURRENT_STAGE}: ${if (animatedLoadUi.isError) StringsRes.ERROR else animatedLoadUi.stageName}",
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.alpha(0.85f)

@@ -8,6 +8,23 @@ data class LoginState(
     val password: String = "tXRzB034gYgAH6",
     val loginStage: LoginStage = LoginStage.NOTHING_0,
 ) {
+    val buttonEnabled: Boolean
+        get() = when (loginStage) {
+            LoginStage.NOTHING_0 -> true
+            LoginStage.FAILED_DURING_LOGIN -> true
+            LoginStage.FAILED_DURING_TOKEN -> true
+            else -> false
+        }
+
+    val showError: Boolean
+        get() = when (loginStage) {
+            LoginStage.FAILED_DURING_LOGIN -> true
+            LoginStage.FAILED_DURING_TOKEN -> true
+            else -> false
+        }
+    val errorText: String
+        get() = loginStage.stateText
+
     val animatedLoadUi: AnimatedLoadUi
         get() = AnimatedLoadUi(loginStage.stateText, loginStage.isShowing, false)
 }

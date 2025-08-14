@@ -15,9 +15,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -38,26 +35,6 @@ fun LoginScreen(
     navigateToHome: () -> Unit,
 ) {
     val state = vm.uiState.collectAsState()
-
-    val buttonEnabled by remember {
-        derivedStateOf {
-            when (state.value.loginStage) {
-                LoginStage.NOTHING_0 -> true
-                LoginStage.FAILED_DURING_LOGIN -> true
-                LoginStage.FAILED_DURING_TOKEN -> true
-                else -> false
-            }
-        }
-    }
-    val showError by remember {
-        derivedStateOf {
-            when (state.value.loginStage) {
-                LoginStage.FAILED_DURING_LOGIN -> true
-                LoginStage.FAILED_DURING_TOKEN -> true
-                else -> false
-            }
-        }
-    }
 
     LaunchedEffect(state.value.loginStage) {
         if (state.value.loginStage == LoginStage.COMPLETED_4) {
@@ -82,7 +59,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(12.dp))
 
         InputFieldBlock(
-            screenState = state.value, isButtonEnabled = buttonEnabled,
+            screenState = state.value, isButtonEnabled = state.value.buttonEnabled,
             onLoginChanged = { login ->
                 vm.handleEvent(Event.OnLoginChanged(login))
             },
@@ -99,14 +76,14 @@ fun LoginScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Bottom
         ) {
-            AnimatedVisibility(showError) {
+            AnimatedVisibility(state.value.showError) {
                 Text(
-                    if (vm.uiState.value.loginStage == LoginStage.FAILED_DURING_LOGIN) StringsRes.AUTH_FAILED else StringsRes.TOKEN_SAVE_FAILED
+                    state.value.errorText
                 )
             }
             AnimatedLoadComponent(
                 Modifier.width(IntrinsicSize.Min).padding(horizontal = 24.dp, vertical = 16.dp),
-                state.value.animatedLoadUi.copy(isError = showError)
+                state.value.animatedLoadUi.copy(isError = state.value.showError)
             )
         }
     }

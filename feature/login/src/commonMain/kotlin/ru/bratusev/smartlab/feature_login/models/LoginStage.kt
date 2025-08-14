@@ -8,6 +8,6 @@ enum class LoginStage(val stateText: String, val isShowing: Boolean = true) {
     SAVING_TOKEN_2(stateText = StringsRes.TOKEN_SAVING),
     CHECKING_TOKEN_3(stateText = StringsRes.TOKEN_CHECKING),
     COMPLETED_4(stateText = StringsRes.AUTH_SUCCESS),
-    FAILED_DURING_LOGIN(stateText = StringsRes.ERROR),
-    FAILED_DURING_TOKEN(stateText = StringsRes.ERROR),
+    FAILED_DURING_LOGIN(stateText = StringsRes.AUTH_FAILED),
+    FAILED_DURING_TOKEN(stateText = StringsRes.TOKEN_SAVE_FAILED),
 }
