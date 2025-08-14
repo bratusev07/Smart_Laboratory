@@ -9,7 +9,7 @@ data class LoginState(
     val loginStage: LoginStage = LoginStage.NOTHING_0,
 ) {
     val animatedLoadUi: AnimatedLoadUi
-        get() = AnimatedLoadUi(loginStage.stateText, loginStage.isShowing)
+        get() = AnimatedLoadUi(loginStage.stateText, loginStage.isShowing, false)
 }
 
 sealed class Event {

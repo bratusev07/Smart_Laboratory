@@ -16,10 +16,11 @@ import ru.bratusev.smartlab.ui.core.resources.StringsRes
 
 @Composable
 fun InputFieldBlock(
-    screenState: LoginState, 
+    screenState: LoginState,
     onLoginChanged: (String) -> Unit,
     onPasswordChanged: (String) -> Unit,
-    onLoginClicked: () -> Unit
+    onLoginClicked: () -> Unit,
+    isButtonEnabled: Boolean = true
 ) {
     val textFieldModifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp)
 
@@ -50,7 +51,7 @@ fun InputFieldBlock(
 
     CustomButton(
         modifier = textFieldModifier,
-        customButtonUi = CustomButtonUi(title = StringsRes.AUTH, fontWeight = 100)
+        customButtonUi = CustomButtonUi(title = StringsRes.AUTH, fontWeight = 100, isEnabled = isButtonEnabled)
     ) {
         onLoginClicked()
     }

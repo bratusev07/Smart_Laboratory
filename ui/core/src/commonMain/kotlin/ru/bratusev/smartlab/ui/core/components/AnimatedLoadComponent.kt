@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -18,8 +19,7 @@ import ru.bratusev.smartlab.ui.core.resources.StringsRes
 @Composable
 fun AnimatedLoadComponent(modifier: Modifier, animatedLoadUi: AnimatedLoadUi) {
     AnimatedVisibility(
-        modifier = modifier,
-        visible = animatedLoadUi.isVisible
+        modifier = modifier, visible = animatedLoadUi.isVisible
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             Text(
@@ -31,9 +31,9 @@ fun AnimatedLoadComponent(modifier: Modifier, animatedLoadUi: AnimatedLoadUi) {
             )
             Spacer(modifier = Modifier.height(6.dp))
             LinearProgressIndicator(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .alpha(0.6f)
+                color = if (animatedLoadUi.isError) MaterialTheme.colorScheme.error else ProgressIndicatorDefaults.linearColor,
+                trackColor = if (animatedLoadUi.isError) MaterialTheme.colorScheme.error else ProgressIndicatorDefaults.linearTrackColor,
+                modifier = Modifier.fillMaxWidth().alpha(0.6f)
             )
         }
     }

@@ -13,9 +13,13 @@ import ru.bratusev.smartlab.ui.core.theme.AppTheme
 fun CustomButton(
     modifier: Modifier = Modifier,
     customButtonUi: CustomButtonUi,
-    onCustomButtonClicked: () -> Unit
+    onCustomButtonClicked: () -> Unit,
 ) {
-    Button(modifier = modifier, onClick = onCustomButtonClicked) {
+    Button(
+        modifier = modifier,
+        onClick = onCustomButtonClicked,
+        enabled = customButtonUi.isEnabled
+    ) {
         Text(
             text = customButtonUi.title,
             fontWeight = FontWeight(customButtonUi.fontWeight)
