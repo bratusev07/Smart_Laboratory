@@ -36,7 +36,7 @@ fun AppNavigation(navController: NavHostController) {
         }
     }
     NavigationDrawer(
-        scope = drawerScope,
+        drawerScope = drawerScope,
         drawerState = drawerState,
         isHidden = isDrawerHidden,
         navigateTo = { screen ->

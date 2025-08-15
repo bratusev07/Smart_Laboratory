@@ -22,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -34,6 +35,8 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ru.bratusev.smartlab.navigation.api.Screen
 import ru.bratusev.smartlab.navigation.models.NavigationDrawerItems
+import ru.bratusev.smartlab.ui.core.components.AppTopBar
+import ru.bratusev.smartlab.ui.core.models.AppTobBarUi
 import ru.bratusev.smartlab.ui.core.resources.StringsRes
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
 
@@ -41,7 +44,7 @@ import ru.bratusev.smartlab.ui.core.theme.AppTheme
 @Composable
 fun NavigationDrawer(
     drawerState: DrawerState = rememberDrawerState(initialValue = DrawerValue.Closed),
-    scope: CoroutineScope = rememberCoroutineScope(),
+    drawerScope: CoroutineScope = rememberCoroutineScope(),
     isHidden: Boolean = false,
     navigateTo: (Screen) -> Unit,
     currentScreenRoute: String,
@@ -60,7 +63,7 @@ fun NavigationDrawer(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             IconButton(onClick = {
-                                scope.launch {
+                                drawerScope.launch {
                                     drawerState.close()
                                 }
                             }) {
@@ -105,7 +108,30 @@ fun NavigationDrawer(
             }
         }, drawerState = drawerState
     ) {
-        content()
+        if (isHidden) {
+            content()
+        } else {
+            Scaffold(
+                topBar = {
+                    AppTopBar(
+                        uiData = AppTobBarUi(
+                            // TODO: Убрать захардкоженное значение
+                            title = "Лаборатория 1",
+                        ),
+                        onTitleClick = {
+                            drawerScope.launch {
+                                drawerState.open()
+                            }
+                        },
+                        onMenuClick = {
+                            // TODO: :-()
+                        }
+                    )
+                }
+            ) { _ ->
+                content()
+            }
+        }
     }
 }
 
