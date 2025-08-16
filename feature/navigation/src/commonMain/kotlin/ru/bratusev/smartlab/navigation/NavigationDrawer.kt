@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
@@ -56,10 +55,11 @@ fun NavigationDrawer(
             if (!isHidden) {
                 ModalDrawerSheet {
                     Column(
-                        modifier = Modifier.fillMaxHeight().verticalScroll(rememberScrollState())
+                        modifier = Modifier.fillMaxHeight().verticalScroll(rememberScrollState()),
+                        verticalArrangement = Arrangement.spacedBy(5.dp)
                     ) {
-                        Spacer(Modifier.height(12.dp))
                         Row(
+                            modifier = Modifier.padding(top = 12.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
@@ -146,6 +146,7 @@ private fun NavigationDrawerItemComponent(
 ) {
     NavigationDrawerItem(
         label = { Text(item.label) },
+        badge = { if (currentScreenRoute == item.screen.route) Text("<") },
         selected = currentScreenRoute == item.screen.route,
         onClick = { navigateTo(item.screen) },
         icon = { Icon(item.icon, contentDescription = null) })

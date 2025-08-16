@@ -1,5 +1,7 @@
 package ru.bratusev.smartlab.ui.core.components.tileButton
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,6 +15,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -87,6 +93,7 @@ fun ThermometerContent(tileButtonUi: TileButtonUi.Thermometer) {
         tileButtonUi.temperature >= 15f -> TileButtonColors.Thermometer.hot
         else -> TileButtonColors.Thermometer.cold
     }
+    val animatedColorTint by animateColorAsState(colorTint, tween(2000))
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -94,7 +101,7 @@ fun ThermometerContent(tileButtonUi: TileButtonUi.Thermometer) {
     ) {
         Image(
             painter = painterResource(tileButtonUi.resource),
-            colorFilter = ColorFilter.tint(colorTint),
+            colorFilter = ColorFilter.tint(animatedColorTint),
             contentDescription = null
         )
         Text(
@@ -119,10 +126,25 @@ fun ThermometerContent(tileButtonUi: TileButtonUi.Thermometer) {
 @Composable
 private fun TileButtonPreviewLightBulb() {
     AppTheme {
+        var tileState by remember { mutableStateOf(false) }
         TileButton(
             tileButtonUi = TileButtonUi.LightBulb(
-                location = "Previesdfsdfw Preview", isOn = true
-            ), onClick = {})
+                location = "Previesdfsdfw Preview", isOn = tileState
+            ), onClick = { tileState = !tileState })
     }
 }
 
+@Preview(
+    group = "TileButton", name = "Thermometer", showBackground = true, widthDp = 250, heightDp = 250
+)
+@Composable
+private fun TileButtonPreviewThermometer() {
+    AppTheme {
+        var temperature by remember { mutableStateOf(0f) }
+        TileButton(
+            tileButtonUi = TileButtonUi.Thermometer(
+                location = "Где-то",
+                temperature = temperature,
+            ), onClick = { temperature += 5f })
+    }
+}

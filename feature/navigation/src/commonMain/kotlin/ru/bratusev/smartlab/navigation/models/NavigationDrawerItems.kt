@@ -14,7 +14,7 @@ enum class NavigationDrawerItems(val screen: Screen, val label: String, val icon
     Home(Screen.Home, "Доска", Icons.Default.Dashboard),
     Settings(Screen.Settings, "Настройки", Icons.Default.Settings),
     Logs(Screen.Logcat, "Логи", Icons.AutoMirrored.Filled.List),
-    Notifications(Screen.Logcat, "Уведомления", Icons.Default.Notifications),
-    Profile(Screen.Logcat, "<username>", Icons.Default.AccountCircle),
+    Notifications(Screen.Notifications, "Уведомления", Icons.Default.Notifications),
+    Profile(Screen.UserProfile, "<username>", Icons.Default.AccountCircle),
     Login(Screen.Login, "Выйти", Icons.AutoMirrored.Filled.Login)
 }

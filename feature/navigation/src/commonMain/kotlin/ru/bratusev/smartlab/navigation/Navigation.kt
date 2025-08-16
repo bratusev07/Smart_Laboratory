@@ -1,6 +1,7 @@
 package ru.bratusev.smartlab.navigation
 
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -74,6 +75,13 @@ private fun AppNavHost(
 
         composable(Screen.Logcat.route) {
             LogcatScreen(navigationApi = navigationApi)
+        }
+
+        composable(Screen.Notifications.route) {
+            Text(Screen.Notifications.route)
+        }
+        composable(Screen.UserProfile.route) {
+            Text(Screen.UserProfile.route)
         }
     }
 }
