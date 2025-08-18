@@ -8,8 +8,17 @@ import ru.bratusev.smartlab.data.core.Logger
 import ru.bratusev.smartlab.data.core.database.LogcatMessageDao
 import ru.bratusev.smartlab.data.core.getCurrentDateTime
 import ru.bratusev.smartlab.data.core.model.LogcatMessageEntity
+import ru.bratusev.smartlab.data.core.database.LogcatMessageDao
+import ru.bratusev.smartlab.data.core.getCurrentDateTime
+import ru.bratusev.smartlab.data.core.model.LogcatMessageEntity
 import ru.bratusev.smartlab.domain.core.model.LogcatMessage
 import ru.bratusev.smartlab.domain.core.repository.LoggerRepository
+
+class LoggerRepositoryImpl(
+    private val logger: Logger,
+    private val logcatMessageDao: LogcatMessageDao,
+    private val coroutineScope: CoroutineScope
+) : LoggerRepository {
 
 class LoggerRepositoryImpl(
     private val logger: Logger,
