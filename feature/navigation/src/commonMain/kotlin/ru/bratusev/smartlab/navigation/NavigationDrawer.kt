@@ -36,7 +36,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import ru.bratusev.smartlab.navigation.api.Screen
 import ru.bratusev.smartlab.navigation.models.NavigationDrawerItems
 import ru.bratusev.smartlab.ui.core.components.AppTopBar
-import ru.bratusev.smartlab.ui.core.models.AppTobBarUi
+import ru.bratusev.smartlab.ui.core.models.AppTopBarUi
 import ru.bratusev.smartlab.ui.core.resources.StringsRes
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
 
@@ -115,7 +115,7 @@ fun NavigationDrawer(
             Scaffold(
                 topBar = {
                     AppTopBar(
-                        uiData = AppTobBarUi(
+                        uiData = AppTopBarUi(
                             // TODO: Убрать захардкоженное значение
                             title = "Лаборатория 1",
                         ),

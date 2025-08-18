@@ -12,13 +12,13 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import ru.bratusev.smartlab.ui.core.models.AppTobBarUi
+import ru.bratusev.smartlab.ui.core.models.AppTopBarUi
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTopBar(
     modifier: Modifier = Modifier,
-    uiData: AppTobBarUi,
+    uiData: AppTopBarUi,
     onTitleClick: () -> Unit,
     onMenuClick: () -> Unit,
 ) {

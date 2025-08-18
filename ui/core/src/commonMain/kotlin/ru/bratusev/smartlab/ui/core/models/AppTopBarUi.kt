@@ -1,5 +1,5 @@
 package ru.bratusev.smartlab.ui.core.models
 
-data class AppTobBarUi(
+data class AppTopBarUi(
     val title: String,
 )
