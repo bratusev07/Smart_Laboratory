@@ -11,6 +11,8 @@ val iosDataModule = module {
     single<Logger> {
         Logger()
     }
+
+    single { DatabaseFactory() }
 }
 
 val iosDataModulePreview = module {
@@ -20,6 +22,8 @@ val iosDataModulePreview = module {
     single<Logger> {
         Logger()
     }
+
+    single { DatabaseFactory() }
 }
 
 actual val platformDataModule = iosDataModule

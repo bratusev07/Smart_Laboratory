@@ -48,6 +48,14 @@ val dataModule = module {
         get<DataStoreFactory>().createDataStore()
     }
 
+    single {
+        get<DatabaseFactory>().create()
+            .setDriver(BundledSQLiteDriver())
+            .build()
+    }
+
+    single<LogcatMessageDao> { get<AppDatabase>().logcatMessagesDao() }
+
     includes(platformDataModule)
 }
 
@@ -82,6 +90,14 @@ val dataModulePreview = module {
     single<HomeAssistantWebSocketClient> {
         HomeAssistantWebSocketClient()
     }
+
+    single {
+        get<DatabaseFactory>().create()
+            .setDriver(BundledSQLiteDriver())
+            .build()
+    }
+
+    single<LogcatMessageDao> { get<AppDatabase>().logcatMessagesDao() }
 
     includes(platformDataModulePreview)
 }

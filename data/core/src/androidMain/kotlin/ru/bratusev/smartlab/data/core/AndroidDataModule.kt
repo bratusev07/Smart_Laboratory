@@ -1,5 +1,6 @@
 package ru.bratusev.smartlab.data.core
 
+import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 import ru.bratusev.smartlab.data.core.dataStore.DataStoreFactory
 import ru.bratusev.smartlab.data.core.dataStore.preview.DataStoreFactoryPreview
@@ -14,6 +15,8 @@ val androidDataModule = module {
     single<Logger> {
         Logger()
     }
+
+    single { DatabaseFactory(androidApplication()) }
 }
 
 val androidDataModulePreview = module {
@@ -25,6 +28,8 @@ val androidDataModulePreview = module {
     single<LoggerPreview> {
         LoggerPreview()
     }
+
+    single { DatabaseFactory(androidApplication()) }
 }
 
 actual val platformDataModule = androidDataModule
