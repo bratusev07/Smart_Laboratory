@@ -7,6 +7,9 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinx.serialization)
+
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.androidx.room)
 }
 
 kotlin {
@@ -28,6 +31,10 @@ kotlin {
         }
     }
 
+    room {
+        schemaDirectory("$projectDir/schemas")
+    }
+
     sourceSets {
         commonMain.dependencies {
             implementation(libs.koin.core)
@@ -47,6 +54,13 @@ kotlin {
             implementation("androidx.datastore:datastore:1.1.7")
             // The Preferences DataStore library
             implementation("androidx.datastore:datastore-preferences:1.1.7")
+
+            // Room Database
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.androidx.sqlite.bundled)
+            
+            // DateTime library for cross-platform date/time operations
+            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
         }
 
         androidMain.dependencies {
@@ -55,6 +69,10 @@ kotlin {
 
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
+        }
+
+        dependencies {
+            ksp(libs.androidx.room.compiler)
         }
     }
 }

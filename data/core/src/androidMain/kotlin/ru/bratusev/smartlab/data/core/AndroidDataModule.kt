@@ -4,6 +4,7 @@ import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 import ru.bratusev.smartlab.data.core.dataStore.DataStoreFactory
 import ru.bratusev.smartlab.data.core.dataStore.preview.DataStoreFactoryPreview
+import ru.bratusev.smartlab.data.core.database.DatabaseFactory
 import ru.bratusev.smartlab.data.core.preview.LoggerPreview
 
 val androidDataModule = module {
