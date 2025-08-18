@@ -16,6 +16,8 @@ sealed class SensorCardUi {
 
     abstract val tints: SensorCardTints
 
+    // Если будут какие-то специфические, то их можно добавить здесь без каких-либо проблем в будущем.
+    // Буквально класс здесь и компонент в SensorCard.kt
     class Small(
         override val id: String,
         override val state: SensorCardState,
@@ -63,8 +65,12 @@ open class SensorCardTints(
         )
     }
 
-    class OneColor(color: Color) : SensorCardTints(
+    class SingleColor(color: Color) : SensorCardTints(
         on = color, off = color, unavailable = color
+    )
+
+    class WithoutOff(on: Color, unavailable: Color) : SensorCardTints(
+        on = on, off = unavailable, unavailable = unavailable
     )
 }
 
