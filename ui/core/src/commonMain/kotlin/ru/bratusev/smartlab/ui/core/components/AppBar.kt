@@ -7,7 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ru.bratusev.smartlab.ui.core.models.tileButton.AppBarUi
+import ru.bratusev.smartlab.ui.core.models.AppBarUi
 
 @Composable
 fun AppBar(
