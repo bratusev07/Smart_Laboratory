@@ -2,11 +2,15 @@ package ru.bratusev.smartlab.data.core
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import io.ktor.client.HttpClient
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import ru.bratusev.smartlab.data.core.dataStore.DataStoreFactory
 import ru.bratusev.smartlab.data.core.dataStore.preview.DataStoreFactoryPreview
+import ru.bratusev.smartlab.data.core.database.AppDatabase
+import ru.bratusev.smartlab.data.core.database.DatabaseFactory
+import ru.bratusev.smartlab.data.core.database.LogcatMessageDao
 import ru.bratusev.smartlab.data.core.preview.KtorClientFactoryPreview
 import ru.bratusev.smartlab.data.core.repository.AuthRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.ButtonTextRepositoryImpl
@@ -29,7 +33,11 @@ val dataModule = module {
     }
 
     single<LoggerRepository> {
-        LoggerRepositoryImpl(get())
+        LoggerRepositoryImpl(
+            get(),
+            logcatMessageDao = get(),
+            coroutineScope = get()
+        )
     }
 
     single<KtorClientFactory> {
