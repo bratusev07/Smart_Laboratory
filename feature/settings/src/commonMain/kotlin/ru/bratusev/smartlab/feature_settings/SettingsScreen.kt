@@ -7,22 +7,26 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.koin.compose.viewmodel.koinViewModel
+import ru.bratusev.smartlab.navigation.api.NavigationApi
 import ru.bratusev.smartlab.ui.core.components.CustomButton
 import ru.bratusev.smartlab.ui.core.models.CustomButtonUi
 
 @Composable
 fun SettingsScreen(
     vm: SettingsViewModel = koinViewModel(),
-    navigateTo: (String?) -> Unit
+    navigationApi: NavigationApi
 ) {
     val state = vm.uiState.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         CustomButton(
             modifier = Modifier.align(Alignment.Center),
-            customButtonUi = CustomButtonUi(state.value.screenName, 300)
+            customButtonUi = CustomButtonUi(
+                state.value.screenName,
+                fontWeight = 50
+            )
         ) {
-            navigateTo(null)
+            navigationApi.popBackStack()
         }
     }
 }

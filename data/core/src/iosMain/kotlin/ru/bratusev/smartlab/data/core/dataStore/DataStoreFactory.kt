@@ -7,7 +7,6 @@ import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSURL
 import platform.Foundation.NSUserDomainMask
-import ru.bratusev.smartlab.data.core.iosModule
 
 actual class DataStoreFactory {
     @OptIn(ExperimentalForeignApi::class)

@@ -32,17 +32,22 @@ kotlin {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
-            implementation(compose.material)
+            implementation(compose.material3)
+            implementation(compose.materialIconsExtended)
             implementation(compose.ui)
+            implementation(libs.ui.backhandler)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
 
             implementation(libs.koin.core)
             implementation(libs.bundles.koin.compose)
 
+            implementation(projects.feature.navigationApi)
             implementation(projects.feature.home)
             implementation(projects.feature.settings)
             implementation(projects.feature.login)
+            implementation(projects.ui.core)
+            implementation(projects.feature.logcat)
         }
     }
 }

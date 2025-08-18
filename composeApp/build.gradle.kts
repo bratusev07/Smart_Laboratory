@@ -1,4 +1,3 @@
-import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -41,7 +40,8 @@ kotlin {
 
             implementation(compose.runtime)
             implementation(compose.foundation)
-            implementation(compose.material)
+            implementation(compose.material3)
+            implementation(compose.materialIconsExtended)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
@@ -49,6 +49,9 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtime.compose)
 
             implementation(libs.koin.core)
+
+            implementation(projects.ui.core)
+
             implementation(libs.bundles.koin.compose)
         }
     }
