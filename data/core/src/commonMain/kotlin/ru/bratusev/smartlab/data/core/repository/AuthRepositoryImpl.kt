@@ -21,9 +21,12 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import ru.bratusev.smartlab.data.core.Constants.BASE_URL
 import ru.bratusev.smartlab.data.core.HomeAssistantWebSocketClient
+import ru.bratusev.smartlab.data.core.auth.AuthTokensStore
 import ru.bratusev.smartlab.domain.core.model.Device
 import ru.bratusev.smartlab.domain.core.repository.AuthRepository
 
@@ -96,13 +99,21 @@ class AuthRepositoryImpl(
             setBody(requestBody)
         }
 
-        val token = Json.parseToJsonElement(response.bodyAsText())
-            .jsonObject["access_token"]
-            .toString()
-            .replace("\"", "")
+        val json = Json.parseToJsonElement(response.bodyAsText()).jsonObject
+        val accessToken = json["access_token"]?.jsonPrimitive?.content ?: ""
+        val refreshToken = json["refresh_token"]?.jsonPrimitive?.content ?: ""
+        val expiresInSeconds = json["expires_in"]?.jsonPrimitive?.intOrNull
 
-        socketClient.setToken(token).connect()
-        return token
+        // Persist both tokens and expiry for automatic auth handling
+        AuthTokensStore.saveTokens(
+            dataStore = dataStore,
+            accessToken = accessToken,
+            refreshToken = refreshToken,
+            expiresInSeconds = expiresInSeconds
+        )
+
+        socketClient.setToken(accessToken).connect()
+        return accessToken
     }
 
     // To Auth interface
@@ -164,6 +175,13 @@ class AuthRepositoryImpl(
         dataStore.edit { preferences ->
             preferences[TOKEN_KEY] = token
         }
+        // Also persist for the Ktor Auth plugin
+        AuthTokensStore.saveTokens(
+            dataStore = dataStore,
+            accessToken = token,
+            refreshToken = null,
+            expiresInSeconds = null
+        )
     }
 
     override suspend fun getToken(): String? {
