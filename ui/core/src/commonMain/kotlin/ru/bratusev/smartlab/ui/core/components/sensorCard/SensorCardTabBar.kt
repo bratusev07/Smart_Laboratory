@@ -1,4 +1,4 @@
-package ru.bratusev.smartlab.ui.core.components.tileButton
+package ru.bratusev.smartlab.ui.core.components.sensorCard
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.ScrollableTabRow
@@ -7,12 +7,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ru.bratusev.smartlab.ui.core.models.AppBarUi
+import ru.bratusev.smartlab.ui.core.models.TabBarUi
 
 @Composable
-fun AppBar(
+fun TabBar(
     onTitleClick: (Int) -> Unit,
-    uiData: AppBarUi,
+    uiData: TabBarUi,
 ) {
     ScrollableTabRow(
         selectedTabIndex = uiData.currentPageIndex,

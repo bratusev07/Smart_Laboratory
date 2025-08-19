@@ -1,6 +1,6 @@
 package ru.bratusev.smartlab.ui.core.models
 
-data class AppBarUi(
+data class TabBarUi(
     val titles: List<String>,
     val currentPageIndex: Int
 )

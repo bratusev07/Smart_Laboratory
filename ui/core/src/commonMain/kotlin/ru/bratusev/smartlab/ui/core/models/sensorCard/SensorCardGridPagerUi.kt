@@ -1,6 +1,6 @@
 package ru.bratusev.smartlab.ui.core.models.sensorCard
 
-class SensorCardVerticalGridUi(
+data class SensorCardGridPagerUi(
     val sensors: List<SensorCardUi>,
-    val columnsAmount: Int = 2,
+    val verticalGridsAtOneScreen: Int = 1,
 )
