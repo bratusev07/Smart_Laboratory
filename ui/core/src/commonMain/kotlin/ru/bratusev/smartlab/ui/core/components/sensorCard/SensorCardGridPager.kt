@@ -44,13 +44,16 @@ fun SensorCardGridPager(
     Column(
         modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
     ) {
-        TabBar(
-            onTitleClick = { pageIndex ->
+        SensorCardTabBar(
+            onDomainClick = { domain ->
                 pagerScope.launch {
-                    pagerState.animateScrollToPage(pageIndex)
+                    val pageIndex = domains.indexOf(domain)
+                    if (pageIndex != -1) {
+                        pagerState.animateScrollToPage(pageIndex)
+                    }
                 }
             }, uiData = TabBarUi(
-                titles = domains, currentPageIndex = pagerState.currentPage
+                domains = domains, currentDomainPage = pagerState.currentPage
             )
         )
 

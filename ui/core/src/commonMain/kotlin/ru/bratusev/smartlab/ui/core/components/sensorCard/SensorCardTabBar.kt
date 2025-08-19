@@ -10,20 +10,20 @@ import androidx.compose.ui.unit.dp
 import ru.bratusev.smartlab.ui.core.models.TabBarUi
 
 @Composable
-fun TabBar(
-    onTitleClick: (Int) -> Unit,
+fun SensorCardTabBar(
+    onDomainClick: (String) -> Unit,
     uiData: TabBarUi,
 ) {
     ScrollableTabRow(
-        selectedTabIndex = uiData.currentPageIndex,
+        selectedTabIndex = uiData.currentDomainPage,
         modifier = Modifier.fillMaxWidth(),
         edgePadding = 16.dp
     ) {
-        uiData.titles.forEachIndexed { index, title ->
+        uiData.domains.forEachIndexed { index, domain ->
             Tab(
-                selected = uiData.currentPageIndex == index,
-                onClick = { onTitleClick(index) },
-                text = { Text(text = title) }
+                selected = uiData.currentDomainPage == index,
+                onClick = { onDomainClick(domain) },
+                text = { Text(text = domain) }
             )
         }
     }
