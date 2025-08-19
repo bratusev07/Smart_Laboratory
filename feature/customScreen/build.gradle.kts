@@ -22,7 +22,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "Navigation"
+            baseName = "FeatureCustomScreen"
             isStatic = true
         }
     }
@@ -35,26 +35,22 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
             implementation(compose.ui)
-            implementation(libs.ui.backhandler)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
 
             implementation(libs.koin.core)
             implementation(libs.bundles.koin.compose)
 
+            implementation(projects.domain.core)
+            implementation(projects.data.core)
             implementation(projects.feature.navigationApi)
-            implementation(projects.feature.home)
-            implementation(projects.feature.settings)
-            implementation(projects.feature.login)
-            implementation(projects.feature.logcat)
             implementation(projects.ui.core)
-
         }
     }
 }
 
 android {
-    namespace = "ru.bratusev.smartlab.feature.navigation"
+    namespace = "ru.bratusev.smartlab.feature.customScreen"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
