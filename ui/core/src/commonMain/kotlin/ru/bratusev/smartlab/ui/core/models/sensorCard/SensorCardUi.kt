@@ -74,6 +74,7 @@ open class SensorCardTints(
     )
 }
 
+// TODO enum не именуют строчными (будет отрефачено в dev ветке)
 enum class SensorCardState(stateName: String) {
     On("on"), Off("off"), Unavailable("unavailable"),
 }
