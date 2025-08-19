@@ -7,28 +7,38 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import ru.bratusev.smartlab.domain.core.usecase.GetButtonTextUseCase
+import ru.bratusev.smartlab.domain.core.model.socket.ServiceEntity
+import ru.bratusev.smartlab.domain.core.usecase.GetServiceEntitiesUseCase
+import ru.bratusev.smartlab.domain.core.usecase.ObserveSocketErrorsUseCase
+import ru.bratusev.smartlab.domain.core.usecase.UpdateSwitchStateUseCase
 import ru.bratusev.smartlab.feature_home.models.Event
 import ru.bratusev.smartlab.feature_home.models.HomeState
 
 class HomeViewModel(
-    getButtonTextUseCase: GetButtonTextUseCase
+    getServiceEntitiesUseCase: GetServiceEntitiesUseCase,
+    private val updateSwitchStateUseCase: UpdateSwitchStateUseCase,
+    observeSocketErrorsUseCase: ObserveSocketErrorsUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeState())
     val uiState: StateFlow<HomeState> = _uiState
 
     init {
-        getButtonTextUseCase
-            .invoke()
-            .onEach {
-                it.fold({ result ->
-                    handleEvent(Event.OnButtonTextUpdated(result))
-                }) {
-                    // TODO Обработка ошибки на UI
-                }
+        getServiceEntitiesUseCase.invoke().onEach {
+            onServiceEntitiesUpdated(it)
+        }.launchIn(viewModelScope)
+
+        observeSocketErrorsUseCase.invoke().onEach { errors ->
+            if (errors.isNotEmpty()) {
+                val messages = errors.map { it.message ?: it.toString() }
+                updateState(uiState.value.copy(socketErrors = messages))
             }
-            .launchIn(viewModelScope)
+        }.launchIn(viewModelScope)
+    }
+
+    private fun onServiceEntitiesUpdated(entities: List<ServiceEntity>) {
+        val switches: List<ServiceEntity> = entities.filter { it.domain == "switch" }
+        updateState(uiState.value.copy(switchesEntity = switches))
     }
 
     private fun onCustomButtonClicked() {
@@ -39,6 +49,16 @@ class HomeViewModel(
     private fun onButtonTextUpdated(text: String) {
         val state = uiState.value.copy(screenName = text)
         updateState(state)
+    }
+
+    private fun onSwitchUpdated(switchId: String) {
+        uiState.value.switchesEntity.find { it.id == switchId }?.let {
+            val updatedState = if (it.state?.contains("off") == true) "turn_on"
+            else "turn_off"
+            it.id?.let { id ->
+                updateSwitchStateUseCase.invoke(id, updatedState).onEach {  }.launchIn(viewModelScope)
+            }
+        }
     }
 
     private fun updateState(updatedState: HomeState) {
@@ -52,6 +72,7 @@ class HomeViewModel(
             Event.OnBackClicked -> Unit
             Event.OnCustomButtonClicked -> onCustomButtonClicked()
             is Event.OnButtonTextUpdated -> onButtonTextUpdated(event.text)
+            is Event.OnSwitchUpdated -> onSwitchUpdated(event.switchId)
         }
     }
 }

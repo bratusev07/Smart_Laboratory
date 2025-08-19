@@ -10,6 +10,7 @@ class GetLoginUseCase(private val authRepository: AuthRepository) {
     operator fun invoke(login: String, password: String, device: Device): Flow<Result<String>> = flow {
         try {
             val token = authRepository.login(login, password)
+            authRepository.saveToken(token)
             emit(Result.success(token))
 
         } catch (e: Exception) {

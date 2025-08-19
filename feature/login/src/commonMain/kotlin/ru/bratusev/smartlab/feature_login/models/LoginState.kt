@@ -4,8 +4,8 @@ import ru.bratusev.smartlab.ui.core.models.AnimatedLoadUi
 
 data class LoginState(
     val screenName: String = "Login Screen",
-    val login: String = "admin",
-    val password: String = "tXRzB034gYgAH6",
+    val login: String = "denis",
+    val password: String = "V+5G5]Aw2uK4HsW",
     val loginStage: LoginStage = LoginStage.NOTHING_0,
 ) {
     val buttonEnabled: Boolean
