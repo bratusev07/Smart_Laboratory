@@ -16,34 +16,45 @@ sealed class SensorCardUi {
 
     abstract val tints: SensorCardTints
 
-    // Если будут какие-то специфические, то их можно добавить здесь без каких-либо проблем в будущем.
-    // Буквально класс здесь и компонент в SensorCard.kt
-    class Small(
-        override val id: String,
-        override val state: SensorCardState,
-        override val domain: String,
-        override val drawableResource: DrawableResource,
-        override val tints: SensorCardTints,
-    ) : SensorCardUi()
+    sealed class Tile: SensorCardUi() {
+        class Small(
+            override val id: String,
+            override val state: SensorCardState,
+            override val domain: String,
+            override val drawableResource: DrawableResource,
+            override val tints: SensorCardTints,
+        ) : Tile()
 
-    data class Medium(
-        val title: String,
-        override val id: String,
-        override val state: SensorCardState,
-        override val domain: String,
-        override val drawableResource: DrawableResource,
-        override val tints: SensorCardTints,
-    ) : SensorCardUi()
+        data class Medium(
+            val title: String,
+            override val id: String,
+            override val state: SensorCardState,
+            override val domain: String,
+            override val drawableResource: DrawableResource,
+            override val tints: SensorCardTints,
+        ) : Tile()
 
-    data class Large(
-        val title: String,
-        val description: String,
-        override val id: String,
-        override val state: SensorCardState,
-        override val domain: String,
-        override val drawableResource: DrawableResource,
-        override val tints: SensorCardTints,
-    ) : SensorCardUi()
+        data class Large(
+            val title: String,
+            val description: String,
+            override val id: String,
+            override val state: SensorCardState,
+            override val domain: String,
+            override val drawableResource: DrawableResource,
+            override val tints: SensorCardTints,
+        ) : Tile()
+    }
+
+    sealed class Widget: SensorCardUi() {
+        data class Row(
+            val title: String,
+            override val id: String,
+            override val state: SensorCardState,
+            override val domain: String,
+            override val drawableResource: DrawableResource,
+            override val tints: SensorCardTints,
+        ) : Widget()
+    }
 }
 
 open class SensorCardTints(

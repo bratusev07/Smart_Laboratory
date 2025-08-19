@@ -4,32 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import ru.bratusev.smartlab.domain.core.usecase.GetButtonTextUseCase
 import ru.bratusev.smartlab.feature_customScreen.models.CustomScreenState
 import ru.bratusev.smartlab.feature_customScreen.models.Event
 
-class CustomScreenViewModel(
-    getButtonTextUseCase: GetButtonTextUseCase
-) : ViewModel() {
+class CustomScreenViewModel() : ViewModel() {
 
     private val _uiState = MutableStateFlow(CustomScreenState())
     val uiState: StateFlow<CustomScreenState> = _uiState
-
-    init {
-        getButtonTextUseCase
-            .invoke()
-            .onEach {
-                it.fold({ result ->
-                    // handleEvent(Event.OnButtonTextUpdated(result))
-                }) {
-                    // TODO Обработка ошибки на UI
-                }
-            }
-            .launchIn(viewModelScope)
-    }
 
     private fun onCustomButtonClicked() {
         val state = uiState.value.copy(screenName = "New screen name")
@@ -41,17 +23,24 @@ class CustomScreenViewModel(
         updateState(state)
     }
 
+    private fun toggleModalMenu() {
+        updateState(_uiState.value.copy(isModalOpen = !_uiState.value.isModalOpen))
+    }
+
     private fun updateState(updatedState: CustomScreenState) {
         viewModelScope.launch {
             _uiState.emit(updatedState)
         }
     }
 
+
     internal fun handleEvent(event: Event) {
-        when(event) {
+        when (event) {
             Event.OnBackClicked -> Unit
             Event.OnCustomButtonClicked -> onCustomButtonClicked()
             is Event.OnButtonTextUpdated -> onButtonTextUpdated(event.text)
+            Event.OnMenuButtonClicked -> toggleModalMenu()
+            Event.OnModalCloseClicked -> toggleModalMenu()
         }
     }
 }

@@ -22,15 +22,18 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardRes
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardState
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardTints
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardUi
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
-import smartlaboratory.ui.core.generated.resources.Res
-import smartlaboratory.ui.core.generated.resources.light_bulb
 
 @Composable
-fun SensorCard(modifier: Modifier = Modifier, sensorCardUi: SensorCardUi, onClick: () -> Unit) {
+fun SensorCardTile(
+    modifier: Modifier = Modifier,
+    sensorCardUi: SensorCardUi.Tile,
+    onClick: () -> Unit,
+) {
     Button(
         onClick = onClick,
         shape = RoundedCornerShape(10.dp),
@@ -46,15 +49,15 @@ fun SensorCard(modifier: Modifier = Modifier, sensorCardUi: SensorCardUi, onClic
         )
     ) {
         when (sensorCardUi) {
-            is SensorCardUi.Small -> {
+            is SensorCardUi.Tile.Small -> {
                 SmallCardContent(sensorCardUi = sensorCardUi)
             }
 
-            is SensorCardUi.Medium -> {
+            is SensorCardUi.Tile.Medium -> {
                 MediumCardContent(sensorCardUi = sensorCardUi)
             }
 
-            is SensorCardUi.Large -> {
+            is SensorCardUi.Tile.Large -> {
                 LargeCardContent(sensorCardUi = sensorCardUi)
             }
         }
@@ -62,13 +65,13 @@ fun SensorCard(modifier: Modifier = Modifier, sensorCardUi: SensorCardUi, onClic
 }
 
 @Composable
-private fun SmallCardContent(sensorCardUi: SensorCardUi.Small) {
+private fun SmallCardContent(sensorCardUi: SensorCardUi.Tile.Small) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        IconImage(
+        SensorCardIconImage(
             sensorCardUi.drawableResource, sensorCardUi.state,
             tints = sensorCardUi.tints
         )
@@ -76,13 +79,13 @@ private fun SmallCardContent(sensorCardUi: SensorCardUi.Small) {
 }
 
 @Composable
-private fun MediumCardContent(sensorCardUi: SensorCardUi.Medium) {
+private fun MediumCardContent(sensorCardUi: SensorCardUi.Tile.Medium) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        IconImage(
+        SensorCardIconImage(
             sensorCardUi.drawableResource, sensorCardUi.state,
             tints = sensorCardUi.tints
         )
@@ -95,13 +98,13 @@ private fun MediumCardContent(sensorCardUi: SensorCardUi.Medium) {
 }
 
 @Composable
-private fun LargeCardContent(sensorCardUi: SensorCardUi.Large) {
+private fun LargeCardContent(sensorCardUi: SensorCardUi.Tile.Large) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        IconImage(
+        SensorCardIconImage(
             sensorCardUi.drawableResource, sensorCardUi.state, tints = sensorCardUi.tints
         )
         Text(
@@ -118,10 +121,11 @@ private fun LargeCardContent(sensorCardUi: SensorCardUi.Large) {
 }
 
 @Composable
-private fun IconImage(
+internal fun SensorCardIconImage(
     drawableRes: DrawableResource,
     state: SensorCardState,
     tints: SensorCardTints,
+    modifier: Modifier = Modifier,
 ) {
     val tint = when (state) {
         SensorCardState.On -> tints.on
@@ -130,6 +134,7 @@ private fun IconImage(
     }
 
     Image(
+        modifier = modifier,
         painter = painterResource(drawableRes),
         contentDescription = null,
         colorFilter = ColorFilter.tint(tint),
@@ -141,16 +146,16 @@ private fun IconImage(
 )
 @Composable
 private fun SmallCardPreview() {
-    val small = SensorCardUi.Small(
+    val small = SensorCardUi.Tile.Small(
         id = "0",
         state = SensorCardState.Off,
         domain = "switch",
-        drawableResource = Res.drawable.light_bulb,
+        drawableResource = SensorCardRes.lightBulb,
         tints = SensorCardTints.Common.LightBulb
     )
 
     AppTheme {
-        SensorCard(sensorCardUi = small, onClick = {})
+        SensorCardTile(sensorCardUi = small, onClick = {})
     }
 }
 
@@ -159,17 +164,17 @@ private fun SmallCardPreview() {
 )
 @Composable
 private fun MediumCardPreview() {
-    val medium = SensorCardUi.Medium(
+    val medium = SensorCardUi.Tile.Medium(
         id = "1",
         state = SensorCardState.On,
         domain = "switch",
         title = "Свет 208",
-        drawableResource = Res.drawable.light_bulb,
+        drawableResource = SensorCardRes.lightBulb,
         tints = SensorCardTints.Common.LightBulb
     )
 
     AppTheme {
-        SensorCard(sensorCardUi = medium, onClick = {})
+        SensorCardTile(sensorCardUi = medium, onClick = {})
     }
 }
 
@@ -178,17 +183,17 @@ private fun MediumCardPreview() {
 )
 @Composable
 private fun LargeCardPreview() {
-    val large = SensorCardUi.Large(
+    val large = SensorCardUi.Tile.Large(
         id = "2",
         state = SensorCardState.Unavailable,
         domain = "switch",
         title = "Давление",
         description = "200 Па",
-        drawableResource = Res.drawable.light_bulb,
+        drawableResource = SensorCardRes.lightBulb,
         tints = SensorCardTints.Common.LightBulb
     )
 
     AppTheme {
-        SensorCard(sensorCardUi = large, onClick = {})
+        SensorCardTile(sensorCardUi = large, onClick = {})
     }
 }

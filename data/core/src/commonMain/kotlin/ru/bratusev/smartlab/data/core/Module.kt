@@ -123,6 +123,16 @@ val dataModulePreview = module {
             .build()
     }
 
+    single<CoroutineScope> {
+        CoroutineScope(SupervisorJob() + Dispatchers.Main)
+    }
+
+    single<SocketRepository> {
+        SocketRepositoryImpl(
+            webSocketClient = get()
+        )
+    }
+
     single<LogcatMessageDao> { get<AppDatabase>().logcatMessagesDao() }
 
     includes(platformDataModulePreview)

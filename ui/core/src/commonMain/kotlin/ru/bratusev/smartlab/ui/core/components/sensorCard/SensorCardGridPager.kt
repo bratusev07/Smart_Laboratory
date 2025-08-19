@@ -31,7 +31,7 @@ fun SensorCardGridPager(
     modifier: Modifier = Modifier,
     uiData: SensorCardGridPagerUi,
 ) {
-    val sensorsByDomain: Map<String, List<SensorCardUi>> by remember {
+    val sensorsByDomain: Map<String, List<SensorCardUi.Tile>> by remember {
         derivedStateOf {
             uiData.sensors.groupBy { it.domain }
         }
@@ -80,11 +80,11 @@ fun SensorCardGridPager(
 @Composable
 private fun SensorCardGridPagerPreview() {
     val mockData = (
-            buildList<SensorCardUi> {
+            buildList{
                 for (k in 1..5) {
                     for (i in 1..5) {
                         add(
-                            SensorCardUi.Medium(
+                            SensorCardUi.Tile.Medium(
                                 title = "Preview$i $k",
                                 id = "Id$i",
                                 state = SensorCardState.entries[(0..1).random()],
@@ -96,7 +96,7 @@ private fun SensorCardGridPagerPreview() {
                     }
                     for (i in 1..5) {
                         add(
-                            SensorCardUi.Medium(
+                            SensorCardUi.Tile.Medium(
                                 title = "Preview$i $k",
                                 id = "Id$i",
                                 state = SensorCardState.entries[(0..2).random()],

@@ -47,6 +47,7 @@ kotlin {
             implementation(projects.feature.settings)
             implementation(projects.feature.login)
             implementation(projects.feature.logcat)
+            implementation(projects.feature.customScreen)
             implementation(projects.ui.core)
 
         }

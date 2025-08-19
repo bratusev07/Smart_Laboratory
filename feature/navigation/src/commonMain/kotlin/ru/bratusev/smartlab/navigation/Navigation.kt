@@ -6,14 +6,17 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.backhandler.BackHandler
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import ru.bratusev.smartlab.feature_customScreen.CustomScreen
 import ru.bratusev.smartlab.feature_home.HomeScreen
 import ru.bratusev.smartlab.feature_logcat.LogcatScreen
 import ru.bratusev.smartlab.feature_login.LoginScreen
@@ -27,6 +30,11 @@ fun AppNavigation(navController: NavHostController) {
     val drawerScope = rememberCoroutineScope()
     val navigationApi = NavigationApiImpl(navController)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
+
+    var onMenuClickAction by remember { mutableStateOf({}) }
+    val setMenuAction: (() -> Unit) -> Unit = { newAction ->
+        onMenuClickAction = newAction
+    }
 
     val isDrawerHidden by remember {
         derivedStateOf {
@@ -44,8 +52,9 @@ fun AppNavigation(navController: NavHostController) {
             navigationApi.navigateTo(screen = screen)
         },
         currentScreenRoute = navBackStackEntry?.destination?.route ?: "",
+        onMenuClick = onMenuClickAction,
     ) {
-        AppNavHost(navController, navigationApi)
+        AppNavHost(navController, navigationApi, setMenuAction)
     }
 }
 
@@ -54,6 +63,7 @@ fun AppNavigation(navController: NavHostController) {
 private fun AppNavHost(
     navController: NavHostController,
     navigationApi: NavigationApi,
+    setMenuAction: (action: () -> Unit) -> Unit,
 ) {
     NavHost(
         navController = navController, startDestination = Screen.Login.route
@@ -69,13 +79,21 @@ private fun AppNavHost(
             HomeScreen(navigationApi = navigationApi)
         }
 
-        composable(Screen.Settings.route) {
-            SettingsScreen(navigationApi = navigationApi)
+        composable(Screen.CustomScreen.route) {
+            CustomScreen(
+                navigationApi = navigationApi,
+                setMenuAction = setMenuAction
+            )
         }
 
         composable(Screen.Logcat.route) {
             LogcatScreen(navigationApi = navigationApi)
         }
+
+        composable(Screen.Settings.route) {
+            SettingsScreen(navigationApi = navigationApi)
+        }
+
 
         composable(Screen.Notifications.route) {
             Text(Screen.Notifications.route)

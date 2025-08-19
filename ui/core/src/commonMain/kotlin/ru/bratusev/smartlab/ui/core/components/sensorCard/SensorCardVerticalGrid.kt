@@ -34,7 +34,7 @@ fun SensorCardVerticalGrid(
                 )
             }
             items(uiData.sensors, key = { it.hashCode() }) {
-                SensorCard(
+                SensorCardTile(
                     modifier = Modifier, sensorCardUi = it, onClick = {})
             }
         })
@@ -46,10 +46,10 @@ fun SensorCardVerticalGrid(
 @Composable
 private fun SensorCardVerticalGridLightBulbs() {
     val mockData = SensorCardVerticalGridUi(
-        buildList<SensorCardUi.Medium> {
+        buildList {
             for (i in 1..30) {
                 add(
-                    SensorCardUi.Medium(
+                    SensorCardUi.Tile.Medium(
                         title = "Preview$i",
                         id = "Id$i",
                         state = SensorCardState.entries[(0..2).random()],
@@ -78,7 +78,7 @@ private fun SensorCardVerticalGridThermometers() {
         buildList {
             for (i in 1..30) {
                 add(
-                    SensorCardUi.Medium(
+                    SensorCardUi.Tile.Medium(
                         title = "Preview$i",
                         id = "Id$i",
                         state = SensorCardState.entries[(0..1).random()],
