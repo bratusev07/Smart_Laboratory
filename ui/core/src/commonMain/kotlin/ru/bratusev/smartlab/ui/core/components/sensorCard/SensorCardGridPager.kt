@@ -1,4 +1,4 @@
-package ru.bratusev.smartlab.ui.core.components.tileButton
+package ru.bratusev.smartlab.ui.core.components.sensorCard
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -17,8 +17,8 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import ru.bratusev.smartlab.ui.core.components.sensorCard.SensorCardVerticalGrid
-import ru.bratusev.smartlab.ui.core.models.AppBarUi
+import ru.bratusev.smartlab.ui.core.models.TabBarUi
+import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardGridPagerUi
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardRes
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardState
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardTints
@@ -27,42 +27,47 @@ import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardVerticalGridUi
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
 
 @Composable
-fun VerticalTileGridPager(
+fun SensorCardGridPager(
     modifier: Modifier = Modifier,
-    uiData: List<SensorCardVerticalGridUi>,
-    pagerState: PagerState = rememberPagerState(pageCount = { uiData.size }),
-    pagerScope: CoroutineScope = rememberCoroutineScope(),
+    uiData: SensorCardGridPagerUi,
 ) {
-    val titles by remember {
+    val sensorsByDomain: Map<String, List<SensorCardUi>> by remember {
         derivedStateOf {
-            uiData.map { it.title }
+            uiData.sensors.groupBy { it.domain }
         }
     }
+    val domains = remember(sensorsByDomain) { sensorsByDomain.keys.toList() }
+
+    val pagerState: PagerState = rememberPagerState(pageCount = { sensorsByDomain.keys.size })
+    val pagerScope: CoroutineScope = rememberCoroutineScope()
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
     ) {
-        AppBar(
-            onTitleClick = { pageIndex ->
+        SensorCardTabBar(
+            onDomainClick = { domain ->
                 pagerScope.launch {
-                    pagerState.animateScrollToPage(pageIndex)
+                    val pageIndex = domains.indexOf(domain)
+                    if (pageIndex != -1) {
+                        pagerState.animateScrollToPage(pageIndex)
+                    }
                 }
-            },
-            uiData = AppBarUi(
-                titles = titles,
-                currentPageIndex = pagerState.currentPage
+            }, uiData = TabBarUi(
+                domains = domains, currentDomainPage = pagerState.currentPage
             )
         )
 
         HorizontalPager(
-            state = pagerState,
-            modifier = modifier,
-            pageSpacing = 40.dp
+            state = pagerState, modifier = modifier, pageSpacing = 40.dp
         ) { pageIndex ->
+            val currentDomain = domains[pageIndex]
+            val sensorsForPage = sensorsByDomain[currentDomain]!!
+
             SensorCardVerticalGrid(
-                uiData = uiData[pageIndex]
+                uiData = SensorCardVerticalGridUi(
+                    sensors = sensorsForPage,
+                    columnsAmount = 2
+                )
             )
         }
     }
@@ -74,47 +79,41 @@ fun VerticalTileGridPager(
 )
 @Composable
 private fun SensorCardGridPagerPreview() {
-    val mockDataThermometers = SensorCardVerticalGridUi(
-        title = "Thermometers",
-        buildList {
-            for (i in 1..30) {
-                add(
-                    SensorCardUi.Medium(
-                        title = "Preview$i",
-                        id = "Id$i",
-                        state = SensorCardState.entries[(0..1).random()],
-                        domain = "PreviewDomain$i",
-                        drawableResource = SensorCardRes.thermometer,
-                        tints = SensorCardTints.Common.Thermometer
-                    )
-                )
-            }
-        },
-        columnsAmount = 2
-    )
-    val mockDataLightBulbs = SensorCardVerticalGridUi(
-        title = "Light bulbs",
-        buildList {
-            for (i in 1..30) {
-                add(
-                    SensorCardUi.Medium(
-                        title = "Preview$i",
-                        id = "Id$i",
-                        state = SensorCardState.entries[(0..2).random()],
-                        domain = "PreviewDomain$i",
-                        drawableResource = SensorCardRes.lightBulb,
-                        tints = SensorCardTints.Common.LightBulb
-                    )
-                )
-            }
-        },
-        columnsAmount = 2
-    )
+    val mockData = (
+            buildList<SensorCardUi> {
+                for (k in 1..5) {
+                    for (i in 1..5) {
+                        add(
+                            SensorCardUi.Medium(
+                                title = "Preview$i $k",
+                                id = "Id$i",
+                                state = SensorCardState.entries[(0..1).random()],
+                                domain = "PreviewDomain$i",
+                                drawableResource = SensorCardRes.thermometer,
+                                tints = SensorCardTints.Common.Thermometer
+                            )
+                        )
+                    }
+                    for (i in 1..5) {
+                        add(
+                            SensorCardUi.Medium(
+                                title = "Preview$i $k",
+                                id = "Id$i",
+                                state = SensorCardState.entries[(0..2).random()],
+                                domain = "PreviewDomain$i",
+                                drawableResource = SensorCardRes.lightBulb,
+                                tints = SensorCardTints.Common.LightBulb
+                            )
+                        )
+                    }
+                }
+            })
 
     AppTheme {
-        VerticalTileGridPager(
-            uiData = listOf(
-                mockDataLightBulbs, mockDataThermometers, mockDataLightBulbs, mockDataThermometers
+        SensorCardGridPager(
+            uiData = SensorCardGridPagerUi(
+                sensors = mockData,
+                verticalGridsAtOneScreen = 1
             )
         )
     }
