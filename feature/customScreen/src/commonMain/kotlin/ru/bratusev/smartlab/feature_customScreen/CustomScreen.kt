@@ -1,25 +1,21 @@
 package ru.bratusev.smartlab.feature_customScreen
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
 import ru.bratusev.smartlab.feature_customScreen.models.Event
 import ru.bratusev.smartlab.navigation.api.NavigationApi
 import ru.bratusev.smartlab.ui.core.components.CustomWidget
-import ru.bratusev.smartlab.ui.core.models.CustomWidgetUi
-import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardRes
-import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardState
-import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardTints
-import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardUi
+import ru.bratusev.smartlab.ui.core.models.CustomWidgetEvent
 
 @Composable
 fun CustomScreen(
@@ -41,28 +37,24 @@ fun CustomScreen(
     }
 
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        var data by remember {
-            mutableStateOf(buildList {
-                for (i in 1..30) {
-                    add(
-                        SensorCardUi.Widget.Row(
-                            title = "Preview$i",
-                            id = "Id$i",
-                            state = SensorCardState.entries[(0..2).random()],
-                            domain = "PreviewDomain$i",
-                            drawableResource = SensorCardRes.lightBulb,
-                            tints = SensorCardTints.Common.LightBulb
-                        )
-                    )
-                }
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(top = 16.dp, start = 12.dp, end = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp)
+    ) {
+        items(state.value.widgets) {
+            CustomWidget(uiData = it, onEvent = { event ->
+                vm.handleEvent(getVmEvent(it.id, event))
             })
         }
-        CustomWidget(
-            uiData = CustomWidgetUi.SensorsList(
-                sensors = data, id = 1
-            )
+        item { Text("Is open ${state.value.isModalOpen}") }
+    }
+}
+
+private fun getVmEvent(widgetId: Int, widgetEvent: CustomWidgetEvent): Event {
+    return when (widgetEvent) {
+        is CustomWidgetEvent.SensorStateChange -> Event.OnSensorStateChanged(
+            widgetId, widgetEvent.sensorId, widgetEvent.newState
         )
-        Text("Is open ${state.value.isModalOpen}")
     }
 }

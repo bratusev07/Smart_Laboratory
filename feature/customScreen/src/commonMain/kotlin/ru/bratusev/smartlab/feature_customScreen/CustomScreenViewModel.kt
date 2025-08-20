@@ -7,11 +7,58 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import ru.bratusev.smartlab.feature_customScreen.models.CustomScreenState
 import ru.bratusev.smartlab.feature_customScreen.models.Event
+import ru.bratusev.smartlab.ui.core.models.CustomWidgetUi
+import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardRes
+import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardTints
+import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardUi
+import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorState
 
 class CustomScreenViewModel() : ViewModel() {
 
     private val _uiState = MutableStateFlow(CustomScreenState())
     val uiState: StateFlow<CustomScreenState> = _uiState
+
+    init {
+        updateState(_uiState.value.copy(widgets = getWidgets()))
+    }
+
+    private fun getWidgets(): List<CustomWidgetUi> {
+        val data = buildList {
+            for (i in 1..30) {
+                add(
+                    SensorCardUi.Widget.Row(
+                        title = "Preview$i",
+                        id = "Id$i",
+                        state = SensorState.entries[(0..2).random()],
+                        domain = "PreviewDomain$i",
+                        drawableResource = SensorCardRes.lightBulb,
+                        tints = SensorCardTints.Common.LightBulb
+                    )
+                )
+            }
+        }
+
+        val widgets = emptyList<CustomWidgetUi>().toMutableList()
+        widgets.add(
+            CustomWidgetUi.SensorsList(
+                sensors = data,
+                id = 1
+            )
+        )
+        widgets.add(
+            CustomWidgetUi.SensorsList(
+                sensors = data.reversed(),
+                id = 2
+            )
+        )
+        widgets.add(
+            CustomWidgetUi.SensorsList(
+                sensors = data,
+                id = 3
+            )
+        )
+        return widgets
+    }
 
     private fun onCustomButtonClicked() {
         val state = uiState.value.copy(screenName = "New screen name")
@@ -33,6 +80,25 @@ class CustomScreenViewModel() : ViewModel() {
         }
     }
 
+    private fun changeSensorState(widgetId: Int, sensorId: String, newState: SensorState) {
+        // TODO: сделать реальную обработку на сервере или типа того
+        val widget = _uiState.value.widgets.find { it.id == widgetId } ?: return
+        when (widget) {
+            is CustomWidgetUi.SensorsList -> {
+                val updatedSensorList = widget.sensors.map { sensor ->
+                    if (sensor.id == sensorId) sensor.copy(state = newState) else sensor
+                }
+                val updatedWidget =
+                    CustomWidgetUi.SensorsList(sensors = updatedSensorList, id = widgetId)
+                updateWidget(widgetId, updatedWidget)
+            }
+        }
+    }
+
+    private fun updateWidget(widgetId: Int, newState: CustomWidgetUi) {
+        val updatedWidgets = _uiState.value.widgets.map { if (it.id == widgetId) newState else it }
+        updateState(_uiState.value.copy(widgets = updatedWidgets))
+    }
 
     internal fun handleEvent(event: Event) {
         when (event) {
@@ -41,6 +107,9 @@ class CustomScreenViewModel() : ViewModel() {
             is Event.OnButtonTextUpdated -> onButtonTextUpdated(event.text)
             Event.OnMenuButtonClicked -> toggleModalMenu()
             Event.OnModalCloseClicked -> toggleModalMenu()
+            is Event.OnSensorStateChanged -> changeSensorState(
+                widgetId = event.widgetId, sensorId = event.sensorId, newState = event.newState
+            )
         }
     }
 }

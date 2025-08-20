@@ -10,7 +10,7 @@ import smartlaboratory.ui.core.generated.resources.thermometer
 sealed class SensorCardUi {
 
     abstract val id: String
-    abstract val state: SensorCardState
+    abstract val state: SensorState
     abstract val domain: String
     abstract val drawableResource: DrawableResource
 
@@ -19,7 +19,7 @@ sealed class SensorCardUi {
     sealed class Tile: SensorCardUi() {
         class Small(
             override val id: String,
-            override val state: SensorCardState,
+            override val state: SensorState,
             override val domain: String,
             override val drawableResource: DrawableResource,
             override val tints: SensorCardTints,
@@ -28,7 +28,7 @@ sealed class SensorCardUi {
         data class Medium(
             val title: String,
             override val id: String,
-            override val state: SensorCardState,
+            override val state: SensorState,
             override val domain: String,
             override val drawableResource: DrawableResource,
             override val tints: SensorCardTints,
@@ -38,7 +38,7 @@ sealed class SensorCardUi {
             val title: String,
             val description: String,
             override val id: String,
-            override val state: SensorCardState,
+            override val state: SensorState,
             override val domain: String,
             override val drawableResource: DrawableResource,
             override val tints: SensorCardTints,
@@ -49,7 +49,7 @@ sealed class SensorCardUi {
         data class Row(
             val title: String,
             override val id: String,
-            override val state: SensorCardState,
+            override val state: SensorState,
             override val domain: String,
             override val drawableResource: DrawableResource,
             override val tints: SensorCardTints,
@@ -85,7 +85,7 @@ open class SensorCardTints(
     )
 }
 
-enum class SensorCardState(stateName: String) {
+enum class SensorState(stateName: String) {
     On("on"), Off("off"), Unavailable("unavailable"),
 }
 

@@ -1,51 +1,71 @@
 package ru.bratusev.smartlab.ui.core.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import ru.bratusev.smartlab.ui.core.components.widgets.SensorsWidget
+import ru.bratusev.smartlab.ui.core.models.CustomWidgetEvent
 import ru.bratusev.smartlab.ui.core.models.CustomWidgetUi
+import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardRes
+import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardTints
+import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardUi
+import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorState
+import ru.bratusev.smartlab.ui.core.theme.AppTheme
 
 @Composable
-fun CustomWidget(uiData: CustomWidgetUi) {
+fun CustomWidget(uiData: CustomWidgetUi, onEvent: (event: CustomWidgetEvent) -> Unit) {
     Column(
-        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(30.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainerLow)
+        modifier = Modifier.fillMaxWidth().background(
+            shape = RoundedCornerShape(30.dp),
+            color = MaterialTheme.colorScheme.surfaceContainerLow
+        )
     ) {
         when (uiData) {
             is CustomWidgetUi.SensorsList -> SensorsWidget(
                 uiData = uiData,
-                onToggle = {},
+                onToggle = { sensorId, newState ->
+                    onEvent(CustomWidgetEvent.SensorStateChange(sensorId, newState))
+                },
                 header = {
-                    Row(
-                        modifier = Modifier.background(
-                            shape = RoundedCornerShape(20.dp),
-                            color = MaterialTheme.colorScheme.secondaryContainer
-                        ).padding(horizontal = 15.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            "Виджет с id: ${uiData.id}",
-                        )
-                        WidgetToolBar(
-                            onEditClick = {},
-                            onAddClick = {}
-                        )
-                    }
-                }
-            )
+                    WidgetToolBar(
+                        title = "Виджет с id: ${uiData.id}",
+                        onEditClick = {},
+                        onAddClick = {})
+                })
         }
+    }
+}
+
+@Preview(
+    showBackground = true
+)
+@Composable
+private fun SensorListPreview() {
+    AppTheme {
+        val data = buildList {
+            for (i in 1..30) {
+                add(
+                    SensorCardUi.Widget.Row(
+                        title = "Preview$i",
+                        id = "Id$i",
+                        state = SensorState.entries[(0..2).random()],
+                        domain = "PreviewDomain$i",
+                        drawableResource = SensorCardRes.lightBulb,
+                        tints = SensorCardTints.Common.LightBulb
+                    )
+                )
+            }
+        }
+        CustomWidget(
+            uiData = CustomWidgetUi.SensorsList(
+                sensors = data, id = 1
+            ), onEvent = {}
+        )
     }
 }

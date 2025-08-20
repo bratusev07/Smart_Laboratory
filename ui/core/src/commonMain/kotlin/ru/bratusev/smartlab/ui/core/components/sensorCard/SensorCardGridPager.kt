@@ -20,10 +20,10 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import ru.bratusev.smartlab.ui.core.models.TabBarUi
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardGridPagerUi
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardRes
-import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardState
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardTints
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardUi
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardVerticalGridUi
+import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorState
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
 
 @Composable
@@ -87,7 +87,7 @@ private fun SensorCardGridPagerPreview() {
                             SensorCardUi.Tile.Medium(
                                 title = "Preview$i $k",
                                 id = "Id$i",
-                                state = SensorCardState.entries[(0..1).random()],
+                                state = SensorState.entries[(0..1).random()],
                                 domain = "PreviewDomain$i",
                                 drawableResource = SensorCardRes.thermometer,
                                 tints = SensorCardTints.Common.Thermometer
@@ -99,7 +99,7 @@ private fun SensorCardGridPagerPreview() {
                             SensorCardUi.Tile.Medium(
                                 title = "Preview$i $k",
                                 id = "Id$i",
-                                state = SensorCardState.entries[(0..2).random()],
+                                state = SensorState.entries[(0..2).random()],
                                 domain = "PreviewDomain$i",
                                 drawableResource = SensorCardRes.lightBulb,
                                 tints = SensorCardTints.Common.LightBulb

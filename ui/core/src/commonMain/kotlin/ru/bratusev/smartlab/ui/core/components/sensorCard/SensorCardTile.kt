@@ -23,9 +23,9 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardRes
-import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardState
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardTints
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardUi
+import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorState
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
 
 @Composable
@@ -123,14 +123,14 @@ private fun LargeCardContent(sensorCardUi: SensorCardUi.Tile.Large) {
 @Composable
 internal fun SensorCardIconImage(
     drawableRes: DrawableResource,
-    state: SensorCardState,
+    state: SensorState,
     tints: SensorCardTints,
     modifier: Modifier = Modifier,
 ) {
     val tint = when (state) {
-        SensorCardState.On -> tints.on
-        SensorCardState.Off -> tints.off
-        SensorCardState.Unavailable -> tints.unavailable
+        SensorState.On -> tints.on
+        SensorState.Off -> tints.off
+        SensorState.Unavailable -> tints.unavailable
     }
 
     Image(
@@ -148,7 +148,7 @@ internal fun SensorCardIconImage(
 private fun SmallCardPreview() {
     val small = SensorCardUi.Tile.Small(
         id = "0",
-        state = SensorCardState.Off,
+        state = SensorState.Off,
         domain = "switch",
         drawableResource = SensorCardRes.lightBulb,
         tints = SensorCardTints.Common.LightBulb
@@ -166,7 +166,7 @@ private fun SmallCardPreview() {
 private fun MediumCardPreview() {
     val medium = SensorCardUi.Tile.Medium(
         id = "1",
-        state = SensorCardState.On,
+        state = SensorState.On,
         domain = "switch",
         title = "Свет 208",
         drawableResource = SensorCardRes.lightBulb,
@@ -185,7 +185,7 @@ private fun MediumCardPreview() {
 private fun LargeCardPreview() {
     val large = SensorCardUi.Tile.Large(
         id = "2",
-        state = SensorCardState.Unavailable,
+        state = SensorState.Unavailable,
         domain = "switch",
         title = "Давление",
         description = "200 Па",

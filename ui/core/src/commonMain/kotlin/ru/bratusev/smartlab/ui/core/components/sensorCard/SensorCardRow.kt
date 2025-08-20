@@ -18,9 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardRes
-import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardState
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardTints
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardUi
+import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorState
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
 
 @Composable
@@ -29,7 +29,7 @@ fun SensorCardRow(
     uiData: SensorCardUi.Widget.Row,
     onToggle: () -> Unit,
 ) {
-    val currentState = uiData.state == SensorCardState.On
+    val currentState = uiData.state == SensorState.On
     Row(
         modifier = modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -47,7 +47,7 @@ fun SensorCardRow(
         }
         Switch(
             modifier = Modifier.padding(start = 15.dp),
-            enabled = uiData.state != SensorCardState.Unavailable,
+            enabled = uiData.state != SensorState.Unavailable,
             checked = currentState,
             onCheckedChange = { onToggle() })
     }
@@ -58,7 +58,7 @@ fun SensorCardRow(
 )
 @Composable
 private fun SensorCardRowPreview() {
-    var currentState by remember { mutableStateOf(SensorCardState.On) }
+    var currentState by remember { mutableStateOf(SensorState.On) }
     AppTheme {
         SensorCardRow(
             uiData = SensorCardUi.Widget.Row(
