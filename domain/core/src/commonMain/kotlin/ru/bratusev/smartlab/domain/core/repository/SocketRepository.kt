@@ -8,5 +8,5 @@ interface SocketRepository {
 
     fun observeSocketErrors(): Flow<List<Error>>
 
-    fun updateSwitch(switchId: String, switchState: String): Boolean
+    fun updateSensor(sensorId: String): Boolean
 }

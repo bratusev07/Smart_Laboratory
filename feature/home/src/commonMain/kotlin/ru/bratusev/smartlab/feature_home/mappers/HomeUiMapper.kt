@@ -21,6 +21,7 @@ fun List<ServiceEntity>.mapToServicePagerUi() = SensorCardGridPagerUi(
 
 private fun ServiceEntity.mapToUi(): SensorCardUi = when (domain?.lowercase()) {
     "switch" -> this.mapSwitchToUi()
+    "button" -> this.mapButtonToUi()
     else -> this.mapDefaultToUi()
 }
 
@@ -44,6 +45,19 @@ private fun ServiceEntity.mapSwitchToUi() = SensorCardUi.Medium(
     drawableResource = SensorCardRes.lightBulb,
     tints = SensorCardTints(
         SensorCardCommonColors.LightBulb.On,
+        SensorCardCommonColors.LightBulb.Off,
+        SensorCardCommonColors.LightBulb.Unavailable
+    ),
+)
+
+private fun ServiceEntity.mapButtonToUi() = SensorCardUi.Medium(
+    title = id.orEmpty(),
+    id = id.orEmpty(),
+    state = state.mapToSensorState(),
+    domain = domain.orEmpty(),
+    drawableResource = SensorCardRes.lightBulb,
+    tints = SensorCardTints(
+        SensorCardCommonColors.LightBulb.Off,
         SensorCardCommonColors.LightBulb.Off,
         SensorCardCommonColors.LightBulb.Unavailable
     ),

@@ -10,13 +10,13 @@ import kotlinx.coroutines.launch
 import ru.bratusev.smartlab.domain.core.model.socket.ServiceEntity
 import ru.bratusev.smartlab.domain.core.usecase.GetServiceEntitiesUseCase
 import ru.bratusev.smartlab.domain.core.usecase.ObserveSocketErrorsUseCase
-import ru.bratusev.smartlab.domain.core.usecase.UpdateSwitchStateUseCase
+import ru.bratusev.smartlab.domain.core.usecase.UpdateSensorUseCase
 import ru.bratusev.smartlab.feature_home.models.Event
 import ru.bratusev.smartlab.feature_home.models.HomeState
 
 class HomeViewModel(
     getServiceEntitiesUseCase: GetServiceEntitiesUseCase,
-    private val updateSwitchStateUseCase: UpdateSwitchStateUseCase,
+    private val updateSensorUseCase: UpdateSensorUseCase,
     observeSocketErrorsUseCase: ObserveSocketErrorsUseCase,
 ) : ViewModel() {
 
@@ -37,8 +37,8 @@ class HomeViewModel(
     }
 
     private fun onServiceEntitiesUpdated(entities: List<ServiceEntity>) {
-        val switches: List<ServiceEntity> = entities.filter { it.domain == "switch" }
-        updateState(uiState.value.copy(switchesEntity = switches))
+        val switches: List<ServiceEntity> = entities
+        updateState(uiState.value.copy(serviceEntities = switches))
     }
 
     private fun onCustomButtonClicked() {
@@ -52,11 +52,9 @@ class HomeViewModel(
     }
 
     private fun onSwitchUpdated(switchId: String) {
-        uiState.value.switchesEntity.find { it.id == switchId }?.let {
-            val updatedState = if (it.state?.contains("off") == true) "turn_on"
-            else "turn_off"
+        uiState.value.serviceEntities.find { it.id == switchId }?.let {
             it.id?.let { id ->
-                updateSwitchStateUseCase.invoke(id, updatedState).onEach {  }.launchIn(viewModelScope)
+                updateSensorUseCase.invoke(id).onEach {  }.launchIn(viewModelScope)
             }
         }
     }
