@@ -1,6 +1,7 @@
 package ru.bratusev.smartlab.feature_home.mappers
 
 import ru.bratusev.smartlab.domain.core.model.socket.ServiceEntity
+import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardGridPagerUi
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardRes
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardState
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardTints
@@ -11,6 +12,11 @@ import ru.bratusev.smartlab.ui.core.theme.SensorCardCommonColors
 fun List<ServiceEntity>.mapToServiceListUi() = SensorCardVerticalGridUi(
     sensors = this.map { it.mapToUi() },
     columnsAmount = 2
+)
+
+fun List<ServiceEntity>.mapToServicePagerUi() = SensorCardGridPagerUi(
+    sensors = this.map { it.mapToUi() },
+    verticalGridsAtOneScreen = 1
 )
 
 private fun ServiceEntity.mapToUi(): SensorCardUi = when (domain?.lowercase()) {
