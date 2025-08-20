@@ -7,10 +7,12 @@ import ru.bratusev.smartlab.domain.core.repository.LoggerRepository
 
 class GetLogcatMessagesUseCase(private val logger: LoggerRepository) {
 
-    operator fun invoke(logTypes: List<String> = listOf<String>("d", "e", "w")): Flow<Result<List<LogcatMessage>>> = flow {
+    operator fun invoke(logTypes: List<String> = listOf("d", "e", "w")): Flow<Result<List<LogcatMessage>>> = flow {
         try {
-            val messages = logger.getLogMessages(logTypes)
-            emit(Result.success(messages))
+            logger.getLogMessages(logTypes)
+                .collect { messages ->
+                    emit(Result.success(messages.asReversed()))
+                }
         } catch (e: Exception) {
             emit(Result.failure(e))
         }
