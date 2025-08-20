@@ -30,6 +30,7 @@ import ru.bratusev.smartlab.ui.core.theme.AppTheme
 fun SensorCardGridPager(
     modifier: Modifier = Modifier,
     uiData: SensorCardGridPagerUi,
+    onSensorCardClicked: (String) -> Unit
 ) {
     val sensorsByDomain: Map<String, List<SensorCardUi>> by remember {
         derivedStateOf {
@@ -67,7 +68,8 @@ fun SensorCardGridPager(
                 uiData = SensorCardVerticalGridUi(
                     sensors = sensorsForPage,
                     columnsAmount = 2
-                )
+                ),
+                onSensorCardClicked = onSensorCardClicked
             )
         }
     }
@@ -115,6 +117,6 @@ private fun SensorCardGridPagerPreview() {
                 sensors = mockData,
                 verticalGridsAtOneScreen = 1
             )
-        )
+        ) {}
     }
 }

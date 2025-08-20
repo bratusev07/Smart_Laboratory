@@ -19,6 +19,7 @@ import ru.bratusev.smartlab.ui.core.theme.AppTheme
 fun SensorCardVerticalGrid(
     modifier: Modifier = Modifier,
     uiData: SensorCardVerticalGridUi,
+    onSensorCardClicked: (String) -> Unit
 ) {
 
     LazyVerticalGrid(
@@ -35,7 +36,7 @@ fun SensorCardVerticalGrid(
             }
             items(uiData.sensors, key = { it.hashCode() }) {
                 SensorCard(
-                    modifier = Modifier, sensorCardUi = it, onClick = {})
+                    modifier = Modifier, sensorCardUi = it, onClick = {onSensorCardClicked(it.id)})
             }
         })
 }
@@ -65,7 +66,7 @@ private fun SensorCardVerticalGridLightBulbs() {
     AppTheme {
         SensorCardVerticalGrid(
             uiData = mockData
-        )
+        ) {}
     }
 }
 
@@ -94,6 +95,6 @@ private fun SensorCardVerticalGridThermometers() {
     AppTheme(darkTheme = true) {
         SensorCardVerticalGrid(
             uiData = mockData
-        )
+        ) {}
     }
 }

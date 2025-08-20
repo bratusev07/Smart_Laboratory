@@ -10,8 +10,11 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.context.startKoin
 import ru.bratusev.smartlab.feature_home.mappers.mapToServiceListUi
+import ru.bratusev.smartlab.feature_home.mappers.mapToServicePagerUi
+import ru.bratusev.smartlab.feature_home.models.Event
 import ru.bratusev.smartlab.navigation.api.NavigationApi
 import ru.bratusev.smartlab.navigation.api.Screen
+import ru.bratusev.smartlab.ui.core.components.sensorCard.SensorCardGridPager
 import ru.bratusev.smartlab.ui.core.components.sensorCard.SensorCardVerticalGrid
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
 
@@ -23,10 +26,19 @@ fun HomeScreen(
     val state = vm.uiState.collectAsState()
 
     if(state.value.switchesEntity.isNotEmpty()) {
-        SensorCardVerticalGrid(
+        /*SensorCardVerticalGrid(
             modifier = Modifier.fillMaxSize().padding(vertical = 6.dp, horizontal = 14.dp),
             uiData = state.value.switchesEntity.mapToServiceListUi(),
-        )
+        ) {
+            vm.handleEvent(Event.OnSwitchUpdated(it))
+        }*/
+
+        SensorCardGridPager(
+            modifier = Modifier.fillMaxSize().padding(vertical = 6.dp, horizontal = 14.dp),
+            uiData = state.value.switchesEntity.mapToServicePagerUi(),
+        ) {
+            vm.handleEvent(Event.OnSwitchUpdated(it))
+        }
     }
 }
 
