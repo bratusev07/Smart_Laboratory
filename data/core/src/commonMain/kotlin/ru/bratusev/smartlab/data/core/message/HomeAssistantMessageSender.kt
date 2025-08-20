@@ -1,5 +1,7 @@
 package ru.bratusev.smartlab.data.core.message
 
+import ru.bratusev.smartlab.data.core.model.ServiceEntity
+
 interface HomeAssistantMessageSender {
-    fun updateSwitchState(switchId: String, switchState: String)
+    fun updateSensorState(sensor: ServiceEntity)
 }

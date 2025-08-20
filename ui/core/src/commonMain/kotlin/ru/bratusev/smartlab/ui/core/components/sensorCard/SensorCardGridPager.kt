@@ -3,6 +3,7 @@ package ru.bratusev.smartlab.ui.core.components.sensorCard
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -12,7 +13,9 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -59,7 +62,10 @@ fun SensorCardGridPager(
         )
 
         HorizontalPager(
-            state = pagerState, modifier = modifier, pageSpacing = 40.dp
+            state = pagerState,
+            verticalAlignment = Alignment.Top,
+            modifier = Modifier.fillMaxSize().padding(vertical = 6.dp, horizontal = 14.dp),
+            pageSpacing = 40.dp
         ) { pageIndex ->
             val currentDomain = domains[pageIndex]
             val sensorsForPage = sensorsByDomain[currentDomain]!!
