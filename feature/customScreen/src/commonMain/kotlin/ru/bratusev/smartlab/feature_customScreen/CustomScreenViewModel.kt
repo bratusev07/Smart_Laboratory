@@ -4,12 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import ru.bratusev.smartlab.domain.core.model.socket.ServiceEntity
 import ru.bratusev.smartlab.domain.core.usecase.GetCustomWidgetsUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetLoggerUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetServiceEntitiesUseCase
 import ru.bratusev.smartlab.domain.core.usecase.SetCustomWidgetsUseCase
+import ru.bratusev.smartlab.feature_customScreen.mappers.toDomain
 import ru.bratusev.smartlab.feature_customScreen.mappers.toUi
 import ru.bratusev.smartlab.feature_customScreen.models.CustomScreenState
 import ru.bratusev.smartlab.feature_customScreen.models.Event
@@ -30,22 +33,38 @@ class CustomScreenViewModel(
     val uiState: StateFlow<CustomScreenState> = _uiState
 
     init {
+        getServiceEntitiesUseCase.invoke().onEach {
+            onServiceEntitiesUpdated(it)
+        }.launchIn(viewModelScope)
+
+        var index = 0
         getWidgets().onEach { result ->
             result.onSuccess {
-                it.map { widget -> widget.toUi() }.ifEmpty {
-                    logger.d("CustomScreen/init", "Custom widgets store is empty. Creating new.")
-                    updateState(_uiState.value.)
-                    getWidgetsPreview()
-                }
+                val resultWidgets =
+                    it.map { widget -> widget.toUi(_uiState.value.switchesEntities, index++) }
+                        .ifEmpty {
+                            logger.d(
+                                "CustomScreen/init",
+                                "Custom widgets store is empty. Creating new."
+                            )
+                            getWidgetsPreview()
+                        }
+                updateState(_uiState.value.copy(widgets = resultWidgets))
             }
             result.onFailure { error ->
                 getWidgetsPreview()
                 logger.e("CustomScreen/init", "Error during getting widgets. Error: $error")
             }
-        }
+        }.launchIn(viewModelScope)
 
         updateState(_uiState.value.copy(widgets = getWidgetsPreview()))
     }
+
+    private fun onServiceEntitiesUpdated(entities: List<ServiceEntity>) {
+        val switches: List<ServiceEntity> = entities.filter { it.domain == "switch" }
+        updateState(uiState.value.copy(switchesEntities = switches))
+    }
+
 
     private fun getWidgetsPreview(): List<CustomWidgetUi> {
         val data = buildList {
@@ -79,6 +98,8 @@ class CustomScreenViewModel(
                 sensors = data, index = 3
             )
         )
+
+        saveWidgets.invoke(widgets.map { it.toDomain() }).launchIn(viewModelScope)
         return widgets
     }
 
