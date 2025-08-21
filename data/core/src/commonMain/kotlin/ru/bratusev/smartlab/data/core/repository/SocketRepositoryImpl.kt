@@ -4,10 +4,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import ru.bratusev.smartlab.data.core.HomeAssistantWebSocketClient
 import ru.bratusev.smartlab.data.core.mapper.mapToDomain
-import ru.bratusev.smartlab.domain.core.repository.SocketRepository
 import ru.bratusev.smartlab.domain.core.model.socket.ServiceEntity
+import ru.bratusev.smartlab.domain.core.repository.SocketRepository
 
-class SocketRepositoryImpl(
+class
+SocketRepositoryImpl(
     private val webSocketClient: HomeAssistantWebSocketClient
 ) : SocketRepository {
     override fun observeServiceEntities(): Flow<List<ServiceEntity>> =
