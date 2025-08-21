@@ -48,7 +48,7 @@ private fun SensorsWidgetPreview() {
         val data = buildList {
             for (i in 1..30) {
                 add(
-                    SensorCardUi.Widget.Row(
+                    SensorCardUi.Widget.Switchs(
                         title = "Preview$i",
                         id = "Id$i",
                         state = SensorState.entries[(0..2).random()],
@@ -61,7 +61,7 @@ private fun SensorsWidgetPreview() {
         }
         SensorsWidget(
             uiData = CustomWidgetUi.SensorsList(
-                sensors = data, id = 1
+                sensors = data, index = 1
             ), onToggle = { _, _ -> {} },
             header = { Text("Preview widget") }
         )

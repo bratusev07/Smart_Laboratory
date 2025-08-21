@@ -4,7 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import ru.bratusev.smartlab.domain.core.usecase.GetCustomWidgetsUseCase
+import ru.bratusev.smartlab.domain.core.usecase.GetLoggerUseCase
+import ru.bratusev.smartlab.domain.core.usecase.GetServiceEntitiesUseCase
+import ru.bratusev.smartlab.domain.core.usecase.SetCustomWidgetsUseCase
+import ru.bratusev.smartlab.feature_customScreen.mappers.toUi
 import ru.bratusev.smartlab.feature_customScreen.models.CustomScreenState
 import ru.bratusev.smartlab.feature_customScreen.models.Event
 import ru.bratusev.smartlab.ui.core.models.CustomWidgetUi
@@ -13,20 +19,39 @@ import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardTints
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardUi
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorState
 
-class CustomScreenViewModel() : ViewModel() {
+class CustomScreenViewModel(
+    getServiceEntitiesUseCase: GetServiceEntitiesUseCase,
+    private val getWidgets: GetCustomWidgetsUseCase,
+    private val saveWidgets: SetCustomWidgetsUseCase,
+    private val logger: GetLoggerUseCase,
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CustomScreenState())
     val uiState: StateFlow<CustomScreenState> = _uiState
 
     init {
-        updateState(_uiState.value.copy(widgets = getWidgets()))
+        getWidgets().onEach { result ->
+            result.onSuccess {
+                it.map { widget -> widget.toUi() }.ifEmpty {
+                    logger.d("CustomScreen/init", "Custom widgets store is empty. Creating new.")
+                    updateState(_uiState.value.)
+                    getWidgetsPreview()
+                }
+            }
+            result.onFailure { error ->
+                getWidgetsPreview()
+                logger.e("CustomScreen/init", "Error during getting widgets. Error: $error")
+            }
+        }
+
+        updateState(_uiState.value.copy(widgets = getWidgetsPreview()))
     }
 
-    private fun getWidgets(): List<CustomWidgetUi> {
+    private fun getWidgetsPreview(): List<CustomWidgetUi> {
         val data = buildList {
             for (i in 1..30) {
                 add(
-                    SensorCardUi.Widget.Row(
+                    SensorCardUi.Widget.Switchs(
                         title = "Preview$i",
                         id = "Id$i",
                         state = SensorState.entries[(0..2).random()],
@@ -41,20 +66,17 @@ class CustomScreenViewModel() : ViewModel() {
         val widgets = emptyList<CustomWidgetUi>().toMutableList()
         widgets.add(
             CustomWidgetUi.SensorsList(
-                sensors = data,
-                id = 1
+                sensors = data, index = 1
             )
         )
         widgets.add(
             CustomWidgetUi.SensorsList(
-                sensors = data.reversed(),
-                id = 2
+                sensors = data.reversed(), index = 2
             )
         )
         widgets.add(
             CustomWidgetUi.SensorsList(
-                sensors = data,
-                id = 3
+                sensors = data, index = 3
             )
         )
         return widgets
@@ -89,7 +111,7 @@ class CustomScreenViewModel() : ViewModel() {
                     if (sensor.id == sensorId) sensor.copy(state = newState) else sensor
                 }
                 val updatedWidget =
-                    CustomWidgetUi.SensorsList(sensors = updatedSensorList, id = widgetId)
+                    CustomWidgetUi.SensorsList(sensors = updatedSensorList, index = widgetId)
                 updateWidget(widgetId, updatedWidget)
             }
         }

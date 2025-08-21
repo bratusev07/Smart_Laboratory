@@ -16,7 +16,7 @@ sealed class SensorCardUi {
 
     abstract val tints: SensorCardTints
 
-    sealed class Tile: SensorCardUi() {
+    sealed class Tile : SensorCardUi() {
         class Small(
             override val id: String,
             override val state: SensorState,
@@ -45,8 +45,8 @@ sealed class SensorCardUi {
         ) : Tile()
     }
 
-    sealed class Widget: SensorCardUi() {
-        data class Row(
+    sealed class Widget : SensorCardUi() {
+        data class Switchs(
             val title: String,
             override val id: String,
             override val state: SensorState,
@@ -86,7 +86,15 @@ open class SensorCardTints(
 }
 
 enum class SensorState(stateName: String) {
-    On("on"), Off("off"), Unavailable("unavailable"),
+    On("on"), Off("off"), Unavailable("unavailable");
+
+    companion object {
+        fun fromString(str: String?): SensorState = when (str?.lowercase()) {
+            "on", "\"on\"" -> On
+            "off", "\"off\"" -> Off
+            else -> Unavailable
+        }
+    }
 }
 
 object SensorCardRes {
