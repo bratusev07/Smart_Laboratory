@@ -55,6 +55,15 @@ sealed class SensorCardUi {
             override val tints: SensorCardTints,
         ) : Widget()
     }
+
+    data class Modal(
+        val title: String?,
+        override val id: String,
+        override val state: SensorState,
+        override val domain: String,
+        override val drawableResource: DrawableResource,
+        override val tints: SensorCardTints = SensorCardTints.SingleColor(Color.Gray),
+    ) : SensorCardUi()
 }
 
 open class SensorCardTints(
@@ -95,6 +104,10 @@ enum class SensorState(stateName: String) {
             else -> Unavailable
         }
     }
+}
+
+enum class SensorDomain(domain: String) {
+    SWITCH("switch")
 }
 
 object SensorCardRes {
