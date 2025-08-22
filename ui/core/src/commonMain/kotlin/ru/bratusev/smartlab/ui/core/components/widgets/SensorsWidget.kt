@@ -48,7 +48,7 @@ private fun SensorsWidgetPreview() {
         val data = buildList {
             for (i in 1..30) {
                 add(
-                    SensorCardUi.Widget.Switchs(
+                    SensorCardUi.Widget.Switches(
                         title = "Preview$i",
                         id = "Id$i",
                         state = SensorState.entries[(0..2).random()],

@@ -22,6 +22,7 @@ import ru.bratusev.smartlab.data.core.repository.WidgetRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.preview.AuthRepositoryPreview
 import ru.bratusev.smartlab.data.core.repository.preview.ButtonTextRepositoryPreview
 import ru.bratusev.smartlab.data.core.repository.preview.LoggerRepositoryPreview
+import ru.bratusev.smartlab.data.core.repository.preview.SocketRepositoryPreview
 import ru.bratusev.smartlab.data.core.repository.preview.WidgetRepositoryPreview
 import ru.bratusev.smartlab.domain.core.repository.AuthRepository
 import ru.bratusev.smartlab.domain.core.repository.ButtonTextRepository
@@ -132,9 +133,7 @@ val dataModulePreview = module {
     }
 
     single<SocketRepository> {
-        SocketRepositoryImpl(
-            webSocketClient = get()
-        )
+        SocketRepositoryPreview()
     }
 
     single<LogcatMessageDao> { get<AppDatabase>().logcatMessagesDao() }

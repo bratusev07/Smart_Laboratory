@@ -13,10 +13,10 @@ fun CustomWidget.toUi(sensors: List<ServiceEntity>, index: Int): CustomWidgetUi 
         is CustomWidget.SensorsList ->
             CustomWidgetUi.SensorsList(
                 sensors = sensors.filter { it.id in this.sensorsIds }.map { switch ->
-                    SensorCardUi.Widget.Switchs(
+                    SensorCardUi.Widget.Switches(
                         title = "title ${switch.id}",
                         id = switch.id!!,
-                        state = SensorState.fromString(switch.state.toString()),
+                        state = SensorState.fromString(switch.state),
                         domain = switch.domain ?: "domain empty",
                         drawableResource = SensorCardRes.lightBulb,
                         tints = SensorCardTints.Common.LightBulb

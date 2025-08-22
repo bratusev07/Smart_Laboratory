@@ -10,7 +10,6 @@ import ru.bratusev.smartlab.domain.core.usecase.GetServiceEntitiesUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetTokenUseCase
 import ru.bratusev.smartlab.domain.core.usecase.ObserveSocketErrorsUseCase
 import ru.bratusev.smartlab.domain.core.usecase.SetCustomWidgetsUseCase
-import ru.bratusev.smartlab.domain.core.usecase.UpdateSwitchStateUseCase
 import ru.bratusev.smartlab.domain.core.usecase.UpdateSensorUseCase
 
 val domainModule = module {

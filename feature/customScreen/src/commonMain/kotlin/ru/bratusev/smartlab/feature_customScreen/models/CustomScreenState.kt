@@ -1,6 +1,8 @@
 package ru.bratusev.smartlab.feature_customScreen.models
 
+import ru.bratusev.smartlab.domain.core.model.CustomWidget
 import ru.bratusev.smartlab.domain.core.model.socket.ServiceEntity
+import ru.bratusev.smartlab.feature_customScreen.mappers.toUi
 import ru.bratusev.smartlab.ui.core.models.CustomWidgetUi
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorState
 
@@ -8,9 +10,18 @@ data class CustomScreenState(
     val screenName: String = "CustomScreen Screen",
 
     val isModalOpen: Boolean = false,
-    val widgets: List<CustomWidgetUi> = emptyList(),
+    val widgets: List<CustomWidget> = emptyList(),
     val switchesEntities: List<ServiceEntity> = emptyList(),
-    )
+    val socketErrors: List<String> = emptyList(),
+) {
+    val widgetsUi: List<CustomWidgetUi>
+        get() = widgets.mapIndexed { index, widget ->
+            widget.toUi(
+                switchesEntities,
+                index
+            )
+        }
+}
 
 sealed class Event {
     data object OnBackClicked : Event()

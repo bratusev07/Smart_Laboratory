@@ -26,7 +26,7 @@ import ru.bratusev.smartlab.ui.core.theme.AppTheme
 @Composable
 fun SensorCardRow(
     modifier: Modifier = Modifier,
-    uiData: SensorCardUi.Widget.Switchs,
+    uiData: SensorCardUi.Widget.Switches,
     onToggle: () -> Unit,
 ) {
     val currentState = uiData.state == SensorState.On
@@ -61,7 +61,7 @@ private fun SensorCardRowPreview() {
     var currentState by remember { mutableStateOf(SensorState.On) }
     AppTheme {
         SensorCardRow(
-            uiData = SensorCardUi.Widget.Switchs(
+            uiData = SensorCardUi.Widget.Switches(
                 title = "Маленькая лампочка",
                 id = "0",
                 state = currentState,

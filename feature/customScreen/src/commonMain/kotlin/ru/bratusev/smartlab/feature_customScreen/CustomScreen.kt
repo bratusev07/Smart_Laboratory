@@ -42,7 +42,7 @@ fun CustomScreen(
         contentPadding = PaddingValues(top = 16.dp, start = 12.dp, end = 12.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-        items(state.value.widgets) {
+        items(state.value.widgetsUi) {
             CustomWidget(uiData = it, onEvent = { event ->
                 vm.handleEvent(getVmEvent(it.id, event))
             })

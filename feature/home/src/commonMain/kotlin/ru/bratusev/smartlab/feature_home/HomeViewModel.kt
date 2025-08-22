@@ -15,8 +15,8 @@ import ru.bratusev.smartlab.feature_home.models.Event
 import ru.bratusev.smartlab.feature_home.models.HomeState
 
 class HomeViewModel(
-    getServiceEntitiesUseCase: GetServiceEntitiesUseCase,
     private val updateSensorUseCase: UpdateSensorUseCase,
+    getServiceEntitiesUseCase: GetServiceEntitiesUseCase,
     observeSocketErrorsUseCase: ObserveSocketErrorsUseCase,
 ) : ViewModel() {
 
