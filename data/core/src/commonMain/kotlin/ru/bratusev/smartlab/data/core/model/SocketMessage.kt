@@ -141,10 +141,10 @@ sealed class SocketMessage {
     }
 
     @Serializable
-    data class SwitchMsg(
+    data class SensorMsg(
         val type: String = "call_service",
-        val domain: String = "switch",
-        val service: String = "turn_off",
+        val domain: String,
+        val service: String,
         @SerialName("return_response") val returnResponse: Boolean = false,
         @SerialName("service_data") val serviceData: ServiceData,
         val id: Int

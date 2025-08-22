@@ -12,6 +12,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import ru.bratusev.smartlab.ui.core.models.AppTopBarUi
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -25,7 +26,7 @@ fun AppTopBar(
     TopAppBar(
         colors = topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
-            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            titleContentColor = Color.White,
             actionIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
         ),
         modifier = modifier,

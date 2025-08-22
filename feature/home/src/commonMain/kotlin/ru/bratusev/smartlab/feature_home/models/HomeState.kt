@@ -5,7 +5,7 @@ import ru.bratusev.smartlab.domain.core.model.socket.ServiceEntity
 
 data class HomeState(
     val screenName: String = "Home Screen",
-    val switchesEntity: List<ServiceEntity> = emptyList<ServiceEntity>(),
+    val serviceEntities: List<ServiceEntity> = emptyList(),
     val socketErrors: List<String> = emptyList()
 )
 

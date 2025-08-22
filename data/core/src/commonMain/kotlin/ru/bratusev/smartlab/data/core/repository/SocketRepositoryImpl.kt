@@ -16,9 +16,12 @@ SocketRepositoryImpl(
 
     override fun observeSocketErrors(): Flow<List<Error>> = webSocketClient.socketErrorsFlow
 
-    override fun updateSwitch(switchId: String, switchState: String): Boolean {
-        webSocketClient.sender.updateSwitchState(switchId, switchState)
-        return true
+    override fun updateSensor(sensorId: String): Boolean {
+        webSocketClient._serviceEntityCopy.find { it.id == sensorId }?.let {
+            webSocketClient.sender.updateSensorState(it)
+            return true
+        }
+        return false
     }
 
 }

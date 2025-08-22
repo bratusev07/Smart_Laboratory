@@ -15,6 +15,6 @@ interface LogcatMessageDao {
     @Query("SELECT count(*) FROM LogcatMessages")
     suspend fun count(): Int
 
-    @Query("SELECT * FROM LogcatMessages")
-    fun getAllAsFlow(): Flow<List<LogcatMessageEntity>>
+    @Query("SELECT * FROM LogcatMessages WHERE type IN (:types)")
+    fun getAllByTypesAsFlow(types: List<String>): Flow<List<LogcatMessageEntity>>
 }

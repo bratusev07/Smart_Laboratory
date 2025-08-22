@@ -48,7 +48,7 @@ class HomeAssistantWebSocketClient() {
     val socketErrorsFlow: SharedFlow<List<Error>> = _socketErrorsFlow
 
     private val _serviceEntitiesFlow = MutableSharedFlow<List<ServiceEntity>>(replay = 1)
-    private var _serviceEntityCopy: List<ServiceEntity> = emptyList()
+    internal var _serviceEntityCopy: List<ServiceEntity> = emptyList()
     val serviceEntitiesFlow: SharedFlow<List<ServiceEntity>> = _serviceEntitiesFlow
 
     private val messageHandlers: HomeAssistantMessageHandlers by lazy {

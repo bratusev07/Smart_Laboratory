@@ -1,5 +1,6 @@
 package ru.bratusev.smartlab.domain.core.repository
 
+import kotlinx.coroutines.flow.Flow
 import ru.bratusev.smartlab.domain.core.model.LogcatMessage
 
 interface LoggerRepository {
@@ -7,5 +8,5 @@ interface LoggerRepository {
     fun w(tag: String?, description: String)
     fun e(tag: String?, description: String)
 
-    suspend fun getLogMessages(logTypes: List<String>) : List<LogcatMessage>
+    suspend fun getLogMessages(logTypes: List<String>) : Flow<List<LogcatMessage>>
 }
