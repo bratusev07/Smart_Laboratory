@@ -12,6 +12,7 @@ import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardRes
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardTints
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardUi
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardVerticalGridUi
+import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorDomain
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorState
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
 
@@ -56,7 +57,7 @@ private fun SensorCardVerticalGridLightBulbs() {
                         title = "Preview$i",
                         id = "Id$i",
                         state = SensorState.entries[(0..2).random()],
-                        domain = "PreviewDomain$i",
+                        domain = SensorDomain.SWITCH,
                         drawableResource = SensorCardRes.lightBulb,
                         tints = SensorCardTints.Common.LightBulb
                     )
@@ -85,7 +86,7 @@ private fun SensorCardVerticalGridThermometers() {
                         title = "Preview$i",
                         id = "Id$i",
                         state = SensorState.entries[(0..1).random()],
-                        domain = "PreviewDomain$i",
+                        domain = SensorDomain.SWITCH,
                         drawableResource = SensorCardRes.thermometer,
                         tints = SensorCardTints.Common.Thermometer
                     )

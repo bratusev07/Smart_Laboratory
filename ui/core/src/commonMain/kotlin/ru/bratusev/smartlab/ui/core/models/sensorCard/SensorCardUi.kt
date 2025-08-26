@@ -11,7 +11,7 @@ sealed class SensorCardUi {
 
     abstract val id: String
     abstract val state: SensorState
-    abstract val domain: String
+    abstract val domain: SensorDomain
     abstract val drawableResource: DrawableResource
 
     abstract val tints: SensorCardTints
@@ -20,7 +20,7 @@ sealed class SensorCardUi {
         class Small(
             override val id: String,
             override val state: SensorState,
-            override val domain: String,
+            override val domain: SensorDomain,
             override val drawableResource: DrawableResource,
             override val tints: SensorCardTints,
         ) : Tile()
@@ -29,7 +29,7 @@ sealed class SensorCardUi {
             val title: String,
             override val id: String,
             override val state: SensorState,
-            override val domain: String,
+            override val domain: SensorDomain,
             override val drawableResource: DrawableResource,
             override val tints: SensorCardTints,
         ) : Tile()
@@ -39,7 +39,7 @@ sealed class SensorCardUi {
             val description: String,
             override val id: String,
             override val state: SensorState,
-            override val domain: String,
+            override val domain: SensorDomain,
             override val drawableResource: DrawableResource,
             override val tints: SensorCardTints,
         ) : Tile()
@@ -50,7 +50,7 @@ sealed class SensorCardUi {
             val title: String,
             override val id: String,
             override val state: SensorState,
-            override val domain: String,
+            override val domain: SensorDomain,
             override val drawableResource: DrawableResource,
             override val tints: SensorCardTints,
         ) : Widget()
@@ -60,7 +60,7 @@ sealed class SensorCardUi {
         val title: String?,
         override val id: String,
         override val state: SensorState,
-        override val domain: String,
+        override val domain: SensorDomain,
         override val drawableResource: DrawableResource,
         override val tints: SensorCardTints = SensorCardTints.SingleColor(Color.Gray),
     ) : SensorCardUi()
@@ -107,7 +107,15 @@ enum class SensorState(stateName: String) {
 }
 
 enum class SensorDomain(domain: String) {
-    SWITCH("switch")
+    SWITCH("switch"),
+    UNKNOWN("domain");
+
+    companion object {
+        fun fromString(str: String?): SensorDomain = when (str?.lowercase()) {
+            "switch" -> SWITCH
+            else -> UNKNOWN
+        }
+    }
 }
 
 object SensorCardRes {

@@ -15,10 +15,8 @@ import ru.bratusev.smartlab.domain.core.usecase.GetServiceEntitiesUseCase
 import ru.bratusev.smartlab.domain.core.usecase.ObserveSocketErrorsUseCase
 import ru.bratusev.smartlab.domain.core.usecase.SetCustomWidgetsUseCase
 import ru.bratusev.smartlab.domain.core.usecase.UpdateSensorUseCase
-import ru.bratusev.smartlab.feature_customScreen.mappers.toDomain
 import ru.bratusev.smartlab.feature_customScreen.models.CustomScreenState
 import ru.bratusev.smartlab.feature_customScreen.models.Event
-import ru.bratusev.smartlab.ui.core.models.CustomWidgetUi
 
 class CustomScreenViewModel(
     private val saveWidgets: SetCustomWidgetsUseCase,
@@ -47,14 +45,12 @@ class CustomScreenViewModel(
 
         getWidgets().onEach { result ->
             result.onSuccess {
-                val resultWidgets =
-                    it.ifEmpty {
-                        logger.d(
-                            "CustomScreen/init",
-                            "Custom widgets store is empty. Creating new."
-                        )
-                        getWidgetsPreview()
-                    }
+                val resultWidgets = it.ifEmpty {
+                    logger.d(
+                        "CustomScreen/init", "Custom widgets store is empty. Creating new."
+                    )
+                    getWidgetsPreview()
+                }
                 updateState(_uiState.value.copy(widgets = resultWidgets))
             }
             result.onFailure { error ->
@@ -73,13 +69,9 @@ class CustomScreenViewModel(
         val data = buildList {
             for (k in 0..2) {
                 val sensorsId = emptyList<String>().toMutableList()
-                for (i in (10 * k + 1)..(10 * (k + 1) + 1)) {
-                    sensorsId.add("Id$i")
-                }
                 add(
                     CustomWidget.SensorsList(
-                        sensorsIds = sensorsId,
-                        position = k
+                        sensorsIds = sensorsId, id = k
                     )
                 )
             }
@@ -117,10 +109,17 @@ class CustomScreenViewModel(
         }
     }
 
-    private fun updateWidget(widgetId: Int, newState: CustomWidgetUi) {
+    private fun updateWidget(newState: CustomWidget) {
+        logger.d("Updating widgets", "Updating widget with id: ${newState.id}")
+        logger.d(
+            "Updating widgets",
+            "Available widgets ids: ${_uiState.value.widgets.map { it.id }}"
+        )
         val updatedWidgets =
-            _uiState.value.widgetsUi.map { if (it.id == widgetId) newState.toDomain() else it.toDomain() }
+            _uiState.value.widgets.map { if (it.id == newState.id) newState else it }
+        logger.d("Updating widgets", "New widgets: $updatedWidgets")
         updateState(_uiState.value.copy(widgets = updatedWidgets))
+        saveWidgets.invoke(updatedWidgets).launchIn(viewModelScope)
     }
 
     internal fun handleEvent(event: Event) {
@@ -132,6 +131,13 @@ class CustomScreenViewModel(
             Event.OnModalCloseClicked -> toggleModalMenu()
             is Event.OnSensorStateChanged -> onSwitchUpdated(
                 event.sensorId
+            )
+
+            is Event.OnSwitchesWidgetChanged -> updateWidget(
+                newState = CustomWidget.SensorsList(
+                    sensorsIds = event.chosenIds,
+                    id = event.widgetId
+                )
             )
         }
     }

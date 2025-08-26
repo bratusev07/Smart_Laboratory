@@ -5,6 +5,6 @@ import ru.bratusev.smartlab.domain.core.model.CustomWidget
 
 fun CustomWidget.toEntity(): CustomWidgetEntity {
     return when (this) {
-        is CustomWidget.SensorsList -> CustomWidgetEntity.SensorsList(this.sensorsIds, this.position)
+        is CustomWidget.SensorsList -> CustomWidgetEntity.SensorsList(this.sensorsIds, this.id)
     }
 }

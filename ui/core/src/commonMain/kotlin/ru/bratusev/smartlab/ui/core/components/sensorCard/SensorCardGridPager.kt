@@ -15,7 +15,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -26,6 +25,7 @@ import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardRes
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardTints
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardUi
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardVerticalGridUi
+import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorDomain
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorState
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
 
@@ -37,7 +37,7 @@ fun SensorCardGridPager(
 ) {
     val sensorsByDomain: Map<String, List<SensorCardUi.Tile>> by remember {
         derivedStateOf {
-            uiData.sensors.groupBy { it.domain }
+            uiData.sensors.groupBy { it.domain.name }
         }
     }
     val domains = remember(sensorsByDomain) { sensorsByDomain.keys.toList() }
@@ -96,7 +96,7 @@ private fun SensorCardGridPagerPreview() {
                                 title = "Preview$i $k",
                                 id = "Id$i",
                                 state = SensorState.entries[(0..1).random()],
-                                domain = "PreviewDomain$i",
+                                domain = SensorDomain.entries.random(),
                                 drawableResource = SensorCardRes.thermometer,
                                 tints = SensorCardTints.Common.Thermometer
                             )
@@ -108,7 +108,7 @@ private fun SensorCardGridPagerPreview() {
                                 title = "Preview$i $k",
                                 id = "Id$i",
                                 state = SensorState.entries[(0..2).random()],
-                                domain = "PreviewDomain$i",
+                                domain = SensorDomain.entries.random(),
                                 drawableResource = SensorCardRes.lightBulb,
                                 tints = SensorCardTints.Common.LightBulb
                             )

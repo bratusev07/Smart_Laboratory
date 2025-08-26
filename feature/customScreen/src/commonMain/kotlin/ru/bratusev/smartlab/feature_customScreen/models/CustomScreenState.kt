@@ -15,10 +15,10 @@ data class CustomScreenState(
     val socketErrors: List<String> = emptyList(),
 ) {
     val widgetsUi: List<CustomWidgetUi>
-        get() = widgets.mapIndexed { index, widget ->
+        get() = widgets.map { widget ->
             widget.toUi(
                 switchesEntities,
-                index
+                widget.id
             )
         }
 }
@@ -35,5 +35,10 @@ sealed class Event {
         val widgetId: Int,
         val sensorId: String,
         val newState: SensorState,
+    ) : Event()
+
+    data class OnSwitchesWidgetChanged(
+        val widgetId: Int,
+        val chosenIds: List<String>,
     ) : Event()
 }

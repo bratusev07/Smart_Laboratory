@@ -20,6 +20,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardRes
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardTints
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardUi
+import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorDomain
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorState
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
 
@@ -65,7 +66,7 @@ private fun SensorCardRowPreview() {
                 title = "Маленькая лампочка",
                 id = "0",
                 state = currentState,
-                domain = "switch",
+                domain = SensorDomain.SWITCH,
                 drawableResource = SensorCardRes.lightBulb,
                 tints = SensorCardTints.Common.LightBulb,
             ), onToggle = { })

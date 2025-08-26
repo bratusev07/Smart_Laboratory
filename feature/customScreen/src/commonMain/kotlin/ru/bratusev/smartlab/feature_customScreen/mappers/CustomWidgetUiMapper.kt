@@ -6,8 +6,8 @@ import ru.bratusev.smartlab.ui.core.models.CustomWidgetUi
 fun CustomWidgetUi.toDomain(): CustomWidget {
     return when (this) {
         is CustomWidgetUi.SensorsList -> CustomWidget.SensorsList(
-            sensorsIds = sensors.map { it.id },
-            position = id
+            sensorsIds = sensorsToShow.map { it.id },
+            id = id
         )
     }
 }

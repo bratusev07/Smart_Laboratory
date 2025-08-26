@@ -15,6 +15,7 @@ import ru.bratusev.smartlab.data.core.database.AppDatabase
 import ru.bratusev.smartlab.data.core.database.DatabaseFactory
 import ru.bratusev.smartlab.data.core.database.LogcatMessageDao
 import ru.bratusev.smartlab.data.core.preview.KtorClientFactoryPreview
+import ru.bratusev.smartlab.data.core.repository.AuthRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.ButtonTextRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.LoggerRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.SocketRepositoryImpl
@@ -47,9 +48,10 @@ val dataModule = module {
     }
 
     single<AuthRepository> {
-        AuthRepositoryPreview(
+        AuthRepositoryImpl(
             client = get(),
             dataStore = get(),
+            socketClient = get(),
         )
     }
 

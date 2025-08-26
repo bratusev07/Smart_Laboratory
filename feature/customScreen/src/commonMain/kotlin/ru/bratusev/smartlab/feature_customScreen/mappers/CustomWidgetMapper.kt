@@ -6,23 +6,34 @@ import ru.bratusev.smartlab.ui.core.models.CustomWidgetUi
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardRes
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardTints
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardUi
+import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorDomain
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorState
 
-fun CustomWidget.toUi(sensors: List<ServiceEntity>, index: Int): CustomWidgetUi {
+fun CustomWidget.toUi(sensors: List<ServiceEntity>, id: Int): CustomWidgetUi {
     return when (this) {
         is CustomWidget.SensorsList ->
             CustomWidgetUi.SensorsList(
-                sensors = sensors.filter { it.id in this.sensorsIds }.map { switch ->
+                sensorsToShow = sensors.filter { it.id in this.sensorsIds }.map { switch ->
                     SensorCardUi.Widget.Switches(
                         title = "title ${switch.id}",
                         id = switch.id!!,
                         state = SensorState.fromString(switch.state),
-                        domain = switch.domain ?: "domain empty",
+                        domain = SensorDomain.fromString(switch.domain),
                         drawableResource = SensorCardRes.lightBulb,
                         tints = SensorCardTints.Common.LightBulb
                     )
                 },
-                index = index
+                id = id,
+                sensorsToChooseFrom = sensors.map { switch ->
+                    SensorCardUi.Modal(
+                        title = "title ${switch.id}",
+                        id = switch.id!!,
+                        state = SensorState.fromString(switch.state),
+                        domain = SensorDomain.fromString(switch.domain),
+                        drawableResource = SensorCardRes.lightBulb,
+                        tints = SensorCardTints.Common.LightBulb
+                    )
+                }
             )
     }
 }

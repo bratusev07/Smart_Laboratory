@@ -25,6 +25,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardRes
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardTints
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardUi
+import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorDomain
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorState
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
 
@@ -149,7 +150,7 @@ private fun SmallCardPreview() {
     val small = SensorCardUi.Tile.Small(
         id = "0",
         state = SensorState.Off,
-        domain = "switch",
+        domain = SensorDomain.SWITCH,
         drawableResource = SensorCardRes.lightBulb,
         tints = SensorCardTints.Common.LightBulb
     )
@@ -167,7 +168,7 @@ private fun MediumCardPreview() {
     val medium = SensorCardUi.Tile.Medium(
         id = "1",
         state = SensorState.On,
-        domain = "switch",
+        domain = SensorDomain.SWITCH,
         title = "Свет 208",
         drawableResource = SensorCardRes.lightBulb,
         tints = SensorCardTints.Common.LightBulb
@@ -186,7 +187,7 @@ private fun LargeCardPreview() {
     val large = SensorCardUi.Tile.Large(
         id = "2",
         state = SensorState.Unavailable,
-        domain = "switch",
+        domain = SensorDomain.SWITCH,
         title = "Давление",
         description = "200 Па",
         drawableResource = SensorCardRes.lightBulb,

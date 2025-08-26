@@ -15,6 +15,7 @@ import ru.bratusev.smartlab.ui.core.models.CustomWidgetUi
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardRes
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardTints
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardUi
+import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorDomain
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorState
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
 
@@ -22,8 +23,7 @@ import ru.bratusev.smartlab.ui.core.theme.AppTheme
 fun CustomWidget(uiData: CustomWidgetUi, onEvent: (event: CustomWidgetEvent) -> Unit) {
     Column(
         modifier = Modifier.fillMaxWidth().background(
-            shape = RoundedCornerShape(30.dp),
-            color = MaterialTheme.colorScheme.surfaceContainerLow
+            shape = RoundedCornerShape(30.dp), color = MaterialTheme.colorScheme.surfaceContainerLow
         )
     ) {
         when (uiData) {
@@ -32,11 +32,12 @@ fun CustomWidget(uiData: CustomWidgetUi, onEvent: (event: CustomWidgetEvent) -> 
                 onToggle = { sensorId, newState ->
                     onEvent(CustomWidgetEvent.SensorStateChange(sensorId, newState))
                 },
-                header = {
-                    WidgetToolBar(
-                        title = "Виджет с id: ${uiData.id}",
-                        onEditClick = {},
-                        onAddClick = {})
+                onSubmit = { chosenIds ->
+                    onEvent(
+                        CustomWidgetEvent.ChosenSwitchesChange(
+                            chosenIds
+                        )
+                    )
                 })
         }
     }
@@ -55,7 +56,21 @@ private fun SensorListPreview() {
                         title = "Preview$i",
                         id = "Id$i",
                         state = SensorState.entries[(0..2).random()],
-                        domain = "PreviewDomain$i",
+                        domain = SensorDomain.entries.random(),
+                        drawableResource = SensorCardRes.lightBulb,
+                        tints = SensorCardTints.Common.LightBulb
+                    )
+                )
+            }
+        }
+        val data2 = buildList {
+            for (i in 1..30) {
+                add(
+                    SensorCardUi.Modal(
+                        title = "Preview$i",
+                        id = "Id$i",
+                        state = SensorState.entries[(0..2).random()],
+                        domain = SensorDomain.entries.random(),
                         drawableResource = SensorCardRes.lightBulb,
                         tints = SensorCardTints.Common.LightBulb
                     )
@@ -64,8 +79,7 @@ private fun SensorListPreview() {
         }
         CustomWidget(
             uiData = CustomWidgetUi.SensorsList(
-                sensors = data, index = 1
-            ), onEvent = {}
-        )
+                sensorsToShow = data, id = 1, sensorsToChooseFrom = data2
+            ), onEvent = {})
     }
 }

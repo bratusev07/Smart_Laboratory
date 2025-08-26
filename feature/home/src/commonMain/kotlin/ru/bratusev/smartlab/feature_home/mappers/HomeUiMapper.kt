@@ -6,6 +6,7 @@ import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardRes
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardTints
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardUi
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardVerticalGridUi
+import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorDomain
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorState
 import ru.bratusev.smartlab.ui.core.theme.SensorCardCommonColors
 
@@ -28,7 +29,7 @@ private fun ServiceEntity.mapToUi(): SensorCardUi.Tile = when (domain?.lowercase
 private fun ServiceEntity.mapDefaultToUi() = SensorCardUi.Tile.Small(
     id = id.orEmpty(),
     state = SensorState.fromString(state),
-    domain = domain.orEmpty(),
+    domain = SensorDomain.fromString(domain.orEmpty()),
     drawableResource = SensorCardRes.lightBulb,
     tints = SensorCardTints(
         SensorCardCommonColors.LightBulb.On,
@@ -41,7 +42,7 @@ private fun ServiceEntity.mapSwitchToUi() = SensorCardUi.Tile.Medium(
     title = id.orEmpty(),
     id = id.orEmpty(),
     state = SensorState.fromString(state),
-    domain = domain.orEmpty(),
+    domain = SensorDomain.fromString(domain.orEmpty()),
     drawableResource = SensorCardRes.lightBulb,
     tints = SensorCardTints(
         SensorCardCommonColors.LightBulb.On,
@@ -54,7 +55,7 @@ private fun ServiceEntity.mapButtonToUi() = SensorCardUi.Tile.Medium(
     title = id.orEmpty(),
     id = id.orEmpty(),
     state = SensorState.fromString(state),
-    domain = domain.orEmpty(),
+    domain = SensorDomain.fromString(domain.orEmpty()),
     drawableResource = SensorCardRes.lightBulb,
     tints = SensorCardTints(
         SensorCardCommonColors.LightBulb.Off,
