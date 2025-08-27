@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -27,7 +28,12 @@ fun CustomScreen(
 ) {
     val state = vm.uiState.collectAsState()
 
+    LaunchedEffect(Unit) {
+        vm.handleEvent(Event.LoadData)
+    }
+
     DisposableEffect(Unit) {
+
         setMenuAction {
             goToAddWidgetScreen()
         }

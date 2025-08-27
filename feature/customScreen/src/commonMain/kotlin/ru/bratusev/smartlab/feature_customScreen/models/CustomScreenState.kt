@@ -41,4 +41,6 @@ sealed class Event {
         val widgetId: Int,
         val chosenIds: List<String>,
     ) : Event()
+
+    data object LoadData : Event()
 }
