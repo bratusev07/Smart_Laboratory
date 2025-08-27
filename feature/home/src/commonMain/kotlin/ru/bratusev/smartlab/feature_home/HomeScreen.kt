@@ -19,7 +19,7 @@ fun HomeScreen(
 ) {
     val state = vm.uiState.collectAsState()
 
-    if(state.value.serviceEntities.isNotEmpty()) {
+    if (state.value.serviceEntities.isNotEmpty()) {
 
         SensorCardGridPager(
             uiData = state.value.serviceEntities
@@ -46,6 +46,7 @@ private fun HomeScreenPreview() {
                 override fun navigateToLogin() {}
                 override fun navigateToSettings() {}
                 override fun navigateToLogcat() {}
+                override fun navigateToAddWidgetCustomScreen() {}
                 override fun popBackStack() {}
             }
         )

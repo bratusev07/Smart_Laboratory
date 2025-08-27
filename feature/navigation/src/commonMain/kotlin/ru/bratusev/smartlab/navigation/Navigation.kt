@@ -16,6 +16,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.navigation
+import ru.bratusev.smartlab.feature_addWidgetScreen.AddWidgetScreen
 import ru.bratusev.smartlab.feature_customScreen.CustomScreen
 import ru.bratusev.smartlab.feature_home.HomeScreen
 import ru.bratusev.smartlab.feature_logcat.LogcatScreen
@@ -40,6 +42,7 @@ fun AppNavigation(navController: NavHostController) {
         derivedStateOf {
             when (navBackStackEntry?.destination?.route) {
                 Screen.Login.route -> true
+                Screen.CustomScreen.AddWidget.route -> true
                 else -> false
             }
         }
@@ -79,11 +82,24 @@ private fun AppNavHost(
             HomeScreen(navigationApi = navigationApi)
         }
 
-        composable(Screen.CustomScreen.route) {
-            CustomScreen(
-                navigationApi = navigationApi,
-                setMenuAction = setMenuAction
-            )
+
+        navigation(
+            startDestination = Screen.CustomScreen.Main.route,
+            route = Screen.CustomScreen.route
+        ) {
+            composable(Screen.CustomScreen.Main.route) {
+                CustomScreen(
+                    setMenuAction = setMenuAction,
+                    goToAddWidgetScreen = {
+                        navigationApi.navigateToAddWidgetCustomScreen()
+                    }
+                )
+            }
+            composable(
+                Screen.CustomScreen.AddWidget.route
+            ) {
+                AddWidgetScreen()
+            }
         }
 
         composable(Screen.Logcat.route) {
@@ -98,8 +114,10 @@ private fun AppNavHost(
         composable(Screen.Notifications.route) {
             Text(Screen.Notifications.route)
         }
+
         composable(Screen.UserProfile.route) {
             Text(Screen.UserProfile.route)
         }
+
     }
 }

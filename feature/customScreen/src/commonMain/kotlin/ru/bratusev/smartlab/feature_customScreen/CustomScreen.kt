@@ -15,7 +15,6 @@ import org.koin.compose.viewmodel.koinViewModel
 import ru.bratusev.smartlab.feature_customScreen.models.Event
 import ru.bratusev.smartlab.feature_customScreen.models.Event.OnSensorStateChanged
 import ru.bratusev.smartlab.feature_customScreen.models.Event.OnSwitchesWidgetChanged
-import ru.bratusev.smartlab.navigation.api.NavigationApi
 import ru.bratusev.smartlab.ui.core.components.CustomWidget
 import ru.bratusev.smartlab.ui.core.models.CustomWidgetEvent
 
@@ -23,12 +22,16 @@ import ru.bratusev.smartlab.ui.core.models.CustomWidgetEvent
 @Composable
 fun CustomScreen(
     vm: CustomScreenViewModel = koinViewModel(),
-    navigationApi: NavigationApi,
     setMenuAction: (action: () -> Unit) -> Unit,
+    goToAddWidgetScreen: () -> Unit,
 ) {
     val state = vm.uiState.collectAsState()
 
     DisposableEffect(Unit) {
+        setMenuAction {
+            goToAddWidgetScreen()
+        }
+
         onDispose {
             setMenuAction { }
         }
