@@ -1,15 +1,20 @@
 package ru.bratusev.smartlab.feature_customScreen
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
@@ -28,6 +33,7 @@ fun CustomScreen(
 ) {
     val state = vm.uiState.collectAsState()
 
+
     LaunchedEffect(Unit) {
         vm.handleEvent(Event.LoadData)
     }
@@ -35,25 +41,60 @@ fun CustomScreen(
     DisposableEffect(Unit) {
 
         setMenuAction {
-            goToAddWidgetScreen()
+            vm.handleEvent(Event.ToggleDropDownMenu)
         }
 
         onDispose {
             setMenuAction { }
         }
     }
+    Box(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(top = 16.dp, start = 12.dp, end = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
+        ) {
+            items(state.value.widgetsUi) {
+                CustomWidget(
+                    uiData = it.copy(showDeleteButton = state.value.isDeleteMode),
+                    onEvent = { event ->
+                        vm.handleEvent(getVmEvent(it.id, event))
+                    })
+            }
+        }
 
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(top = 16.dp, start = 12.dp, end = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(24.dp)
-    ) {
-        items(state.value.widgetsUi) {
-            CustomWidget(uiData = it, onEvent = { event ->
-                vm.handleEvent(getVmEvent(it.id, event))
-            })
+        Box(modifier = Modifier.align(Alignment.TopEnd)) {
+            MenuDropDown(
+                isExpanded = state.value.isDropDownMenuExpanded,
+                onClose = { vm.handleEvent(Event.ToggleDropDownMenu) },
+                onAddWidget = {
+                    goToAddWidgetScreen()
+                    vm.handleEvent(Event.ToggleDropDownMenu)
+                },
+                onRemoveWidget = {
+                    vm.handleEvent(Event.ToggleDeleteMode)
+                    vm.handleEvent(Event.ToggleDropDownMenu)
+                })
         }
     }
+}
+
+@Composable
+private fun MenuDropDown(
+    isExpanded: Boolean,
+    onAddWidget: () -> Unit,
+    onRemoveWidget: () -> Unit,
+    onClose: () -> Unit,
+) {
+    DropdownMenu(
+        expanded = isExpanded, onDismissRequest = onClose, content = {
+            DropdownMenuItem(
+                text = { Text("Добавить виджет") }, onClick = onAddWidget
+            )
+            DropdownMenuItem(
+                text = { Text("Удалить виджет") }, onClick = onRemoveWidget
+            )
+        })
 }
 
 private fun getVmEvent(widgetId: Int, widgetEvent: CustomWidgetEvent): Event {
@@ -63,8 +104,11 @@ private fun getVmEvent(widgetId: Int, widgetEvent: CustomWidgetEvent): Event {
         )
 
         is CustomWidgetEvent.ChosenSwitchesChange -> OnSwitchesWidgetChanged(
-            widgetId = widgetId,
-            chosenIds = widgetEvent.chosenIds
+            widgetId = widgetId, chosenIds = widgetEvent.chosenIds
+        )
+
+        CustomWidgetEvent.DeleteWidget -> Event.DeleteWidget(
+            widgetId = widgetId
         )
     }
 }

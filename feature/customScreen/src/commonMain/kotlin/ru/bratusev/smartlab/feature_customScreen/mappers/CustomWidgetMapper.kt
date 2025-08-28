@@ -33,7 +33,8 @@ fun CustomWidget.toUi(sensors: List<ServiceEntity>, id: Int): CustomWidgetUi {
                         drawableResource = SensorCardRes.lightBulb,
                         tints = SensorCardTints.Common.LightBulb
                     )
-                }
+                },
+                showDeleteButton = false
             )
     }
 }

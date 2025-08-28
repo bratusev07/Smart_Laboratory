@@ -88,11 +88,12 @@ private fun AppNavHost(
             route = Screen.CustomScreen.route
         ) {
             composable(Screen.CustomScreen.Main.route) {
+
                 CustomScreen(
                     setMenuAction = setMenuAction,
                     goToAddWidgetScreen = {
                         navigationApi.navigateToAddWidgetCustomScreen()
-                    }
+                    },
                 )
             }
             composable(

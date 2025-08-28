@@ -1,5 +1,6 @@
 package ru.bratusev.smartlab.ui.core.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -26,6 +28,8 @@ import androidx.compose.ui.unit.dp
 fun WidgetToolBar(
     modifier: Modifier = Modifier,
     title: String = "",
+    showDeleteButton: Boolean,
+    onDeleteClick: () -> Unit,
     onEditClick: () -> Unit,
     onAddClick: () -> Unit,
 ) {
@@ -45,6 +49,17 @@ fun WidgetToolBar(
             horizontalArrangement = Arrangement.spacedBy(3.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            AnimatedVisibility(showDeleteButton) {
+                IconButton(
+                    onClick = onDeleteClick
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Delete,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onBackground
+                    )
+                }
+            }
             IconButton(
                 onClick = onEditClick
             ) {

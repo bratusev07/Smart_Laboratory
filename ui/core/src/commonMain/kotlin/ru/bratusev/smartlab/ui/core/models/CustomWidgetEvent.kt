@@ -8,4 +8,6 @@ sealed class CustomWidgetEvent {
 
     data class ChosenSwitchesChange(val chosenIds: List<String>) :
         CustomWidgetEvent()
+
+    data object  DeleteWidget: CustomWidgetEvent()
 }

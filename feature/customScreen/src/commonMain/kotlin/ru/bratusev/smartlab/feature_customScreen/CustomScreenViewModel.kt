@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import ru.bratusev.smartlab.domain.core.model.CustomWidget
+import ru.bratusev.smartlab.domain.core.model.CustomWidget.SensorsList
 import ru.bratusev.smartlab.domain.core.model.socket.ServiceEntity
 import ru.bratusev.smartlab.domain.core.usecase.GetCustomWidgetsUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetLoggerUseCase
@@ -76,24 +77,23 @@ class CustomScreenViewModel(
         updateState(uiState.value.copy(switchesEntities = switches))
     }
 
-    private fun onCustomButtonClicked() {
-        val state = uiState.value.copy(screenName = "New screen name")
-        updateState(state)
+    private fun toggleDropDownMenu() {
+        updateState(_uiState.value.copy(isDropDownMenuExpanded = !_uiState.value.isDropDownMenuExpanded))
     }
 
-    private fun onButtonTextUpdated(text: String) {
-        val state = uiState.value.copy(screenName = text)
-        updateState(state)
-    }
-
-    private fun toggleModalMenu() {
-        updateState(_uiState.value.copy(isModalOpen = !_uiState.value.isModalOpen))
+    private fun toggleDeleteMode() {
+        updateState(_uiState.value.copy(isDeleteMode = !_uiState.value.isDeleteMode))
     }
 
     private fun updateState(updatedState: CustomScreenState) {
         viewModelScope.launch {
             _uiState.emit(updatedState)
         }
+    }
+
+    private fun updateWidgets(updatedWidgets: List<CustomWidget>) {
+        updateState(_uiState.value.copy(widgets = updatedWidgets))
+        saveWidgets.invoke(updatedWidgets).launchIn(viewModelScope)
     }
 
     private fun onSwitchUpdated(switchId: String) {
@@ -104,37 +104,40 @@ class CustomScreenViewModel(
         }
     }
 
+    private fun deleteWidget(widgetId: Int) {
+        val updatedWidgets = _uiState.value.widgets.filter { it.id != widgetId }
+        logger.d("Deleting widget with id$widgetId", "New widgets: $updatedWidgets")
+        updateWidgets(updatedWidgets)
+        toggleDeleteMode()
+    }
+
     private fun updateWidget(newState: CustomWidget) {
         logger.d("Updating widgets", "Updating widget with id: ${newState.id}")
         logger.d(
-            "Updating widgets",
-            "Available widgets ids: ${_uiState.value.widgets.map { it.id }}"
+            "Updating widgets", "Available widgets ids: ${_uiState.value.widgets.map { it.id }}"
         )
         val updatedWidgets =
             _uiState.value.widgets.map { if (it.id == newState.id) newState else it }
         logger.d("Updating widgets", "New widgets: $updatedWidgets")
-        updateState(_uiState.value.copy(widgets = updatedWidgets))
-        saveWidgets.invoke(updatedWidgets).launchIn(viewModelScope)
+        updateWidgets(updatedWidgets)
     }
 
-    internal fun handleEvent(event: Event) {
+    fun handleEvent(event: Event) {
         when (event) {
-            Event.OnBackClicked -> Unit
-            Event.OnCustomButtonClicked -> onCustomButtonClicked()
-            is Event.OnButtonTextUpdated -> onButtonTextUpdated(event.text)
-            Event.OnMenuButtonClicked -> toggleModalMenu()
-            Event.OnModalCloseClicked -> toggleModalMenu()
             is Event.OnSensorStateChanged -> onSwitchUpdated(
                 event.sensorId
             )
 
             is Event.OnSwitchesWidgetChanged -> updateWidget(
-                newState = CustomWidget.SensorsList(
-                    sensorsIds = event.chosenIds,
-                    id = event.widgetId
+                newState = SensorsList(
+                    sensorsIds = event.chosenIds, id = event.widgetId
                 )
             )
+
             Event.LoadData -> loadData()
+            Event.ToggleDropDownMenu -> toggleDropDownMenu()
+            is Event.DeleteWidget -> deleteWidget(event.widgetId)
+            Event.ToggleDeleteMode -> toggleDeleteMode()
         }
     }
 }

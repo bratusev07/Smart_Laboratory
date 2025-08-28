@@ -134,6 +134,8 @@ private fun SensorsListWidget() {
     }
     SensorsWidget(
         uiData = CustomWidgetUi.SensorsList(
-            sensorsToShow = data, sensorsToChooseFrom = data2, id = 1
-        ), onToggle = { _, _ -> {} }, onSubmit = {})
+            sensorsToShow = data, sensorsToChooseFrom = data2, id = 1,
+        ), onToggle = { _, _ -> {} }, onSubmit = {},
+        onDeleteWidgetClick = {}
+    )
 }

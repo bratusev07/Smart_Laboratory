@@ -9,7 +9,8 @@ import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorState
 data class CustomScreenState(
     val screenName: String = "CustomScreen Screen",
 
-    val isModalOpen: Boolean = false,
+    val isDropDownMenuExpanded: Boolean = false,
+    val isDeleteMode: Boolean = false,
     val widgets: List<CustomWidget> = emptyList(),
     val switchesEntities: List<ServiceEntity> = emptyList(),
     val socketErrors: List<String> = emptyList(),
@@ -17,20 +18,15 @@ data class CustomScreenState(
     val widgetsUi: List<CustomWidgetUi>
         get() = widgets.map { widget ->
             widget.toUi(
-                switchesEntities,
-                widget.id
+                switchesEntities, widget.id
             )
         }
 }
 
 sealed class Event {
-    data object OnBackClicked : Event()
-    data object OnCustomButtonClicked : Event()
-    data class OnButtonTextUpdated(val text: String) : Event()
-
-    data object OnMenuButtonClicked : Event()
-    object OnModalCloseClicked : Event()
-
+    data object ToggleDropDownMenu : Event()
+    data object ToggleDeleteMode : Event()
+    data class DeleteWidget(val widgetId: Int) : Event()
     data class OnSensorStateChanged(
         val widgetId: Int,
         val sensorId: String,

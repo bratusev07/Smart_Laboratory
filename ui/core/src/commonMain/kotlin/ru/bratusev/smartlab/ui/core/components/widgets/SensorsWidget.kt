@@ -30,6 +30,7 @@ fun SensorsWidget(
     uiData: CustomWidgetUi.SensorsList,
     onToggle: (id: String, newState: SensorState) -> Unit,
     onSubmit: (chosenIds: List<String>) -> Unit,
+    onDeleteWidgetClick: () -> Unit,
 ) {
     var isModalOpen by remember { mutableStateOf(false) }
     if (isModalOpen) {
@@ -49,7 +50,10 @@ fun SensorsWidget(
             onEditClick = {
                 isModalOpen = true
             },
-            onAddClick = {})
+            onAddClick = {},
+            showDeleteButton = uiData.showDeleteButton,
+            onDeleteClick = onDeleteWidgetClick
+        )
         uiData.sensorsToShow.forEach {
             SensorCardRow(
                 uiData = it, onToggle = {
@@ -100,7 +104,8 @@ private fun SensorsWidgetPreview() {
                 sensorsToShow = data, id = 1,
                 sensorsToChooseFrom = data2,
             ), onToggle = { _, _ -> {} },
-            onSubmit = {}
+            onSubmit = {},
+            onDeleteWidgetClick = {}
         )
     }
 }

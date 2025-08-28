@@ -38,7 +38,9 @@ fun CustomWidget(uiData: CustomWidgetUi, onEvent: (event: CustomWidgetEvent) -> 
                             chosenIds
                         )
                     )
-                })
+                },
+                onDeleteWidgetClick = { onEvent(CustomWidgetEvent.DeleteWidget) }
+            )
         }
     }
 }
