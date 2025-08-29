@@ -1,6 +1,7 @@
 package ru.bratusev.smartlab.ui.core.components.modals
 
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Checkbox
@@ -16,6 +17,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardRes
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardUi
@@ -42,7 +44,11 @@ fun FindSensorModal(
         sheetState = sheetState,
         onDismissRequest = onClose,
     ) {
-        ModalBottomSheetContent(sensors = filteredSensors, onSubmit = onSubmit)
+        ModalBottomSheetContent(
+            modifier = Modifier.padding(horizontal = 12.dp),
+            sensors = filteredSensors,
+            onSubmit = onSubmit
+        )
     }
 }
 
@@ -50,12 +56,13 @@ fun FindSensorModal(
 private fun ModalBottomSheetContent(
     modifier: Modifier = Modifier,
     sensors: List<SensorCardUi.Modal>,
-    onSubmit: (List<String>) -> Unit,
+    onSubmit: (checkedIds: List<String>) -> Unit,
 ) {
     val checkedIds = rememberSaveable { mutableStateListOf<String>() }
     LazyColumn(modifier = modifier) {
         item {
             ModalToolBar(
+                title = "Доступные датчики",
                 onSubmit = {
                     println("checkedIds: $checkedIds")
                     onSubmit(checkedIds)

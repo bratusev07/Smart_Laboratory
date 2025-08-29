@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
@@ -28,8 +29,8 @@ fun ModalToolBar(
     onSubmit: () -> Unit,
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().height(48.dp).background(
-            shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.secondaryContainer
+        modifier = Modifier.fillMaxWidth().height(48.dp).clip(RoundedCornerShape(30)).background(
+            color = MaterialTheme.colorScheme.secondaryContainer
         ).padding(start = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -39,7 +40,8 @@ fun ModalToolBar(
             text = title,
         )
         Row(
-            modifier = modifier.wrapContentHeight(),
+            modifier = modifier.wrapContentHeight()
+                .background(MaterialTheme.colorScheme.secondary),
             horizontalArrangement = Arrangement.spacedBy(3.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -49,7 +51,7 @@ fun ModalToolBar(
                 Icon(
                     imageVector = Icons.Default.DoneAll,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground
+                    tint = MaterialTheme.colorScheme.onSecondary
                 )
             }
         }

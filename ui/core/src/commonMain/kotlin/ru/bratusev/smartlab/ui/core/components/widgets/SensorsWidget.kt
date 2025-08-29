@@ -38,7 +38,10 @@ fun SensorsWidget(
             sensors = uiData.sensorsToChooseFrom,
             filterDomain = SensorDomain.SWITCH,
             onClose = { isModalOpen = false },
-            onSubmit = onSubmit
+            onSubmit = {
+                isModalOpen = false
+                onSubmit(it)
+            }
         )
     }
     Column(
