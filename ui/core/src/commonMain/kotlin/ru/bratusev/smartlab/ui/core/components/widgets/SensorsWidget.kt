@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,12 +42,10 @@ fun SensorsWidget(
             onSubmit = {
                 isModalOpen = false
                 onSubmit(it)
-            }
-        )
+            })
     }
     Column(
-        modifier = modifier.padding(12.dp),
-        verticalArrangement = Arrangement.spacedBy(15.dp)
+        modifier = modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         WidgetToolBar(
             title = "Виджет с id: ${uiData.id}",
@@ -57,12 +56,26 @@ fun SensorsWidget(
             showDeleteButton = uiData.showDeleteButton,
             onDeleteClick = onDeleteWidgetClick
         )
-        uiData.sensorsToShow.forEach {
+        uiData.sensorsToShow.forEach { sensor ->
             SensorCardRow(
-                uiData = it, onToggle = {
-                    onToggle(
-                        it.id, if (it.state == SensorState.On) SensorState.Off else SensorState.On
-                    )
+                uiData = SensorCardUi.Row(
+                    title = sensor.title,
+                    id = sensor.id,
+                    state = sensor.state,
+                    domain = sensor.domain,
+                    drawableResource = sensor.drawableResource,
+                    tints = sensor.tints
+                ), buttonContent = {
+                    Switch(
+                        modifier = Modifier.padding(start = 15.dp),
+                        enabled = sensor.state != SensorState.Unavailable,
+                        checked = sensor.state == SensorState.On,
+                        onCheckedChange = {
+                            onToggle(
+                                sensor.id,
+                                if (sensor.state == SensorState.On) SensorState.Off else SensorState.On
+                            )
+                        })
                 })
         }
     }
@@ -106,9 +119,6 @@ private fun SensorsWidgetPreview() {
             uiData = CustomWidgetUi.SensorsList(
                 sensorsToShow = data, id = 1,
                 sensorsToChooseFrom = data2,
-            ), onToggle = { _, _ -> {} },
-            onSubmit = {},
-            onDeleteWidgetClick = {}
-        )
+            ), onToggle = { _, _ -> {} }, onSubmit = {}, onDeleteWidgetClick = {})
     }
 }

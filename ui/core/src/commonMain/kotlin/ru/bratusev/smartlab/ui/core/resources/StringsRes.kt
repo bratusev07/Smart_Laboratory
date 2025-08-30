@@ -23,4 +23,8 @@ object StringsRes {
 
     val DRAWER_TITLE = "Умная лаборатория"
 
+    // -----------SENSOR DOMAIN--------------------
+    val SWITCH = "Переключатель"
+    val UNKNOWN = "Неизвестно"
+
 }

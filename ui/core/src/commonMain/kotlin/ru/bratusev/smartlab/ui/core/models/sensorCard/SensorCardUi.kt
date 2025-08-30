@@ -2,6 +2,7 @@ package ru.bratusev.smartlab.ui.core.models.sensorCard
 
 import androidx.compose.ui.graphics.Color
 import org.jetbrains.compose.resources.DrawableResource
+import ru.bratusev.smartlab.ui.core.resources.StringsRes
 import ru.bratusev.smartlab.ui.core.theme.SensorCardCommonColors
 import smartlaboratory.ui.core.generated.resources.Res
 import smartlaboratory.ui.core.generated.resources.light_bulb
@@ -15,6 +16,15 @@ sealed class SensorCardUi {
     abstract val drawableResource: DrawableResource
 
     abstract val tints: SensorCardTints
+
+    data class Row(
+        val title: String,
+        override val id: String,
+        override val state: SensorState,
+        override val domain: SensorDomain,
+        override val drawableResource: DrawableResource,
+        override val tints: SensorCardTints,
+    ) : SensorCardUi()
 
     sealed class Tile : SensorCardUi() {
         class Small(
@@ -89,13 +99,10 @@ open class SensorCardTints(
         on = color, off = color, unavailable = color
     )
 
-    class WithoutOff(on: Color, unavailable: Color) : SensorCardTints(
-        on = on, off = unavailable, unavailable = unavailable
-    )
 }
 
-enum class SensorState(stateName: String) {
-    On("on"), Off("off"), Unavailable("unavailable");
+enum class SensorState(val localeName: String) {
+    On("Включено"), Off("Выключено"), Unavailable("Отключено");
 
     companion object {
         fun fromString(str: String?): SensorState = when (str?.lowercase()) {
@@ -106,11 +113,12 @@ enum class SensorState(stateName: String) {
     }
 }
 
-enum class SensorDomain(domain: String) {
-    SWITCH("switch"),
-    UNKNOWN("domain");
+enum class SensorDomain(val localeName: String) {
+    SWITCH(StringsRes.SWITCH),
+    UNKNOWN(StringsRes.UNKNOWN);
 
     companion object {
+
         fun fromString(str: String?): SensorDomain = when (str?.lowercase()) {
             "switch" -> SWITCH
             else -> UNKNOWN

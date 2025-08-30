@@ -29,7 +29,7 @@ fun ModalToolBar(
     onSubmit: () -> Unit,
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().height(48.dp).clip(RoundedCornerShape(30)).background(
+        modifier = modifier.fillMaxWidth().height(48.dp).clip(RoundedCornerShape(30)).background(
             color = MaterialTheme.colorScheme.secondaryContainer
         ).padding(start = 12.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -40,7 +40,7 @@ fun ModalToolBar(
             text = title,
         )
         Row(
-            modifier = modifier.wrapContentHeight()
+            modifier = Modifier.wrapContentHeight()
                 .background(MaterialTheme.colorScheme.secondary),
             horizontalArrangement = Arrangement.spacedBy(3.dp),
             verticalAlignment = Alignment.CenterVertically
