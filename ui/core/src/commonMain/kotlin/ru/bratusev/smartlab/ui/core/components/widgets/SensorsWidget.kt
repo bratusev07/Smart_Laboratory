@@ -53,7 +53,7 @@ fun SensorsWidget(
                 isModalOpen = true
             },
             onAddClick = {},
-            showDeleteButton = uiData.showDeleteButton,
+            isEditMode = uiData.isEditMode,
             onDeleteClick = onDeleteWidgetClick
         )
         uiData.sensorsToShow.forEach { sensor ->

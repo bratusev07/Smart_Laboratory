@@ -8,7 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,6 +29,11 @@ import ru.bratusev.smartlab.feature_customScreen.models.Event.OnSwitchesWidgetCh
 import ru.bratusev.smartlab.ui.core.components.CustomWidget
 import ru.bratusev.smartlab.ui.core.models.CustomWidgetEvent
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
+
+// TODO: Сделать уведомления, что сохранение произошло успешно.
+// Также нужно всегда убеждаться, что сохранение произошло и тогда разблокировать навигацию.
+// Иначе есть риск тупо не сохранить ничего.
+// Похожий механизм уже есть на экране добавления виджетов.
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,7 +67,7 @@ fun CustomScreen(
         ) {
             items(state.value.widgetsUi) {
                 CustomWidget(
-                    uiData = it.copy(showDeleteButton = state.value.isDeleteMode),
+                    uiData = it.copy(isEditMode = state.value.isEditMode),
                     onEvent = { event ->
                         vm.handleEvent(getVmEvent(it.id, event))
                     })
@@ -74,14 +79,15 @@ fun CustomScreen(
             MenuDropDown(
                 isExpanded = state.value.isDropDownMenuExpanded,
                 onClose = { vm.handleEvent(Event.ToggleDropDownMenu) },
-                onAddWidget = {
+                onAddScreen = {
                     goToAddWidgetScreen()
                     vm.handleEvent(Event.ToggleDropDownMenu)
                 },
-                onRemoveWidget = {
-                    vm.handleEvent(Event.ToggleDeleteMode)
+                onEditMode = {
+                    vm.handleEvent(Event.ToggleEditMode)
                     vm.handleEvent(Event.ToggleDropDownMenu)
-                })
+                },
+            )
         }
     }
 }
@@ -89,26 +95,26 @@ fun CustomScreen(
 @Composable
 private fun MenuDropDown(
     isExpanded: Boolean,
-    onAddWidget: () -> Unit,
-    onRemoveWidget: () -> Unit,
+    onAddScreen: () -> Unit,
+    onEditMode: () -> Unit,
     onClose: () -> Unit,
 ) {
     DropdownMenu(
         expanded = isExpanded, onDismissRequest = onClose, content = {
             DropdownMenuItem(
                 text = { Text("Добавить виджет") },
-                onClick = onAddWidget,
+                onClick = onAddScreen,
                 leadingIcon = {
                     Icon(
                         Icons.Default.Add, contentDescription = null
                     )
                 })
             DropdownMenuItem(
-                text = { Text("Удалить виджет") },
-                onClick = onRemoveWidget,
+                text = { Text("Редактировать") },
+                onClick = onEditMode,
                 leadingIcon = {
                     Icon(
-                        Icons.Default.Delete, contentDescription = null
+                        Icons.Default.Edit, contentDescription = null
                     )
                 })
         })
@@ -121,7 +127,10 @@ private fun MenuDropDown(
 @Composable
 private fun MenuDropDownPreview() {
     AppTheme {
-        MenuDropDown(isExpanded = true, onAddWidget = {}, onRemoveWidget = {}, onClose = {})
+        MenuDropDown(
+            isExpanded = true, onAddScreen = {}, onClose = {},
+            onEditMode = {}
+        )
     }
 }
 

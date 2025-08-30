@@ -10,7 +10,7 @@ data class CustomScreenState(
     val screenName: String = "CustomScreen Screen",
 
     val isDropDownMenuExpanded: Boolean = false,
-    val isDeleteMode: Boolean = false,
+    val isEditMode: Boolean = false,
     val widgets: List<CustomWidget> = emptyList(),
     val switchesEntities: List<ServiceEntity> = emptyList(),
     val socketErrors: List<String> = emptyList(),
@@ -25,7 +25,7 @@ data class CustomScreenState(
 
 sealed class Event {
     data object ToggleDropDownMenu : Event()
-    data object ToggleDeleteMode : Event()
+    data object ToggleEditMode : Event()
     data class DeleteWidget(val widgetId: Int) : Event()
     data class OnSensorStateChanged(
         val widgetId: Int,

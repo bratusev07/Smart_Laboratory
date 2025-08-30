@@ -9,7 +9,9 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import ru.bratusev.smartlab.domain.core.model.CustomWidget
 import ru.bratusev.smartlab.domain.core.usecase.GetCustomWidgetsUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetLoggerUseCase
@@ -62,7 +64,16 @@ class AddWidgetScreenViewModel(
             .catch { error ->
                 logger.e("SaveWidget Chain", "An error occurred: ${error.message}")
             }
+            .onCompletion {
+                updateState(_uiState.value.copy(isReadyToGoBack = true))
+            }
             .launchIn(viewModelScope)
+    }
+
+    private fun updateState(updatedState: AddWidgetScreenState) {
+        viewModelScope.launch {
+            _uiState.emit(updatedState)
+        }
     }
 
     internal fun handleEvent(event: Event) {

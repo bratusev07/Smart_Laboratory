@@ -58,9 +58,6 @@ class CustomScreenViewModel(
         getWidgetsJob = getWidgetsUseCase().onEach { result ->
             result.onSuccess {
                 val resultWidgets = it.ifEmpty {
-                    logger.d(
-                        "CustomScreen/loadData", "Custom widgets store is empty. Creating new."
-                    )
                     emptyList()
                 }
                 updateState(_uiState.value.copy(widgets = resultWidgets))
@@ -81,8 +78,8 @@ class CustomScreenViewModel(
         updateState(_uiState.value.copy(isDropDownMenuExpanded = !_uiState.value.isDropDownMenuExpanded))
     }
 
-    private fun toggleDeleteMode() {
-        updateState(_uiState.value.copy(isDeleteMode = !_uiState.value.isDeleteMode))
+    private fun toggleEditMode() {
+        updateState(_uiState.value.copy(isEditMode = !_uiState.value.isEditMode))
     }
 
     private fun updateState(updatedState: CustomScreenState) {
@@ -108,7 +105,6 @@ class CustomScreenViewModel(
         val updatedWidgets = _uiState.value.widgets.filter { it.id != widgetId }
         logger.d("Deleting widget with id$widgetId", "New widgets: $updatedWidgets")
         updateWidgets(updatedWidgets)
-        toggleDeleteMode()
     }
 
     private fun updateWidget(newState: CustomWidget) {
@@ -137,7 +133,7 @@ class CustomScreenViewModel(
             Event.LoadData -> loadData()
             Event.ToggleDropDownMenu -> toggleDropDownMenu()
             is Event.DeleteWidget -> deleteWidget(event.widgetId)
-            Event.ToggleDeleteMode -> toggleDeleteMode()
+            Event.ToggleEditMode -> toggleEditMode()
         }
     }
 }

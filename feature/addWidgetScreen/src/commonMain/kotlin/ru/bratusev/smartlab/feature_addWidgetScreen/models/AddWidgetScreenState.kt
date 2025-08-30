@@ -5,7 +5,7 @@ import kotlin.reflect.KClass
 
 data class AddWidgetScreenState(
     val screenName: String = "AddWidgetScreenScreen",
-
+    val isReadyToGoBack: Boolean = false
     )
 
 sealed class Event {

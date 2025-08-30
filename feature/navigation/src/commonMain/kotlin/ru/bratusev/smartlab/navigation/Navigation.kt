@@ -4,6 +4,7 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect // Added import
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,6 +18,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navigation
+import kotlinx.coroutines.launch // Added import
 import ru.bratusev.smartlab.feature_addWidgetScreen.AddWidgetScreen
 import ru.bratusev.smartlab.feature_customScreen.CustomScreen
 import ru.bratusev.smartlab.feature_home.HomeScreen
@@ -47,11 +49,20 @@ fun AppNavigation(navController: NavHostController) {
             }
         }
     }
+
+    LaunchedEffect(isDrawerHidden) {
+        if (!isDrawerHidden) {
+            if (drawerState.currentValue == DrawerValue.Open) {
+                drawerScope.launch { drawerState.close() }
+            }
+        }
+    }
     NavigationDrawer(
         drawerScope = drawerScope,
         drawerState = drawerState,
         isHidden = isDrawerHidden,
         navigateTo = { screen ->
+            drawerScope.launch { drawerState.close() }
             navigationApi.navigateTo(screen = screen)
         },
         currentScreenRoute = navBackStackEntry?.destination?.route ?: "",
@@ -99,7 +110,9 @@ private fun AppNavHost(
             composable(
                 Screen.CustomScreen.AddWidget.route
             ) {
-                AddWidgetScreen()
+                AddWidgetScreen(
+                    onGoBack = { navigationApi.popBackStack() }
+                )
             }
         }
 

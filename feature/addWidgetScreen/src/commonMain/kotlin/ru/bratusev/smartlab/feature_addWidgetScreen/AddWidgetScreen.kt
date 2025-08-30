@@ -11,6 +11,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,8 +36,15 @@ import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorState
 @Composable
 fun AddWidgetScreen(
     vm: AddWidgetScreenViewModel = koinViewModel(),
+    onGoBack: () -> Unit,
 ) {
     val state = vm.uiState.collectAsState()
+
+    LaunchedEffect(state.value.isReadyToGoBack) {
+        if (state.value.isReadyToGoBack) {
+            onGoBack()
+        }
+    }
 
     Scaffold(topBar = {
         AppTopBar(
@@ -47,7 +55,9 @@ fun AddWidgetScreen(
         LazyColumn(modifier = Modifier.padding(paddingValues)) {
             item {
                 WidgetItem(
-                    onAccept = { vm.handleEvent(Event.OnSaveWidget(CustomWidget.SensorsList::class)) }
+                    onAccept = {
+                        vm.handleEvent(Event.OnSaveWidget(CustomWidget.SensorsList::class))
+                    }
                 ) { SensorsListWidget() }
             }
         }

@@ -34,7 +34,7 @@ fun CustomWidget.toUi(sensors: List<ServiceEntity>, id: Int): CustomWidgetUi {
                         tints = SensorCardTints.Common.LightBulb
                     )
                 },
-                showDeleteButton = false
+                isEditMode = false
             )
     }
 }

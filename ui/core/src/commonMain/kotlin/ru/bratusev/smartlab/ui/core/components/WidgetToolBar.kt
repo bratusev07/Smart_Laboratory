@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 fun WidgetToolBar(
     modifier: Modifier = Modifier,
     title: String = "",
-    showDeleteButton: Boolean,
+    isEditMode: Boolean,
     onDeleteClick: () -> Unit,
     onEditClick: () -> Unit,
     onAddClick: () -> Unit,
@@ -44,12 +44,12 @@ fun WidgetToolBar(
             style = MaterialTheme.typography.titleMedium,
             text = title,
         )
-        Row(
-            modifier = modifier.wrapContentHeight(),
-            horizontalArrangement = Arrangement.spacedBy(3.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            AnimatedVisibility(showDeleteButton) {
+        AnimatedVisibility(isEditMode) {
+            Row(
+                modifier = modifier.wrapContentHeight(),
+                horizontalArrangement = Arrangement.spacedBy(3.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 IconButton(
                     onClick = onDeleteClick
                 ) {
@@ -59,24 +59,24 @@ fun WidgetToolBar(
                         tint = MaterialTheme.colorScheme.onBackground
                     )
                 }
-            }
-            IconButton(
-                onClick = onEditClick
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Edit,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground
-                )
-            }
-            IconButton(
-                onClick = onAddClick
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onBackground
-                )
+                IconButton(
+                    onClick = onEditClick
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Edit,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onBackground
+                    )
+                }
+                IconButton(
+                    onClick = onAddClick
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onBackground
+                    )
+                }
             }
         }
     }

@@ -52,6 +52,7 @@ fun NavigationDrawer(
     content: @Composable () -> Unit,
 ) {
     ModalNavigationDrawer(
+        drawerState = drawerState,
         modifier = Modifier.wrapContentWidth(), gesturesEnabled = !isHidden, drawerContent = {
             if (!isHidden) {
                 ModalDrawerSheet {
@@ -113,7 +114,7 @@ fun NavigationDrawer(
                     }
                 }
             }
-        }, drawerState = drawerState
+        }
     ) {
         if (isHidden) {
             content()
