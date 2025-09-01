@@ -108,7 +108,9 @@ enum class SensorState(val localeName: String) {
         fun fromString(str: String?): SensorState = when (str?.lowercase()) {
             "on", "\"on\"" -> On
             "off", "\"off\"" -> Off
-            else -> Unavailable
+            else -> {
+                Unavailable
+            }
         }
     }
 }

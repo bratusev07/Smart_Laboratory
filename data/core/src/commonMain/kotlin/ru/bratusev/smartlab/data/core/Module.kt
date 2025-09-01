@@ -15,8 +15,10 @@ import ru.bratusev.smartlab.data.core.database.AppDatabase
 import ru.bratusev.smartlab.data.core.database.DatabaseFactory
 import ru.bratusev.smartlab.data.core.database.LogcatMessageDao
 import ru.bratusev.smartlab.data.core.preview.KtorClientFactoryPreview
+import ru.bratusev.smartlab.data.core.repository.AuthRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.ButtonTextRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.LoggerRepositoryImpl
+import ru.bratusev.smartlab.data.core.repository.SocketRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.WidgetRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.preview.AuthRepositoryPreview
 import ru.bratusev.smartlab.data.core.repository.preview.ButtonTextRepositoryPreview
@@ -40,24 +42,22 @@ val dataModule = module {
     }
 
     single<SocketRepository> {
-        SocketRepositoryPreview(
-
+        SocketRepositoryImpl(
+            webSocketClient = get()
         )
     }
 
     single<AuthRepository> {
-        AuthRepositoryPreview(
+        AuthRepositoryImpl(
             client = get(),
-            dataStore = get(),
-
+            socketClient = get(),
+            dataStore = get()
         )
     }
 
     single<LoggerRepository> {
         LoggerRepositoryImpl(
-            logger = get(),
-            logcatMessageDao = get(),
-            coroutineScope = get()
+            logger = get(), logcatMessageDao = get(), coroutineScope = get()
         )
     }
 
@@ -78,9 +78,7 @@ val dataModule = module {
     }
 
     single {
-        get<DatabaseFactory>().create()
-            .setDriver(BundledSQLiteDriver())
-            .build()
+        get<DatabaseFactory>().create().setDriver(BundledSQLiteDriver()).build()
     }
 
     single<LogcatMessageDao> { get<AppDatabase>().logcatMessagesDao() }
@@ -123,9 +121,7 @@ val dataModulePreview = module {
     }
 
     single {
-        get<DatabaseFactory>().create()
-            .setDriver(BundledSQLiteDriver())
-            .build()
+        get<DatabaseFactory>().create().setDriver(BundledSQLiteDriver()).build()
     }
 
     single<CoroutineScope> {

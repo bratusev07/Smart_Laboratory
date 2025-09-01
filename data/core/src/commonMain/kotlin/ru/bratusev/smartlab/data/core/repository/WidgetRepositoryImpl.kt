@@ -33,6 +33,6 @@ class WidgetRepositoryImpl(private val dataStore: DataStore<Preferences>) : Widg
     }
 
     private companion object {
-        val WIDGETS_KEY = stringPreferencesKey("auth_token")
+        val WIDGETS_KEY = stringPreferencesKey("customScreen_widgets")
     }
 }

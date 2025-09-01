@@ -17,10 +17,11 @@ fun List<ServiceEntity>.mapToServiceListUi() = SensorCardVerticalGridUi(
 
 fun List<ServiceEntity>.mapToServicePagerUi() = SensorCardGridPagerUi(
     sensors = this.map { it.mapToUi() },
-    verticalGridsAtOneScreen = 1
+    verticalGridsAtOneScreen = 1,
+    isLoading = false
 )
 
-private fun ServiceEntity.mapToUi(): SensorCardUi.Tile = when (domain?.lowercase()) {
+internal fun ServiceEntity.mapToUi(): SensorCardUi.Tile = when (domain?.lowercase()) {
     "switch" -> this.mapSwitchToUi()
     "button" -> this.mapButtonToUi()
     else -> this.mapDefaultToUi()

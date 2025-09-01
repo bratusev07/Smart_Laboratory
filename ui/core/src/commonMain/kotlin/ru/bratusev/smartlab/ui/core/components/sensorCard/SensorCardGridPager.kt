@@ -1,12 +1,15 @@
 package ru.bratusev.smartlab.ui.core.components.sensorCard
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -33,9 +36,9 @@ import ru.bratusev.smartlab.ui.core.theme.AppTheme
 fun SensorCardGridPager(
     modifier: Modifier = Modifier,
     uiData: SensorCardGridPagerUi,
-    onSensorCardClicked: (String) -> Unit
+    onSensorCardClicked: (String) -> Unit,
 ) {
-    val sensorsByDomain: Map<String, List<SensorCardUi.Tile>> by remember {
+    val sensorsByDomain: Map<String, List<SensorCardUi.Tile>> by remember(uiData) {
         derivedStateOf {
             uiData.sensors.groupBy { it.domain.name }
         }
@@ -60,23 +63,27 @@ fun SensorCardGridPager(
                 domains = domains, currentDomainPage = pagerState.currentPage
             )
         )
+        Box {
+            this@Column.AnimatedVisibility(
+                uiData.isLoading, modifier = Modifier.align(Alignment.Center)
+            ) {
+                CircularProgressIndicator()
+            }
+            HorizontalPager(
+                state = pagerState,
+                verticalAlignment = Alignment.Top,
+                modifier = Modifier.fillMaxSize().padding(vertical = 6.dp, horizontal = 14.dp),
+                pageSpacing = 40.dp
+            ) { pageIndex ->
+                val currentDomain = domains[pageIndex]
+                val sensorsForPage = sensorsByDomain[currentDomain]!!
 
-        HorizontalPager(
-            state = pagerState,
-            verticalAlignment = Alignment.Top,
-            modifier = Modifier.fillMaxSize().padding(vertical = 6.dp, horizontal = 14.dp),
-            pageSpacing = 40.dp
-        ) { pageIndex ->
-            val currentDomain = domains[pageIndex]
-            val sensorsForPage = sensorsByDomain[currentDomain]!!
-
-            SensorCardVerticalGrid(
-                uiData = SensorCardVerticalGridUi(
-                    sensors = sensorsForPage,
-                    columnsAmount = 2
-                ),
-                onSensorCardClicked = onSensorCardClicked
-            )
+                SensorCardVerticalGrid(
+                    uiData = SensorCardVerticalGridUi(
+                        sensors = sensorsForPage, columnsAmount = 2
+                    ), onSensorCardClicked = onSensorCardClicked
+                )
+            }
         }
     }
 }
@@ -87,41 +94,39 @@ fun SensorCardGridPager(
 )
 @Composable
 private fun SensorCardGridPagerPreview() {
-    val mockData = (
-            buildList{
-                for (k in 1..5) {
-                    for (i in 1..5) {
-                        add(
-                            SensorCardUi.Tile.Medium(
-                                title = "Preview$i $k",
-                                id = "Id$i",
-                                state = SensorState.entries[(0..1).random()],
-                                domain = SensorDomain.entries.random(),
-                                drawableResource = SensorCardRes.thermometer,
-                                tints = SensorCardTints.Common.Thermometer
-                            )
-                        )
-                    }
-                    for (i in 1..5) {
-                        add(
-                            SensorCardUi.Tile.Medium(
-                                title = "Preview$i $k",
-                                id = "Id$i",
-                                state = SensorState.entries[(0..2).random()],
-                                domain = SensorDomain.entries.random(),
-                                drawableResource = SensorCardRes.lightBulb,
-                                tints = SensorCardTints.Common.LightBulb
-                            )
-                        )
-                    }
-                }
-            })
+    val mockData = (buildList {
+        for (k in 1..5) {
+            for (i in 1..5) {
+                add(
+                    SensorCardUi.Tile.Medium(
+                        title = "Preview$i $k",
+                        id = "Id$i",
+                        state = SensorState.entries[(0..1).random()],
+                        domain = SensorDomain.entries.random(),
+                        drawableResource = SensorCardRes.thermometer,
+                        tints = SensorCardTints.Common.Thermometer
+                    )
+                )
+            }
+            for (i in 1..5) {
+                add(
+                    SensorCardUi.Tile.Medium(
+                        title = "Preview$i $k",
+                        id = "Id$i",
+                        state = SensorState.entries[(0..2).random()],
+                        domain = SensorDomain.entries.random(),
+                        drawableResource = SensorCardRes.lightBulb,
+                        tints = SensorCardTints.Common.LightBulb
+                    )
+                )
+            }
+        }
+    })
 
     AppTheme {
         SensorCardGridPager(
             uiData = SensorCardGridPagerUi(
-                sensors = mockData,
-                verticalGridsAtOneScreen = 1
+                sensors = mockData, verticalGridsAtOneScreen = 1, isLoading = false
             )
         ) {}
     }

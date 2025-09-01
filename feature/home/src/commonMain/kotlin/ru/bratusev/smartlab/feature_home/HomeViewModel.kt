@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import ru.bratusev.smartlab.domain.core.model.socket.ServiceEntity
+import ru.bratusev.smartlab.domain.core.usecase.GetLoggerUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetServiceEntitiesUseCase
 import ru.bratusev.smartlab.domain.core.usecase.ObserveSocketErrorsUseCase
 import ru.bratusev.smartlab.domain.core.usecase.UpdateSensorUseCase
@@ -16,6 +17,7 @@ import ru.bratusev.smartlab.feature_home.models.HomeState
 
 class HomeViewModel(
     private val updateSensorUseCase: UpdateSensorUseCase,
+    private val logger: GetLoggerUseCase,
     getServiceEntitiesUseCase: GetServiceEntitiesUseCase,
     observeSocketErrorsUseCase: ObserveSocketErrorsUseCase,
 ) : ViewModel() {
@@ -37,8 +39,9 @@ class HomeViewModel(
     }
 
     private fun onServiceEntitiesUpdated(entities: List<ServiceEntity>) {
+        logger.d("HomeViewModel/onServiceEntitiesUpdated", "Got entities update")
         val switches: List<ServiceEntity> = entities
-        updateState(uiState.value.copy(serviceEntities = switches))
+        updateState(uiState.value.copy(serviceEntities = switches, isUpdating = false))
     }
 
     private fun onCustomButtonClicked() {
@@ -52,9 +55,22 @@ class HomeViewModel(
     }
 
     private fun onSwitchUpdated(switchId: String) {
+        updateState(_uiState.value.copy(isUpdating = true))
         uiState.value.serviceEntities.find { it.id == switchId }?.let {
             it.id?.let { id ->
-                updateSensorUseCase.invoke(id).onEach {  }.launchIn(viewModelScope)
+                updateSensorUseCase.invoke(id).onEach { result ->
+                    result.fold(
+                        onSuccess = {
+                            logger.d("HomeViewModel switch switch", "Switched switch with id: $id")
+                        },
+                        onFailure = { error ->
+                            logger.e(
+                                "HomeViewModel switch switch",
+                                "Could switch with error: $error"
+                            )
+                        }
+                    )
+                }.launchIn(viewModelScope)
             }
         }
     }
