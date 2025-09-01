@@ -10,8 +10,8 @@ sealed class CustomWidgetUi {
         isEditMode: Boolean = this.isEditMode,
     ): CustomWidgetUi
 
-    data class SensorsList(
-        val sensorsToShow: List<SensorCardUi.Widget.Switches>,
+    data class ManySensorsList(
+        val sensorsToShow: List<SensorCardUi.Widget.Switch>,
         val sensorsToChooseFrom: List<SensorCardUi.Modal>,
         override val id: Int,
         override val isEditMode: Boolean = false,
@@ -24,6 +24,24 @@ sealed class CustomWidgetUi {
             id = id,
             isEditMode = isEditMode,
             sensorsToShow = sensorsToShow,
+            sensorsToChooseFrom = sensorsToChooseFrom
+        )
+    }
+
+    data class SingleSensor(
+        val sensor: SensorCardUi.Widget.Switch,
+        val sensorsToChooseFrom: List<SensorCardUi.Modal>,
+        override val id: Int,
+        override val isEditMode: Boolean = false,
+    ) :
+        CustomWidgetUi() {
+        override fun copy(
+            id: Int,
+            isEditMode: Boolean,
+        ): CustomWidgetUi = copy(
+            id = id,
+            isEditMode = isEditMode,
+            sensor = sensor,
             sensorsToChooseFrom = sensorsToChooseFrom
         )
     }

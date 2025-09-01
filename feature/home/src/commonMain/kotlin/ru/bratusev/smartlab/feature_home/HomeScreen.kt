@@ -18,7 +18,6 @@ fun HomeScreen(
 ) {
     val state = vm.uiState.collectAsState()
     if (state.value.sensorCardGridPagerUiData.sensors.isNotEmpty()) {
-        println("HomeScreen state changed and triggered recomposition")
         SensorCardGridPager(
             uiData = state.value.sensorCardGridPagerUiData,
             onSensorCardClicked = { vm.handleEvent(Event.OnSwitchUpdated(it)) }

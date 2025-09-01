@@ -31,7 +31,7 @@ import ru.bratusev.smartlab.ui.core.theme.Colors
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FindSensorModal(
+fun FindManySensorModal(
     sensors: List<SensorCardUi.Modal>,
     filterDomain: SensorDomain,
     sheetState: SheetState = rememberModalBottomSheetState(),

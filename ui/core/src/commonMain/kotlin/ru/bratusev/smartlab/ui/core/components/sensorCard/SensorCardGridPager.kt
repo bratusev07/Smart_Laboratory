@@ -64,11 +64,6 @@ fun SensorCardGridPager(
             )
         )
         Box {
-            this@Column.AnimatedVisibility(
-                uiData.isLoading, modifier = Modifier.align(Alignment.Center)
-            ) {
-                CircularProgressIndicator()
-            }
             HorizontalPager(
                 state = pagerState,
                 verticalAlignment = Alignment.Top,
@@ -83,6 +78,11 @@ fun SensorCardGridPager(
                         sensors = sensorsForPage, columnsAmount = 2
                     ), onSensorCardClicked = onSensorCardClicked
                 )
+            }
+            this@Column.AnimatedVisibility(
+                uiData.isLoading, modifier = Modifier.align(Alignment.TopCenter)
+            ) {
+                CircularProgressIndicator()
             }
         }
     }

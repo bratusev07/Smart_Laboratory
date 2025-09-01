@@ -23,7 +23,8 @@ import org.koin.compose.viewmodel.koinViewModel
 import ru.bratusev.smartlab.domain.core.model.CustomWidget
 import ru.bratusev.smartlab.feature_addWidgetScreen.models.Event
 import ru.bratusev.smartlab.ui.core.components.AppTopBar
-import ru.bratusev.smartlab.ui.core.components.widgets.SensorsWidget
+import ru.bratusev.smartlab.ui.core.components.widgets.ManySensorsWidget
+import ru.bratusev.smartlab.ui.core.components.widgets.SingleSensorWidget
 import ru.bratusev.smartlab.ui.core.models.AppTopBarUi
 import ru.bratusev.smartlab.ui.core.models.CustomWidgetUi
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardRes
@@ -58,7 +59,14 @@ fun AddWidgetScreen(
                     onAccept = {
                         vm.handleEvent(Event.OnSaveWidget(CustomWidget.SensorsList::class))
                     }
-                ) { SensorsListWidget() }
+                ) { ManySensorsListWidgetPreview() }
+            }
+            item {
+                WidgetItem(
+                    onAccept = {
+                        vm.handleEvent(Event.OnSaveWidget(CustomWidget.SingleSensor::class))
+                    }
+                ) { SingleSensorWidgetPreview() }
             }
         }
     }
@@ -113,11 +121,48 @@ private fun WidgetItem(onAccept: () -> Unit, content: @Composable () -> Unit) {
 }
 
 @Composable
-private fun SensorsListWidget() {
+private fun SingleSensorWidgetPreview() {
+    val sensor = SensorCardUi.Widget.Switch(
+        title = "title",
+        description = "description",
+        id = "id",
+        state = SensorState.On,
+        domain = SensorDomain.SWITCH,
+        drawableResource = SensorCardRes.lightBulb,
+        tints = SensorCardTints.Common.LightBulb
+    )
+    val data2 = buildList {
+        for (i in 1..5) {
+            add(
+                SensorCardUi.Modal(
+                    title = "Preview$i",
+                    id = "Id$i",
+                    state = SensorState.entries[(0..2).random()],
+                    domain = SensorDomain.SWITCH,
+                    drawableResource = SensorCardRes.lightBulb,
+                    tints = SensorCardTints.Common.LightBulb
+                )
+            )
+        }
+    }
+    SingleSensorWidget(
+        uiData = CustomWidgetUi.SingleSensor(
+            sensor = sensor,
+            sensorsToChooseFrom = data2,
+            id = 1
+        ),
+        onToggle = { _, _ -> },
+        onSubmit = {},
+        onDeleteWidgetClick = {}
+    )
+}
+
+@Composable
+private fun ManySensorsListWidgetPreview() {
     val data = buildList {
         for (i in 1..5) {
             add(
-                SensorCardUi.Widget.Switches(
+                SensorCardUi.Widget.Switch(
                     title = "Preview$i",
                     id = "Id$i",
                     state = SensorState.entries[(0..2).random()],
@@ -142,8 +187,8 @@ private fun SensorsListWidget() {
             )
         }
     }
-    SensorsWidget(
-        uiData = CustomWidgetUi.SensorsList(
+    ManySensorsWidget(
+        uiData = CustomWidgetUi.ManySensorsList(
             sensorsToShow = data, sensorsToChooseFrom = data2, id = 1,
         ), onToggle = { _, _ -> {} }, onSubmit = {},
         onDeleteWidgetClick = {}

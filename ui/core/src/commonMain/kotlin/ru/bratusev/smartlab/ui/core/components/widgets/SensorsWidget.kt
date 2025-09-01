@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ru.bratusev.smartlab.ui.core.components.WidgetToolBar
-import ru.bratusev.smartlab.ui.core.components.modals.FindSensorModal
+import ru.bratusev.smartlab.ui.core.components.modals.FindManySensorModal
 import ru.bratusev.smartlab.ui.core.components.sensorCard.SensorCardRow
 import ru.bratusev.smartlab.ui.core.models.CustomWidgetUi
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardRes
@@ -26,16 +26,16 @@ import ru.bratusev.smartlab.ui.core.theme.AppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SensorsWidget(
+fun ManySensorsWidget(
     modifier: Modifier = Modifier,
-    uiData: CustomWidgetUi.SensorsList,
+    uiData: CustomWidgetUi.ManySensorsList,
     onToggle: (id: String, newState: SensorState) -> Unit,
     onSubmit: (chosenIds: List<String>) -> Unit,
     onDeleteWidgetClick: () -> Unit,
 ) {
     var isModalOpen by remember { mutableStateOf(false) }
     if (isModalOpen) {
-        FindSensorModal(
+        FindManySensorModal(
             sensors = uiData.sensorsToChooseFrom,
             filterDomain = SensorDomain.SWITCH,
             onClose = { isModalOpen = false },
@@ -90,7 +90,7 @@ private fun SensorsWidgetPreview() {
         val data = buildList {
             for (i in 1..30) {
                 add(
-                    SensorCardUi.Widget.Switches(
+                    SensorCardUi.Widget.Switch(
                         title = "Preview$i",
                         id = "Id$i",
                         state = SensorState.entries[(0..2).random()],
@@ -115,8 +115,8 @@ private fun SensorsWidgetPreview() {
                 )
             }
         }
-        SensorsWidget(
-            uiData = CustomWidgetUi.SensorsList(
+        ManySensorsWidget(
+            uiData = CustomWidgetUi.ManySensorsList(
                 sensorsToShow = data, id = 1,
                 sensorsToChooseFrom = data2,
             ), onToggle = { _, _ -> {} }, onSubmit = {}, onDeleteWidgetClick = {})

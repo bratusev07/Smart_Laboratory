@@ -56,8 +56,9 @@ sealed class SensorCardUi {
     }
 
     sealed class Widget : SensorCardUi() {
-        data class Switches(
+        data class Switch(
             val title: String,
+            val description: String? = null,
             override val id: String,
             override val state: SensorState,
             override val domain: SensorDomain,

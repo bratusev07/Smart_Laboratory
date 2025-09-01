@@ -9,7 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import ru.bratusev.smartlab.ui.core.components.widgets.SensorsWidget
+import ru.bratusev.smartlab.ui.core.components.widgets.ManySensorsWidget
+import ru.bratusev.smartlab.ui.core.components.widgets.SingleSensorWidget
 import ru.bratusev.smartlab.ui.core.models.CustomWidgetEvent
 import ru.bratusev.smartlab.ui.core.models.CustomWidgetUi
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardRes
@@ -27,7 +28,7 @@ fun CustomWidget(uiData: CustomWidgetUi, onEvent: (event: CustomWidgetEvent) -> 
         )
     ) {
         when (uiData) {
-            is CustomWidgetUi.SensorsList -> SensorsWidget(
+            is CustomWidgetUi.ManySensorsList -> ManySensorsWidget(
                 uiData = uiData,
                 onToggle = { sensorId, newState ->
                     onEvent(CustomWidgetEvent.SensorStateChange(sensorId, newState))
@@ -40,6 +41,15 @@ fun CustomWidget(uiData: CustomWidgetUi, onEvent: (event: CustomWidgetEvent) -> 
                     )
                 },
                 onDeleteWidgetClick = { onEvent(CustomWidgetEvent.DeleteWidget) }
+            )
+
+            is CustomWidgetUi.SingleSensor -> SingleSensorWidget(
+                uiData = uiData,
+                onToggle = { sensorId, newState ->
+                    onEvent(CustomWidgetEvent.SensorStateChange(sensorId, newState))
+                },
+                onSubmit = TODO(),
+                onDeleteWidgetClick = TODO()
             )
         }
     }
@@ -54,7 +64,7 @@ private fun SensorListPreview() {
         val data = buildList {
             for (i in 1..30) {
                 add(
-                    SensorCardUi.Widget.Switches(
+                    SensorCardUi.Widget.Switch(
                         title = "Preview$i",
                         id = "Id$i",
                         state = SensorState.entries[(0..2).random()],
@@ -80,7 +90,7 @@ private fun SensorListPreview() {
             }
         }
         CustomWidget(
-            uiData = CustomWidgetUi.SensorsList(
+            uiData = CustomWidgetUi.ManySensorsList(
                 sensorsToShow = data, id = 1, sensorsToChooseFrom = data2
             ), onEvent = {})
     }

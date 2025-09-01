@@ -11,10 +11,21 @@ sealed class CustomWidgetEntity {
     @Serializable
     class SensorsList(val sensorsIds: List<String>, override val id: Int) :
         CustomWidgetEntity() {
-        override fun toDomain(): CustomWidget.SensorsList {
+        override fun toDomain(): CustomWidget {
             return CustomWidget.SensorsList(
                 sensorsIds = this.sensorsIds,
                 id = this.id
+            )
+        }
+    }
+
+    @Serializable
+    class SingleSensor(val sensorId: String, override val id: Int) :
+        CustomWidgetEntity() {
+        override fun toDomain(): CustomWidget {
+            return CustomWidget.SingleSensor(
+                sensorId = sensorId,
+                id = id
             )
         }
     }

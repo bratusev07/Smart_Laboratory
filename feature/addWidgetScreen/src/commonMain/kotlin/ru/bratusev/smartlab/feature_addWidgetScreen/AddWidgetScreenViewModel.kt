@@ -30,44 +30,41 @@ class AddWidgetScreenViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun saveWidget(widget: KClass<out CustomWidget>) {
-        getWidgetsUseCase()
-            .map { result -> result.getOrThrow() }
-            .flatMapLatest { currentWidgets ->
-                val mutableWidgets = currentWidgets.toMutableList()
-                val newId = (mutableWidgets.maxOfOrNull { it.id } ?: 0) + 1
+        getWidgetsUseCase().map { result -> result.getOrThrow() }.flatMapLatest { currentWidgets ->
+            val mutableWidgets = currentWidgets.toMutableList()
+            val newId = (mutableWidgets.maxOfOrNull { it.id } ?: 0) + 1
 
-                val actualWidget = when (widget) {
-                    CustomWidget.SensorsList::class -> {
-                        CustomWidget.SensorsList(sensorsIds = emptyList(), id = newId)
-                    }
-
-                    else -> {
-                        throw IllegalArgumentException("Unsupported widget type: $widget")
-                    }
+            val actualWidget = when (widget) {
+                CustomWidget.SensorsList::class -> {
+                    CustomWidget.SensorsList(sensorsIds = emptyList(), id = newId)
                 }
 
-                mutableWidgets.add(actualWidget)
+                // TODO: Сделать вместе с добавления этого виджета и выбор сенсора, чтобы id не был случайным
+                CustomWidget.SingleSensor::class -> {
+                    CustomWidget.SingleSensor(
+                        sensorId = "-123$newId", id = newId
+                    )
+                }
 
-                saveWidgetUseCase(mutableWidgets)
+                else -> {
+                    throw IllegalArgumentException("Unsupported widget type: $widget")
+                }
             }
-            .onEach { saveResult ->
-                saveResult.fold(
-                    onSuccess = {
-                        logger.d(
-                            "Save widgets useCase",
-                            "Successfully saved new widget."
-                        )
-                    },
-                    onFailure = { error -> logger.e("Save widgets useCase", error.toString()) }
+
+            mutableWidgets.add(actualWidget)
+
+            saveWidgetUseCase(mutableWidgets)
+        }.onEach { saveResult ->
+            saveResult.fold(onSuccess = {
+                logger.d(
+                    "Save widgets useCase", "Successfully saved new widget."
                 )
-            }
-            .catch { error ->
-                logger.e("SaveWidget Chain", "An error occurred: ${error.message}")
-            }
-            .onCompletion {
-                updateState(_uiState.value.copy(isReadyToGoBack = true))
-            }
-            .launchIn(viewModelScope)
+            }, onFailure = { error -> logger.e("Save widgets useCase", error.toString()) })
+        }.catch { error ->
+            logger.e("SaveWidget Chain", "An error occurred: ${error.message}")
+        }.onCompletion {
+            updateState(_uiState.value.copy(isReadyToGoBack = true))
+        }.launchIn(viewModelScope)
     }
 
     private fun updateState(updatedState: AddWidgetScreenState) {
