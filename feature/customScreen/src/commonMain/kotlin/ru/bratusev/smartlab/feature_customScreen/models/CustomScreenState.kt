@@ -33,9 +33,14 @@ sealed class Event {
         val newState: SensorState,
     ) : Event()
 
-    data class OnSwitchesWidgetChanged(
+    data class ChosenManySwitchesChange(
         val widgetId: Int,
         val chosenIds: List<String>,
+    ) : Event()
+
+    data class ChosenSingleSwitchChange(
+        val widgetId: Int,
+        val chosenId: String,
     ) : Event()
 
     data object LoadData : Event()

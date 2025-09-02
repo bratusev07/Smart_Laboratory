@@ -96,7 +96,22 @@ class CustomScreenViewModel(
     private fun onSwitchUpdated(switchId: String) {
         uiState.value.switchesEntities.find { it.id == switchId }?.let {
             it.id?.let { id ->
-                updateSensorUseCase.invoke(id).onEach { }.launchIn(viewModelScope)
+                updateSensorUseCase.invoke(id).onEach { result ->
+                    result.fold(
+                        onSuccess = {
+                            logger.d(
+                                "CustomScreenViewModel switch switch",
+                                "Switched switch with id: $id"
+                            )
+                        },
+                        onFailure = { error ->
+                            logger.e(
+                                "CustomScreenViewModel switch switch",
+                                "Could switch with error: $error"
+                            )
+                        }
+                    )
+                }.launchIn(viewModelScope)
             }
         }
     }
@@ -124,7 +139,7 @@ class CustomScreenViewModel(
                 event.sensorId
             )
 
-            is Event.OnSwitchesWidgetChanged -> updateWidget(
+            is Event.ChosenManySwitchesChange -> updateWidget(
                 newState = SensorsList(
                     sensorsIds = event.chosenIds, id = event.widgetId
                 )
@@ -134,6 +149,12 @@ class CustomScreenViewModel(
             Event.ToggleDropDownMenu -> toggleDropDownMenu()
             is Event.DeleteWidget -> deleteWidget(event.widgetId)
             Event.ToggleEditMode -> toggleEditMode()
+            is Event.ChosenSingleSwitchChange -> updateWidget(
+                CustomWidget.SingleSensor(
+                    sensorId = event.chosenId,
+                    id = event.widgetId
+                )
+            )
         }
     }
 }

@@ -24,8 +24,9 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import ru.bratusev.smartlab.feature_customScreen.models.Event
+import ru.bratusev.smartlab.feature_customScreen.models.Event.ChosenManySwitchesChange
+import ru.bratusev.smartlab.feature_customScreen.models.Event.DeleteWidget
 import ru.bratusev.smartlab.feature_customScreen.models.Event.OnSensorStateChanged
-import ru.bratusev.smartlab.feature_customScreen.models.Event.OnSwitchesWidgetChanged
 import ru.bratusev.smartlab.ui.core.components.CustomWidget
 import ru.bratusev.smartlab.ui.core.models.CustomWidgetEvent
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
@@ -140,12 +141,16 @@ private fun getVmEvent(widgetId: Int, widgetEvent: CustomWidgetEvent): Event {
             widgetId, widgetEvent.sensorId, widgetEvent.newState
         )
 
-        is CustomWidgetEvent.ChosenSwitchesChange -> OnSwitchesWidgetChanged(
+        is CustomWidgetEvent.ChosenManySwitchesChange -> ChosenManySwitchesChange(
             widgetId = widgetId, chosenIds = widgetEvent.chosenIds
         )
 
-        CustomWidgetEvent.DeleteWidget -> Event.DeleteWidget(
+        CustomWidgetEvent.DeleteWidget -> DeleteWidget(
             widgetId = widgetId
+        )
+
+        is CustomWidgetEvent.ChosenSingleSwitchChange -> Event.ChosenSingleSwitchChange(
+            widgetId = widgetId, chosenId = widgetEvent.chosenId
         )
     }
 }

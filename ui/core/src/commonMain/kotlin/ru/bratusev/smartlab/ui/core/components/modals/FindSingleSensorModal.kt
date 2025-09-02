@@ -1,5 +1,6 @@
 package ru.bratusev.smartlab.ui.core.components.modals
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -74,21 +75,23 @@ private fun ModalBottomSheetContent(
                 })
         }
         items(sensors, key = { it.id }) { sensor ->
-            SensorModalItem(sensor, checked = sensor.id == selectedId, onCheckedChange = {
-                selectedId = sensor.id
-            })
+            SensorModalItem(
+                modifier = Modifier.clickable { selectedId = sensor.id },
+                sensor,
+                checked = sensor.id == selectedId
+            )
         }
     }
 }
 
 @Composable
 private fun SensorModalItem(
+    modifier: Modifier = Modifier,
     sensor: SensorCardUi.Modal,
     checked: Boolean,
-    onCheckedChange: () -> Unit,
 ) {
     SensorCardRow(
-        uiData = SensorCardUi.Row(
+        modifier = modifier, uiData = SensorCardUi.Row(
             title = sensor.title ?: "",
             id = sensor.id,
             state = sensor.state,
@@ -97,9 +100,7 @@ private fun SensorModalItem(
             tints = sensor.tints
         ), buttonContent = {
             RadioButton(
-                selected = checked,
-                onClick = { onCheckedChange() }
-            )
+                selected = checked, onClick = { })
         }, label = {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 SensorCardRowLabel(

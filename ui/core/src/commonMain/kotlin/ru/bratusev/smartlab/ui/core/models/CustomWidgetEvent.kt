@@ -6,8 +6,10 @@ sealed class CustomWidgetEvent {
     data class SensorStateChange(val sensorId: String, val newState: SensorState) :
         CustomWidgetEvent()
 
-    data class ChosenSwitchesChange(val chosenIds: List<String>) :
+    data class ChosenManySwitchesChange(val chosenIds: List<String>) :
         CustomWidgetEvent()
 
-    data object  DeleteWidget: CustomWidgetEvent()
+    data class ChosenSingleSwitchChange(val chosenId: String) : CustomWidgetEvent()
+
+    data object DeleteWidget : CustomWidgetEvent()
 }

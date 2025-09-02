@@ -52,9 +52,8 @@ fun SingleSensorWidget(
             onDeleteClick = onDeleteWidgetClick
         )
         SensorCardTile(
-            sensorCardUi = SensorCardUi.Tile.Large(
-                title = uiData.sensor.title,
-                description = uiData.sensor.description ?: "",
+            sensorCardUi = SensorCardUi.Tile.Medium(
+                title = uiData.sensor.title.ifEmpty { uiData.sensor.id },
                 id = uiData.sensor.id,
                 state = uiData.sensor.state,
                 domain = uiData.sensor.domain,

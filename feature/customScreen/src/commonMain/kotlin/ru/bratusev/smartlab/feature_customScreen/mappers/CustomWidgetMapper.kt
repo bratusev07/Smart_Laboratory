@@ -45,10 +45,9 @@ fun CustomWidget.toUi(sensors: List<ServiceEntity>, id: Int): CustomWidgetUi {
                     sensors.find { it.id == this.sensorId }?.let {
                         Switch(
                             title = "",
-                            description = null,
                             id = sensorId,
-                            state = SensorState.fromString(it?.state),
-                            domain = SensorDomain.fromString(it?.domain),
+                            state = SensorState.fromString(it.state),
+                            domain = SensorDomain.fromString(it.domain),
                             drawableResource = SensorCardRes.lightBulb,
                             tints = SensorCardTints.Common.LightBulb
                         )

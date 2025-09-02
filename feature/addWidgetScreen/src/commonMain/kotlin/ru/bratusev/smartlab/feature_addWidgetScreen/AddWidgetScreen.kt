@@ -124,7 +124,6 @@ private fun WidgetItem(onAccept: () -> Unit, content: @Composable () -> Unit) {
 private fun SingleSensorWidgetPreview() {
     val sensor = SensorCardUi.Widget.Switch(
         title = "title",
-        description = "description",
         id = "id",
         state = SensorState.On,
         domain = SensorDomain.SWITCH,

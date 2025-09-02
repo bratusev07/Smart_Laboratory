@@ -35,7 +35,7 @@ fun CustomWidget(uiData: CustomWidgetUi, onEvent: (event: CustomWidgetEvent) -> 
                 },
                 onSubmit = { chosenIds ->
                     onEvent(
-                        CustomWidgetEvent.ChosenSwitchesChange(
+                        CustomWidgetEvent.ChosenManySwitchesChange(
                             chosenIds
                         )
                     )
@@ -48,8 +48,12 @@ fun CustomWidget(uiData: CustomWidgetUi, onEvent: (event: CustomWidgetEvent) -> 
                 onToggle = { sensorId, newState ->
                     onEvent(CustomWidgetEvent.SensorStateChange(sensorId, newState))
                 },
-                onSubmit = TODO(),
-                onDeleteWidgetClick = TODO()
+                onSubmit = {chosenId ->
+                    onEvent(
+                        CustomWidgetEvent.ChosenSingleSwitchChange(chosenId)
+                    )
+                },
+                onDeleteWidgetClick = { onEvent(CustomWidgetEvent.DeleteWidget) }
             )
         }
     }
