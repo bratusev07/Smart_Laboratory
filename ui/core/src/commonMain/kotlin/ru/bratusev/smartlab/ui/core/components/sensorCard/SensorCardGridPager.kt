@@ -80,7 +80,7 @@ fun SensorCardGridPager(
                 )
             }
             this@Column.AnimatedVisibility(
-                uiData.isLoading, modifier = Modifier.align(Alignment.TopCenter)
+                uiData.isLoading, modifier = Modifier.align(Alignment.TopCenter).padding(48.dp)
             ) {
                 CircularProgressIndicator()
             }

@@ -4,11 +4,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
 import ru.bratusev.smartlab.data.core.mapper.toEntity
-import ru.bratusev.smartlab.data.core.model.CustomWidgetEntity
 import ru.bratusev.smartlab.domain.core.model.CustomWidget
 import ru.bratusev.smartlab.domain.core.repository.WidgetsRepository
 
@@ -25,11 +22,20 @@ class WidgetRepositoryPreview(private val dataStore: DataStore<Preferences>) : W
     }
 
     override suspend fun getWidgets(): List<CustomWidget> {
-        val widgetsJsonString = dataStore.data.map { preferences ->
-            preferences[WIDGETS_KEY]
-        }.first() ?: return emptyList()
-        val result =
-            Json.decodeFromString<List<CustomWidgetEntity>>(widgetsJsonString).map { it.toDomain() }
+        val result = buildList {
+            add(
+                CustomWidget.SingleSensor(
+                    sensorId = "Id1",
+                    id = 1
+                )
+            )
+            add(
+                CustomWidget.SensorsList(
+                    sensorsIds = listOf("Id1", "Id2"),
+                    id = 2
+                )
+            )
+        }
         println("✅ Preview: Widgets read result $result")
         return result
     }

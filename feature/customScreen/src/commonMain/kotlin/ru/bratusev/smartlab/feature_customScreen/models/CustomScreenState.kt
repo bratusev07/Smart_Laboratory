@@ -9,6 +9,7 @@ import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorState
 data class CustomScreenState(
     val screenName: String = "CustomScreen Screen",
 
+    val isUpdating: Boolean = false,
     val isDropDownMenuExpanded: Boolean = false,
     val isEditMode: Boolean = false,
     val widgets: List<CustomWidget> = emptyList(),

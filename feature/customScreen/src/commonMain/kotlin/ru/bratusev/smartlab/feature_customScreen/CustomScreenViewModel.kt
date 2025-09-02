@@ -6,6 +6,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import ru.bratusev.smartlab.domain.core.model.CustomWidget
@@ -90,27 +91,36 @@ class CustomScreenViewModel(
 
     private fun updateWidgets(updatedWidgets: List<CustomWidget>) {
         updateState(_uiState.value.copy(widgets = updatedWidgets))
-        saveWidgets.invoke(updatedWidgets).launchIn(viewModelScope)
+        saveWidgets.invoke(updatedWidgets).onEach { result ->
+            result.fold(onSuccess = {
+                logger.d("CustomScreenViewModel/updateWidgets", "Successfully saved widgets")
+            }, onFailure = { error ->
+                logger.e(
+                    "CustomScreenViewModel/updateWidget",
+                    "Error during saving widgets. Error $error"
+                )
+            })
+        }.launchIn(viewModelScope)
     }
 
     private fun onSwitchUpdated(switchId: String) {
+        updateState(_uiState.value.copy(isUpdating = true))
         uiState.value.switchesEntities.find { it.id == switchId }?.let {
             it.id?.let { id ->
                 updateSensorUseCase.invoke(id).onEach { result ->
-                    result.fold(
-                        onSuccess = {
-                            logger.d(
-                                "CustomScreenViewModel switch switch",
-                                "Switched switch with id: $id"
-                            )
-                        },
-                        onFailure = { error ->
-                            logger.e(
-                                "CustomScreenViewModel switch switch",
-                                "Could switch with error: $error"
-                            )
-                        }
-                    )
+                    result.fold(onSuccess = {
+                        logger.d(
+                            "CustomScreenViewModel switch switch",
+                            "Switched switch with id: $id"
+                        )
+                    }, onFailure = { error ->
+                        logger.e(
+                            "CustomScreenViewModel switch switch",
+                            "Could switch with error: $error"
+                        )
+                    })
+                }.onCompletion {
+                    updateState(_uiState.value.copy(isUpdating = false))
                 }.launchIn(viewModelScope)
             }
         }
@@ -151,8 +161,7 @@ class CustomScreenViewModel(
             Event.ToggleEditMode -> toggleEditMode()
             is Event.ChosenSingleSwitchChange -> updateWidget(
                 CustomWidget.SingleSensor(
-                    sensorId = event.chosenId,
-                    id = event.widgetId
+                    sensorId = event.chosenId, id = event.widgetId
                 )
             )
         }
