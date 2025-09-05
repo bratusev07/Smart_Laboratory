@@ -2,6 +2,7 @@ package ru.bratusev.smartlab.data.core
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.websocket.DefaultClientWebSocketSession
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.plugins.websocket.webSocket
@@ -20,11 +21,11 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import ru.bratusev.smartlab.data.core.model.ServiceEntity
 import ru.bratusev.smartlab.data.core.message.HomeAssistantMessageHandlers
 import ru.bratusev.smartlab.data.core.message.HomeAssistantMessageHandlersImpl
 import ru.bratusev.smartlab.data.core.message.HomeAssistantMessageSender
 import ru.bratusev.smartlab.data.core.message.HomeAssistantMessageSenderImpl
+import ru.bratusev.smartlab.data.core.model.ServiceEntity
 
 
 class HomeAssistantWebSocketClient() {
@@ -32,6 +33,9 @@ class HomeAssistantWebSocketClient() {
     private var accessToken: String? = null
 
     private val client = HttpClient(CIO) {
+        install(HttpTimeout) {
+            requestTimeoutMillis = 10000
+        }
         install(WebSockets)
     }
 
@@ -113,11 +117,13 @@ class HomeAssistantWebSocketClient() {
                     jsonElement = jsonElement,
                     accessToken = accessToken
                 )
+
                 "auth_ok" -> messageHandlers.handleAuthOk(
                     jsonElement = jsonElement,
                     getMessageId = { messageId },
                     setMessageId = { newId -> messageId = newId }
                 )
+
                 "auth_invalid" -> messageHandlers.handleAuthInvalid(jsonElement = jsonElement)
                 "result" -> messageHandlers.handleResult(jsonElement = jsonElement)
                 "event" -> messageHandlers.handleEvent(
@@ -126,6 +132,7 @@ class HomeAssistantWebSocketClient() {
                     setServiceEntitiesCopy = { list -> _serviceEntityCopy = list },
                     emitServiceEntities = { list -> _serviceEntitiesFlow.tryEmit(list) }
                 )
+
                 "pong" -> messageHandlers.handlePong(jsonElement = jsonElement)
                 else -> {
                     println("Unknown message type: $type")
