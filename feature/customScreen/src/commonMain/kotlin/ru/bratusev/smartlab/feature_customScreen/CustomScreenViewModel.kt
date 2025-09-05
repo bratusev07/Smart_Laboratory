@@ -6,7 +6,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import ru.bratusev.smartlab.domain.core.model.CustomWidget
@@ -72,7 +71,7 @@ class CustomScreenViewModel(
 
     private fun onServiceEntitiesUpdated(entities: List<ServiceEntity>) {
         val switches: List<ServiceEntity> = entities.filter { it.domain == "switch" }
-        updateState(uiState.value.copy(switchesEntities = switches))
+        updateState(uiState.value.copy(switchesEntities = switches, isUpdating = false))
     }
 
     private fun toggleDropDownMenu() {
@@ -119,8 +118,6 @@ class CustomScreenViewModel(
                             "Could switch with error: $error"
                         )
                     })
-                }.onCompletion {
-                    updateState(_uiState.value.copy(isUpdating = false))
                 }.launchIn(viewModelScope)
             }
         }

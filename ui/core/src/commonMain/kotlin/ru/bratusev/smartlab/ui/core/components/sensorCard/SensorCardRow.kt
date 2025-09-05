@@ -49,7 +49,7 @@ fun SensorCardRow(
                 drawableRes = uiData.drawableResource, state = uiData.state, tints = uiData.tints
             )
             Column {
-                Text("${uiData.title} ${uiData.id}", style = MaterialTheme.typography.titleMedium)
+                Text(uiData.title, style = MaterialTheme.typography.titleMedium)
                 label()
             }
         }

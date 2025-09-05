@@ -80,7 +80,7 @@ fun SensorCardGridPager(
                 )
             }
             this@Column.AnimatedVisibility(
-                uiData.isLoading, modifier = Modifier.align(Alignment.TopCenter).padding(48.dp)
+                uiData.isUpdating, modifier = Modifier.align(Alignment.TopCenter).padding(48.dp)
             ) {
                 CircularProgressIndicator()
             }
@@ -126,7 +126,7 @@ private fun SensorCardGridPagerPreview() {
     AppTheme {
         SensorCardGridPager(
             uiData = SensorCardGridPagerUi(
-                sensors = mockData, verticalGridsAtOneScreen = 1, isLoading = false
+                sensors = mockData, verticalGridsAtOneScreen = 1, isUpdating = false
             )
         ) {}
     }

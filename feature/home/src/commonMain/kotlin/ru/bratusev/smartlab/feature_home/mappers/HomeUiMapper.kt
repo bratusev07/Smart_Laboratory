@@ -15,10 +15,10 @@ fun List<ServiceEntity>.mapToServiceListUi() = SensorCardVerticalGridUi(
     columnsAmount = 2
 )
 
-fun List<ServiceEntity>.mapToServicePagerUi() = SensorCardGridPagerUi(
+fun List<ServiceEntity>.mapToServicePagerUi(isUpdating: Boolean = false) = SensorCardGridPagerUi(
     sensors = this.map { it.mapToUi() },
     verticalGridsAtOneScreen = 1,
-    isLoading = false
+    isUpdating = isUpdating
 )
 
 internal fun ServiceEntity.mapToUi(): SensorCardUi.Tile = when (domain?.lowercase()) {
