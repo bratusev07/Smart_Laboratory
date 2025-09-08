@@ -19,7 +19,10 @@ fun mapJsonToServiceEntityList(jsonString: String): List<ServiceEntity> {
     return entities.map { (key, value) ->
         val entity = json.decodeFromJsonElement<ServiceEntity>(value)
         val attributes = json.decodeFromJsonElement<ServiceEntityAttributes>(entity.rawAttributes!!)
-        entity.copy(id = key, domain = key.split(".")[0], attributes = attributes)
+        val resultEntity =
+            entity.copy(id = key, domain = key.split(".")[0], attributes = attributes)
+        println("result entity: $resultEntity")
+        resultEntity
     }
 }
 
@@ -41,6 +44,7 @@ fun mapJsonToEventPair(jsonString: String): Pair<String, String> {
 
 fun ServiceEntityAttributes.toDomain() = DomainServiceEntityAttributes(
     icon = icon,
+    measurementUnit = measurementUnit,
     friendlyName = friendlyName,
     deviceClass = deviceClass,
 )

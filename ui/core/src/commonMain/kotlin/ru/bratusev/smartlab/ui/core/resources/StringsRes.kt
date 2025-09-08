@@ -25,6 +25,7 @@ object StringsRes {
 
     // -----------SENSOR DOMAIN--------------------
     val SWITCH = "Переключатель"
+    val SENSOR = "Датчик"
     val UNKNOWN = "Неизвестно"
 
 }

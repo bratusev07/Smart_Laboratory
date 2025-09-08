@@ -111,7 +111,7 @@ private fun SensorModalItem(
                     borderColor = when (sensor.state) {
                         SensorState.On -> Colors.success
                         SensorState.Off -> MaterialTheme.colorScheme.errorContainer
-                        SensorState.Unavailable -> MaterialTheme.colorScheme.outline
+                        else -> MaterialTheme.colorScheme.outline
                     }
                 )
             }
@@ -128,7 +128,7 @@ private fun FindSenorModalContent() {
         for (i in 1..30) {
             add(
                 SensorCardUi.Modal(
-                    state = SensorState.entries.random(),
+                    state = SensorState.On,
                     title = "Preview",
                     id = "Id$i",
                     domain = SensorDomain.SWITCH,

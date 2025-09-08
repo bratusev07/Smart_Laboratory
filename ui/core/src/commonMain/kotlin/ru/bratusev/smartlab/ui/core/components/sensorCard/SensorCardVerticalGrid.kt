@@ -56,7 +56,7 @@ private fun SensorCardVerticalGridLightBulbs() {
                     SensorCardUi.Tile.Medium(
                         title = "Preview$i",
                         id = "Id$i",
-                        state = SensorState.entries[(0..2).random()],
+                        state = SensorState.On,
                         domain = SensorDomain.SWITCH,
                         drawableResource = SensorCardRes.lightBulb,
                         tints = SensorCardTints.Common.LightBulb
@@ -85,7 +85,7 @@ private fun SensorCardVerticalGridThermometers() {
                     SensorCardUi.Tile.Medium(
                         title = "Preview$i",
                         id = "Id$i",
-                        state = SensorState.entries[(0..1).random()],
+                        state = SensorState.On,
                         domain = SensorDomain.SWITCH,
                         drawableResource = SensorCardRes.thermometer,
                         tints = SensorCardTints.Common.Thermometer

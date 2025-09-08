@@ -48,7 +48,7 @@ fun CustomWidget(uiData: CustomWidgetUi, onEvent: (event: CustomWidgetEvent) -> 
                 onToggle = { sensorId, newState ->
                     onEvent(CustomWidgetEvent.SensorStateChange(sensorId, newState))
                 },
-                onSubmit = {chosenId ->
+                onSubmit = { chosenId ->
                     onEvent(
                         CustomWidgetEvent.ChosenSingleSwitchChange(chosenId)
                     )
@@ -71,7 +71,7 @@ private fun SensorListPreview() {
                     SensorCardUi.Widget.Switch(
                         title = "Preview$i",
                         id = "Id$i",
-                        state = SensorState.entries[(0..2).random()],
+                        state = SensorState.On,
                         domain = SensorDomain.entries.random(),
                         drawableResource = SensorCardRes.lightBulb,
                         tints = SensorCardTints.Common.LightBulb
@@ -85,7 +85,7 @@ private fun SensorListPreview() {
                     SensorCardUi.Modal(
                         title = "Preview$i",
                         id = "Id$i",
-                        state = SensorState.entries[(0..2).random()],
+                        state = SensorState.On,
                         domain = SensorDomain.entries.random(),
                         drawableResource = SensorCardRes.lightBulb,
                         tints = SensorCardTints.Common.LightBulb

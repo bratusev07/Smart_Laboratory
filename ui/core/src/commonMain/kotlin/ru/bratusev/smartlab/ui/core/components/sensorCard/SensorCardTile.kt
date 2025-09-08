@@ -61,6 +61,10 @@ fun SensorCardTile(
             is SensorCardUi.Tile.Large -> {
                 LargeCardContent(sensorCardUi = sensorCardUi)
             }
+
+            is SensorCardUi.Tile.Sensor -> {
+                SensorContent(sensorCardUi = sensorCardUi)
+            }
         }
     }
 }
@@ -73,8 +77,7 @@ private fun SmallCardContent(sensorCardUi: SensorCardUi.Tile.Small) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         SensorCardIconImage(
-            sensorCardUi.drawableResource, sensorCardUi.state,
-            tints = sensorCardUi.tints
+            sensorCardUi.drawableResource, sensorCardUi.state, tints = sensorCardUi.tints
         )
     }
 }
@@ -87,13 +90,38 @@ private fun MediumCardContent(sensorCardUi: SensorCardUi.Tile.Medium) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         SensorCardIconImage(
-            sensorCardUi.drawableResource, sensorCardUi.state,
-            tints = sensorCardUi.tints
+            sensorCardUi.drawableResource, sensorCardUi.state, tints = sensorCardUi.tints
         )
         Text(
             text = sensorCardUi.title,
             modifier = Modifier.fillMaxWidth().padding(4.dp),
             textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+private fun SensorContent(sensorCardUi: SensorCardUi.Tile.Sensor) {
+    println(sensorCardUi)
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        SensorCardIconImage(
+            sensorCardUi.drawableResource, sensorCardUi.state, tints = sensorCardUi.tints
+        )
+        Text(
+            text = sensorCardUi.title,
+            modifier = Modifier.fillMaxWidth().padding(4.dp),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Text(
+            text = "${sensorCardUi.state.value} ${sensorCardUi.measurementUnit}",
+            modifier = Modifier.fillMaxWidth().padding(4.dp),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.bodySmall
         )
     }
 }
@@ -132,6 +160,7 @@ internal fun SensorCardIconImage(
         SensorState.On -> tints.on
         SensorState.Off -> tints.off
         SensorState.Unavailable -> tints.unavailable
+        is SensorState.SensorValue -> tints.unavailable
     }
 
     Image(

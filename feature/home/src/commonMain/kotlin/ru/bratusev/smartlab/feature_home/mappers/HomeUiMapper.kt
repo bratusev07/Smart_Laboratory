@@ -24,8 +24,10 @@ fun List<ServiceEntity>.mapToServicePagerUi(isUpdating: Boolean = false) = Senso
 internal fun ServiceEntity.mapToUi(): SensorCardUi.Tile = when (domain?.lowercase()) {
     "switch" -> this.mapSwitchToUi()
     "button" -> this.mapButtonToUi()
+    "sensor" -> this.mapSensorToUi()
     else -> this.mapDefaultToUi()
 }
+
 
 private fun ServiceEntity.mapDefaultToUi() = SensorCardUi.Tile.Small(
     id = id.orEmpty(),
@@ -38,6 +40,18 @@ private fun ServiceEntity.mapDefaultToUi() = SensorCardUi.Tile.Small(
         SensorCardCommonColors.LightBulb.Unavailable
     ),
 )
+
+private fun ServiceEntity.mapSensorToUi(): SensorCardUi.Tile.Sensor {
+    return SensorCardUi.Tile.Sensor(
+        title = attributes?.friendlyName ?: id.orEmpty(),
+        measurementUnit = attributes?.measurementUnit.orEmpty(),
+        id = id.orEmpty(),
+        state = SensorState.SensorValue.floatFromString(state),
+        domain = SensorDomain.fromString(domain.orEmpty()),
+        drawableResource = SensorCardRes.thermometer,
+        tints = SensorCardTints.Common.Thermometer,
+    )
+}
 
 private fun ServiceEntity.mapSwitchToUi() = SensorCardUi.Tile.Medium(
     title = attributes?.friendlyName ?: id.orEmpty(),

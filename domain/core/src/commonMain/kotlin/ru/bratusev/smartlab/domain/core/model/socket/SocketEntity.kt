@@ -12,6 +12,7 @@ data class ServiceEntity(
 
 data class ServiceEntityAttributes(
     val icon: String? = null,
+    val measurementUnit: String? = null,
     val friendlyName: String? = null,
     val deviceClass: String? = null,
 )

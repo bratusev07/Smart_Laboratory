@@ -146,7 +146,7 @@ private fun SingleSensorWidgetPreview() {
                 SensorCardUi.Modal(
                     title = "Preview$i",
                     id = "Id$i",
-                    state = SensorState.entries[(0..2).random()],
+                    state = SensorState.On,
                     domain = SensorDomain.SWITCH,
                     drawableResource = SensorCardRes.lightBulb,
                     tints = SensorCardTints.Common.LightBulb
@@ -168,7 +168,7 @@ private fun ManySensorsListWidgetPreview() {
                 SensorCardUi.Widget.Switch(
                     title = "Preview$i",
                     id = "Id$i",
-                    state = SensorState.entries[(0..2).random()],
+                    state = SensorState.On,
                     domain = SensorDomain.SWITCH,
                     drawableResource = SensorCardRes.lightBulb,
                     tints = SensorCardTints.Common.LightBulb
@@ -182,7 +182,7 @@ private fun ManySensorsListWidgetPreview() {
                 SensorCardUi.Modal(
                     title = "Preview$i",
                     id = "Id$i",
-                    state = SensorState.entries[(0..2).random()],
+                    state = SensorState.On,
                     domain = SensorDomain.SWITCH,
                     drawableResource = SensorCardRes.lightBulb,
                     tints = SensorCardTints.Common.LightBulb

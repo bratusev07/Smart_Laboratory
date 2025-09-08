@@ -53,6 +53,16 @@ sealed class SensorCardUi {
             override val drawableResource: DrawableResource,
             override val tints: SensorCardTints,
         ) : Tile()
+
+        data class Sensor(
+            val title: String,
+            val measurementUnit: String,
+            override val id: String,
+            override val state: SensorState.SensorValue,
+            override val domain: SensorDomain,
+            override val drawableResource: DrawableResource,
+            override val tints: SensorCardTints,
+        ) : Tile()
     }
 
     sealed class Widget : SensorCardUi() {
@@ -101,28 +111,39 @@ open class SensorCardTints(
 
 }
 
-enum class SensorState(val localeName: String) {
-    On("Включено"), Off("Выключено"), Unavailable("Отключено");
-
-    companion object {
-        fun fromString(str: String?): SensorState = when (str?.lowercase()) {
-            "on", "\"on\"" -> On
-            "off", "\"off\"" -> Off
-            else -> {
-                Unavailable
+sealed class SensorState(val localeName: String) {
+    data object On : SensorState("Включено")
+    data object Off : SensorState("Выключено")
+    data object Unavailable : SensorState("Отключено")
+    data class SensorValue(val value: Float) : SensorState("Значение сенсора") {
+        companion object {
+            fun floatFromString(str: String?): SensorValue {
+                val string = str?.replace("\"", "")
+                val result = string?.toFloatOrNull()
+                return SensorValue(result ?: -1f)
             }
         }
     }
+
+    companion object {
+        fun fromString(str: String?): SensorState =
+            when (str?.lowercase()) {
+                "on", "\"on\"" -> On
+                "off", "\"off\"" -> Off
+                else -> Unavailable
+            }
+    }
+
 }
 
 enum class SensorDomain(val localeName: String) {
-    SWITCH(StringsRes.SWITCH),
-    UNKNOWN(StringsRes.UNKNOWN);
+    SWITCH(StringsRes.SWITCH), SENSOR(StringsRes.SENSOR), UNKNOWN(StringsRes.UNKNOWN);
 
     companion object {
 
         fun fromString(str: String?): SensorDomain = when (str?.lowercase()) {
             "switch" -> SWITCH
+            "sensor" -> SENSOR
             else -> UNKNOWN
         }
     }
