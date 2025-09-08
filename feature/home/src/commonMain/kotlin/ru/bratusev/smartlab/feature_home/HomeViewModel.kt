@@ -59,17 +59,13 @@ class HomeViewModel(
         uiState.value.serviceEntities.find { it.id == switchId }?.let {
             it.id?.let { id ->
                 updateSensorUseCase.invoke(id).onEach { result ->
-                    result.fold(
-                        onSuccess = {
-                            logger.d("HomeViewModel switch switch", "Switched switch with id: $id")
-                        },
-                        onFailure = { error ->
-                            logger.e(
-                                "HomeViewModel switch switch",
-                                "Could switch with error: $error"
-                            )
-                        }
-                    )
+                    result.fold(onSuccess = {
+                        logger.d("HomeViewModel switch switch", "Switched switch with id: $id")
+                    }, onFailure = { error ->
+                        logger.e(
+                            "HomeViewModel switch switch", "Could switch with error: $error"
+                        )
+                    })
                 }.launchIn(viewModelScope)
             }
         }

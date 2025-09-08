@@ -17,7 +17,7 @@ fun CustomWidget.toUi(sensors: List<ServiceEntity>, id: Int): CustomWidgetUi {
             ManySensorsList(
                 sensorsToShow = sensors.filter { it.id in this.sensorsIds }.map { switch ->
                     Switch(
-                        title = "title ${switch.id}",
+                        title = switch.attributes?.friendlyName.orEmpty(),
                         id = switch.id!!,
                         state = SensorState.fromString(switch.state),
                         domain = SensorDomain.fromString(switch.domain),
@@ -28,7 +28,7 @@ fun CustomWidget.toUi(sensors: List<ServiceEntity>, id: Int): CustomWidgetUi {
                 id = id,
                 sensorsToChooseFrom = sensors.map { switch ->
                     Modal(
-                        title = "title ${switch.id}",
+                        title = switch.attributes?.friendlyName.orEmpty(),
                         id = switch.id!!,
                         state = SensorState.fromString(switch.state),
                         domain = SensorDomain.fromString(switch.domain),
@@ -44,7 +44,7 @@ fun CustomWidget.toUi(sensors: List<ServiceEntity>, id: Int): CustomWidgetUi {
                 sensor =
                     sensors.find { it.id == this.sensorId }?.let {
                         Switch(
-                            title = "",
+                            title = it.attributes?.friendlyName.orEmpty(),
                             id = sensorId,
                             state = SensorState.fromString(it.state),
                             domain = SensorDomain.fromString(it.domain),
@@ -62,7 +62,7 @@ fun CustomWidget.toUi(sensors: List<ServiceEntity>, id: Int): CustomWidgetUi {
                 id = id,
                 sensorsToChooseFrom = sensors.map { switch ->
                     Modal(
-                        title = "title ${switch.id}",
+                        title = switch.attributes?.friendlyName.orEmpty(),
                         id = switch.id!!,
                         state = SensorState.fromString(switch.state),
                         domain = SensorDomain.fromString(switch.domain),

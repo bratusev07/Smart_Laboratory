@@ -107,7 +107,7 @@ private fun SensorModalItem(
                     text = sensor.domain.localeName,
                 )
                 SensorCardRowLabel(
-                    text = "Состояние: ${sensor.state.localeName}",
+                    text = sensor.state.localeName,
                     borderColor = when (sensor.state) {
                         SensorState.On -> Colors.success
                         SensorState.Off -> MaterialTheme.colorScheme.errorContainer

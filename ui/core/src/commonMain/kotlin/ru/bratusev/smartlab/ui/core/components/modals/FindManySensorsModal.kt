@@ -78,10 +78,11 @@ private fun ModalBottomSheetContent(
             SensorModalItem(
                 sensor = sensor,
                 checked = sensor.id in checkedIds,
-                modifier = Modifier.clickable {
+                onClick = {
                     if (sensor.id in checkedIds) checkedIds.remove(sensor.id)
                     else checkedIds.add(sensor.id)
-                })
+                }
+            )
         }
     }
 }
@@ -91,9 +92,10 @@ private fun SensorModalItem(
     modifier: Modifier = Modifier,
     sensor: SensorCardUi.Modal,
     checked: Boolean,
+    onClick: () -> Unit,
 ) {
     SensorCardRow(
-        modifier = modifier,
+        modifier = modifier.clickable { onClick() },
         uiData = SensorCardUi.Row(
             title = sensor.title ?: "",
             id = sensor.id,
@@ -103,14 +105,14 @@ private fun SensorModalItem(
             tints = sensor.tints
         ), buttonContent = {
             Checkbox(
-                checked = checked, onCheckedChange = { })
+                checked = checked, onCheckedChange = { onClick() })
         }, label = {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 SensorCardRowLabel(
                     text = sensor.domain.localeName,
                 )
                 SensorCardRowLabel(
-                    text = "Состояние: ${sensor.state.localeName}",
+                    text = sensor.state.localeName,
                     borderColor = when (sensor.state) {
                         SensorState.On -> Colors.success
                         SensorState.Off -> MaterialTheme.colorScheme.errorContainer

@@ -40,7 +40,7 @@ private fun ServiceEntity.mapDefaultToUi() = SensorCardUi.Tile.Small(
 )
 
 private fun ServiceEntity.mapSwitchToUi() = SensorCardUi.Tile.Medium(
-    title = id.orEmpty(),
+    title = attributes?.friendlyName ?: id.orEmpty(),
     id = id.orEmpty(),
     state = SensorState.fromString(state),
     domain = SensorDomain.fromString(domain.orEmpty()),
@@ -53,7 +53,7 @@ private fun ServiceEntity.mapSwitchToUi() = SensorCardUi.Tile.Medium(
 )
 
 private fun ServiceEntity.mapButtonToUi() = SensorCardUi.Tile.Medium(
-    title = id.orEmpty(),
+    title = attributes?.friendlyName ?: id.orEmpty(),
     id = id.orEmpty(),
     state = SensorState.fromString(state),
     domain = SensorDomain.fromString(domain.orEmpty()),

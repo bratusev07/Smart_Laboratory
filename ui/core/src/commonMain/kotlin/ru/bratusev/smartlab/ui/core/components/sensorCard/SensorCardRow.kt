@@ -48,12 +48,12 @@ fun SensorCardRow(
                 modifier = Modifier.height(35.dp),
                 drawableRes = uiData.drawableResource, state = uiData.state, tints = uiData.tints
             )
-            Column {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(uiData.title, style = MaterialTheme.typography.titleMedium)
                 label()
             }
+            buttonContent()
         }
-        buttonContent()
     }
 }
 
@@ -83,7 +83,7 @@ private fun SensorCardRowPreview() {
     AppTheme {
         SensorCardRow(
             uiData = SensorCardUi.Row(
-                title = "Маленькая лампочка",
+                title = "Маленькая лампочкаМаленькая лампочкаМаленькая лампочка",
                 id = "0",
                 state = currentState,
                 domain = SensorDomain.SWITCH,
