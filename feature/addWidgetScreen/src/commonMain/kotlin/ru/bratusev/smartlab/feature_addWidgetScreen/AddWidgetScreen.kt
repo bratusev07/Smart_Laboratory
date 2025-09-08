@@ -1,11 +1,13 @@
 package ru.bratusev.smartlab.feature_addWidgetScreen
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -58,14 +60,19 @@ fun AddWidgetScreen(
                 WidgetItem(
                     onAccept = {
                         vm.handleEvent(Event.OnSaveWidget(CustomWidget.SensorsList::class))
-                    }
+                    },
+                    title = "Переключатели списком"
                 ) { ManySensorsListWidgetPreview() }
+            }
+            item {
+                HorizontalDivider()
             }
             item {
                 WidgetItem(
                     onAccept = {
                         vm.handleEvent(Event.OnSaveWidget(CustomWidget.SingleSensor::class))
-                    }
+                    },
+                    title = "Большой переключатель"
                 ) { SingleSensorWidgetPreview() }
             }
         }
@@ -75,7 +82,7 @@ fun AddWidgetScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun WidgetItem(onAccept: () -> Unit, content: @Composable () -> Unit) {
+private fun WidgetItem(onAccept: () -> Unit, title: String, content: @Composable () -> Unit) {
     var isDialogOpen by remember { mutableStateOf(false) }
     if (isDialogOpen) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -110,7 +117,10 @@ private fun WidgetItem(onAccept: () -> Unit, content: @Composable () -> Unit) {
     }
     Surface(onClick = { isDialogOpen = true }) {
         Box {
-            content()
+            Column() {
+                Text(text = title)
+                content()
+            }
             Box(
                 modifier = Modifier
                     .matchParentSize()

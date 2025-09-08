@@ -67,7 +67,7 @@ fun SensorCardGridPager(
             HorizontalPager(
                 state = pagerState,
                 verticalAlignment = Alignment.Top,
-                modifier = Modifier.fillMaxSize().padding(vertical = 6.dp, horizontal = 14.dp),
+                modifier = Modifier.fillMaxSize().padding(horizontal = 14.dp),
                 pageSpacing = 40.dp
             ) { pageIndex ->
                 val currentDomain = domains[pageIndex]

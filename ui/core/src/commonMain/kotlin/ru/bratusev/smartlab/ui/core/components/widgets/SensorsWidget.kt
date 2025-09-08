@@ -1,5 +1,6 @@
 package ru.bratusev.smartlab.ui.core.components.widgets
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -47,15 +48,17 @@ fun ManySensorsWidget(
     Column(
         modifier = modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        WidgetToolBar(
-            title = "Виджет с id: ${uiData.id}",
-            onEditClick = {
-                isModalOpen = true
-            },
-            onAddClick = {},
-            isEditMode = uiData.isEditMode,
-            onDeleteClick = onDeleteWidgetClick
-        )
+        AnimatedVisibility(visible = uiData.isEditMode) {
+            WidgetToolBar(
+                title = "Виджет с id: ${uiData.id}",
+                onEditClick = {
+                    isModalOpen = true
+                },
+                onAddClick = {},
+                isEditMode = uiData.isEditMode,
+                onDeleteClick = onDeleteWidgetClick
+            )
+        }
         uiData.sensorsToShow.forEach { sensor ->
             SensorCardRow(
                 uiData = SensorCardUi.Row(
