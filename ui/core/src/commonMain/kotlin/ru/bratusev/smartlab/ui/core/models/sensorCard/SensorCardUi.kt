@@ -143,7 +143,7 @@ enum class SensorDomain(val localeName: String) {
 
         fun fromString(str: String?): SensorDomain = when (str?.lowercase()) {
             "switch" -> SWITCH
-            "sensor" -> SENSOR
+            "sensor", "number" -> SENSOR
             else -> UNKNOWN
         }
     }

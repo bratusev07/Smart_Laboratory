@@ -24,7 +24,7 @@ fun List<ServiceEntity>.mapToServicePagerUi(isUpdating: Boolean = false) = Senso
 internal fun ServiceEntity.mapToUi(): SensorCardUi.Tile = when (domain?.lowercase()) {
     "switch" -> this.mapSwitchToUi()
     "button" -> this.mapButtonToUi()
-    "sensor" -> this.mapSensorToUi()
+    "sensor", "number" -> this.mapSensorToUi()
     else -> this.mapDefaultToUi()
 }
 
