@@ -3,10 +3,12 @@ package ru.bratusev.smartlab.ui.core.components.sensorCard
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -18,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
@@ -36,9 +39,13 @@ fun SensorCardTile(
     onClick: () -> Unit,
 ) {
     Button(
+        enabled = when (sensorCardUi) {
+            is SensorCardUi.Tile.Sensor -> false
+            else -> true
+        },
         onClick = onClick,
         shape = RoundedCornerShape(10.dp),
-        modifier = modifier.fillMaxSize().aspectRatio(1f),
+        modifier = modifier.fillMaxSize().aspectRatio(1f, true),
         colors = ButtonColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant,
             contentColor = MaterialTheme.colorScheme.onSurface,
@@ -47,7 +54,8 @@ fun SensorCardTile(
         ),
         elevation = ButtonDefaults.buttonElevation(
             defaultElevation = 5.dp, pressedElevation = 1.dp
-        )
+        ),
+        contentPadding = PaddingValues(1.dp)
     ) {
         when (sensorCardUi) {
             is SensorCardUi.Tile.Small -> {
@@ -77,7 +85,10 @@ private fun SmallCardContent(sensorCardUi: SensorCardUi.Tile.Small) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         SensorCardIconImage(
-            sensorCardUi.drawableResource, sensorCardUi.state, tints = sensorCardUi.tints
+            modifier = Modifier.fillMaxWidth(),
+            drawableRes = sensorCardUi.drawableResource,
+            state = sensorCardUi.state,
+            tints = sensorCardUi.tints
         )
     }
 }
@@ -108,20 +119,30 @@ private fun SensorContent(sensorCardUi: SensorCardUi.Tile.Sensor) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        SensorCardIconImage(
-            sensorCardUi.drawableResource, sensorCardUi.state, tints = sensorCardUi.tints
-        )
-        Text(
-            text = sensorCardUi.title,
-            modifier = Modifier.fillMaxWidth().padding(4.dp),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.bodyMedium
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.weight(1f)
+        ) {
+            SensorCardIconImage(
+                modifier = Modifier.size(48.dp),
+                drawableRes = sensorCardUi.drawableResource,
+                state = sensorCardUi.state,
+                tints = sensorCardUi.tints
+            )
+            Text(
+                text = sensorCardUi.title,
+                modifier = Modifier.fillMaxWidth().padding(1.dp),
+                overflow = TextOverflow.Ellipsis,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
         Text(
             text = "${sensorCardUi.state.value} ${sensorCardUi.measurementUnit}",
             modifier = Modifier.fillMaxWidth().padding(4.dp),
             textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.bodySmall
+            style = MaterialTheme.typography.bodyMedium
         )
     }
 }
@@ -225,5 +246,25 @@ private fun LargeCardPreview() {
 
     AppTheme {
         SensorCardTile(sensorCardUi = large, onClick = {})
+    }
+}
+
+@Preview(
+    widthDp = 300, heightDp = 300
+)
+@Composable
+private fun SensorCardPreview() {
+    val sensor = SensorCardUi.Tile.Sensor(
+        id = "2",
+        state = SensorState.SensorValue(15f),
+        domain = SensorDomain.SWITCH,
+        title = "Давление",
+        drawableResource = SensorCardRes.lightBulb,
+        tints = SensorCardTints.Common.Thermometer,
+        measurementUnit = "%"
+    )
+
+    AppTheme {
+        SensorCardTile(sensorCardUi = sensor, onClick = {})
     }
 }

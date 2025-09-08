@@ -76,9 +76,9 @@ private fun ModalBottomSheetContent(
         }
         items(sensors, key = { it.id }) { sensor ->
             SensorModalItem(
-                modifier = Modifier.clickable { selectedId = sensor.id },
-                sensor,
-                checked = sensor.id == selectedId
+                onClick = { selectedId = sensor.id },
+                sensor = sensor,
+                checked = sensor.id == selectedId,
             )
         }
     }
@@ -88,10 +88,13 @@ private fun ModalBottomSheetContent(
 private fun SensorModalItem(
     modifier: Modifier = Modifier,
     sensor: SensorCardUi.Modal,
+    onClick: () -> Unit,
     checked: Boolean,
 ) {
     SensorCardRow(
-        modifier = modifier, uiData = SensorCardUi.Row(
+        modifier = modifier.clickable {
+            onClick()
+        }, uiData = SensorCardUi.Row(
             title = sensor.title ?: "",
             id = sensor.id,
             state = sensor.state,
@@ -100,7 +103,8 @@ private fun SensorModalItem(
             tints = sensor.tints
         ), buttonContent = {
             RadioButton(
-                selected = checked, onClick = { })
+                selected = checked, onClick = onClick
+            )
         }, label = {
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 SensorCardRowLabel(

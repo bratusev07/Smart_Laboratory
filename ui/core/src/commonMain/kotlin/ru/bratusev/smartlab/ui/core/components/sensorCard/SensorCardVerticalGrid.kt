@@ -1,6 +1,7 @@
 package ru.bratusev.smartlab.ui.core.components.sensorCard
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -37,7 +38,7 @@ fun SensorCardVerticalGrid(
             }
             items(uiData.sensors, key = { it.hashCode() }) {
                 SensorCardTile(
-                    modifier = Modifier,
+                    modifier = modifier.fillMaxWidth(),
                     sensorCardUi = it,
                     onClick = { onSensorCardClicked(it.id) })
             }
