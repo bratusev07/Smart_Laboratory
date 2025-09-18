@@ -51,15 +51,15 @@ class LoginViewModel(
         loginUseCase.invoke(uiState.value.login, uiState.value.password, device).onEach { result ->
             result.fold(onSuccess = { token ->
                 // TODO Исправить показуху на нормальное отслеживание
-                delay(1300)
+                delay(1200)
                 updateState(_uiState.value.copy(loginStage = LoginStage.SAVING_TOKEN_2))
-                delay(1300)
+                delay(1200)
                 updateState(_uiState.value.copy(loginStage = LoginStage.CHECKING_TOKEN_3))
-                delay(1300)
+                delay(1200)
                 updateState(_uiState.value.copy(loginStage = LoginStage.COMPLETED_4))
                 logger.d("viewModel", "loginUseCase returned success with token: $token")
             }, onFailure = { error ->
-                delay(1300)
+                delay(400)
                 updateState(_uiState.value.copy(loginStage = LoginStage.FAILED_DURING_LOGIN))
                 logger.d("viewModel", "loginUseCase returned failure. Error is $error")
             })

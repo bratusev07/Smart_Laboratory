@@ -1,6 +1,7 @@
 package ru.bratusev.smartlab.ui.core.components.sensorCard
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -9,17 +10,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardRes
-import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardState
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardTints
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardUi
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardVerticalGridUi
+import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorDomain
+import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorState
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
 
 @Composable
 fun SensorCardVerticalGrid(
     modifier: Modifier = Modifier,
     uiData: SensorCardVerticalGridUi,
-    onSensorCardClicked: (String) -> Unit
+    onSensorCardClicked: (String) -> Unit,
 ) {
 
     LazyVerticalGrid(
@@ -35,8 +37,10 @@ fun SensorCardVerticalGrid(
                 )
             }
             items(uiData.sensors, key = { it.hashCode() }) {
-                SensorCard(
-                    modifier = Modifier, sensorCardUi = it, onClick = {onSensorCardClicked(it.id)})
+                SensorCardTile(
+                    modifier = modifier.fillMaxWidth(),
+                    sensorCardUi = it,
+                    onClick = { onSensorCardClicked(it.id) })
             }
         })
 }
@@ -47,14 +51,14 @@ fun SensorCardVerticalGrid(
 @Composable
 private fun SensorCardVerticalGridLightBulbs() {
     val mockData = SensorCardVerticalGridUi(
-        buildList<SensorCardUi.Medium> {
+        buildList {
             for (i in 1..30) {
                 add(
-                    SensorCardUi.Medium(
+                    SensorCardUi.Tile.Medium(
                         title = "Preview$i",
                         id = "Id$i",
-                        state = SensorCardState.entries[(0..2).random()],
-                        domain = "PreviewDomain$i",
+                        state = SensorState.On,
+                        domain = SensorDomain.SWITCH,
                         drawableResource = SensorCardRes.lightBulb,
                         tints = SensorCardTints.Common.LightBulb
                     )
@@ -79,11 +83,11 @@ private fun SensorCardVerticalGridThermometers() {
         buildList {
             for (i in 1..30) {
                 add(
-                    SensorCardUi.Medium(
+                    SensorCardUi.Tile.Medium(
                         title = "Preview$i",
                         id = "Id$i",
-                        state = SensorCardState.entries[(0..1).random()],
-                        domain = "PreviewDomain$i",
+                        state = SensorState.On,
+                        domain = SensorDomain.SWITCH,
                         drawableResource = SensorCardRes.thermometer,
                         tints = SensorCardTints.Common.Thermometer
                     )

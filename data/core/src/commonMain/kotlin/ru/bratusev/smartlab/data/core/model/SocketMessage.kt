@@ -18,7 +18,7 @@ data class PongResponseMsg(override val id: Int) : WebSocketResponse() {
 @Serializable
 data class TriggerResponseMsg(
     override val id: Int,
-    val event: TriggerEventData
+    val event: TriggerEventData,
 ) : WebSocketResponse() {
     override val type: String = "event"
 }
@@ -26,14 +26,14 @@ data class TriggerResponseMsg(
 @Serializable
 data class EventResponseMsg(
     override val id: Int,
-    val event: EventData
+    val event: EventData,
 ) : WebSocketResponse() {
     override val type: String = "event"
 }
 
 @Serializable
 data class AuthRequiredResponseMsg(
-    @SerialName("ha_version") val haVersion: String? = null
+    @SerialName("ha_version") val haVersion: String? = null,
 ) : WebSocketResponse() {
     override val type: String = "auth_required"
     override val id: Int? = null
@@ -41,7 +41,7 @@ data class AuthRequiredResponseMsg(
 
 @Serializable
 data class AuthOkResponseMsg(
-    @SerialName("ha_version") val haVersion: String
+    @SerialName("ha_version") val haVersion: String,
 ) : WebSocketResponse() {
     override val type: String = "auth_ok"
     override val id: Int? = null
@@ -58,7 +58,7 @@ data class ResultResponseMsg(
     override val id: Int,
     val success: Boolean,
     val result: JsonElement? = null,
-    val error: ApiError? = null
+    val error: ApiError? = null,
 ) : WebSocketResponse() {
     override val type: String = "result"
 }
@@ -69,7 +69,7 @@ data class ApiError(
     val message: String,
     val translation_key: String? = null,
     val translation_domain: String? = null,
-    val translation_placeholders: Map<String, String>? = null
+    val translation_placeholders: Map<String, String>? = null,
 )
 
 @Serializable
@@ -78,36 +78,45 @@ data class EventData(
     val data: Map<String, JsonElement>? = null,
     val origin: String? = null,
     @SerialName("time_fired") val timeFired: String,
-    val context: Context? = null
+    val context: Context? = null,
 )
 
 @Serializable
 data class TriggerEventData(
     val variables: Map<String, JsonElement>,
-    val description: String
+    val description: String,
 )
 
 @Serializable
 data class Context(
     val id: String? = null,
     @SerialName("parent_id") val parentId: String? = null,
-    @SerialName("user_id") val userId: String? = null
+    @SerialName("user_id") val userId: String? = null,
 )
 
 @Serializable
 data class ServiceData(
-    @SerialName("entity_id") val entityId: String
+    @SerialName("entity_id") val entityId: String,
 )
 
 @Serializable
 data class ServiceEntity(
     @SerialName("s") val state: JsonElement? = null,
-    @SerialName("a") val attributes: JsonElement? = null,
+    @SerialName("a") val rawAttributes: JsonElement? = null,
+    val attributes: ServiceEntityAttributes? = null,
     val c: JsonElement? = null,
     val id: String? = null,
     val domain: String? = null,
     @SerialName("lu") val lastUpdate: String? = null,
-    @SerialName("lc") val lastChange: String? = null
+    @SerialName("lc") val lastChange: String? = null,
+)
+
+@Serializable
+data class ServiceEntityAttributes(
+    val icon: String? = null,
+    @SerialName("friendly_name") val friendlyName: String? = null,
+    @SerialName("device_class") val deviceClass: String? = null,
+    @SerialName("unit_of_measurement") val measurementUnit: String? = null
 )
 
 // === WebSocket Messages ===
@@ -118,7 +127,7 @@ sealed class SocketMessage {
     @Serializable
     data class AuthMsg(
         @SerialName("type") val type: String = "auth",
-        @SerialName("access_token") val accessToken: String
+        @SerialName("access_token") val accessToken: String,
     ) : SocketMessage() {
 
         override fun toString(): String {
@@ -132,7 +141,7 @@ sealed class SocketMessage {
     @Serializable
     data class SubEntitiesMsg(
         val type: String = "subscribe_entities",
-        val id: Int
+        val id: Int,
     ) : SocketMessage() {
 
         override fun toString(): String {
@@ -147,6 +156,6 @@ sealed class SocketMessage {
         val service: String,
         @SerialName("return_response") val returnResponse: Boolean = false,
         @SerialName("service_data") val serviceData: ServiceData,
-        val id: Int
+        val id: Int,
     ) : SocketMessage()
 }

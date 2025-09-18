@@ -33,6 +33,10 @@ class NavigationApiImpl(
         navController.navigate(Screen.Logcat.route)
     }
 
+    override fun navigateToAddWidgetCustomScreen() {
+        navController.navigate(Screen.CustomScreen.AddWidget.route)
+    }
+
     override fun popBackStack() {
         navController.popBackStack()
     }

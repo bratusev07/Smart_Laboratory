@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -10,7 +9,6 @@ plugins {
 
 kotlin {
     androidTarget {
-        @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
         }
@@ -46,8 +44,11 @@ kotlin {
             implementation(projects.feature.home)
             implementation(projects.feature.settings)
             implementation(projects.feature.login)
-            implementation(projects.ui.core)
             implementation(projects.feature.logcat)
+            implementation(projects.feature.customScreen)
+            implementation(projects.feature.addWidgetScreen)
+            implementation(projects.ui.core)
+
         }
     }
 }

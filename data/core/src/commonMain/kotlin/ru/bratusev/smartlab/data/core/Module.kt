@@ -19,13 +19,17 @@ import ru.bratusev.smartlab.data.core.repository.AuthRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.ButtonTextRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.LoggerRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.SocketRepositoryImpl
+import ru.bratusev.smartlab.data.core.repository.WidgetRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.preview.AuthRepositoryPreview
 import ru.bratusev.smartlab.data.core.repository.preview.ButtonTextRepositoryPreview
 import ru.bratusev.smartlab.data.core.repository.preview.LoggerRepositoryPreview
+import ru.bratusev.smartlab.data.core.repository.preview.SocketRepositoryPreview
+import ru.bratusev.smartlab.data.core.repository.preview.WidgetRepositoryPreview
 import ru.bratusev.smartlab.domain.core.repository.AuthRepository
 import ru.bratusev.smartlab.domain.core.repository.ButtonTextRepository
 import ru.bratusev.smartlab.domain.core.repository.LoggerRepository
 import ru.bratusev.smartlab.domain.core.repository.SocketRepository
+import ru.bratusev.smartlab.domain.core.repository.WidgetsRepository
 
 val dataModule = module {
 
@@ -46,16 +50,14 @@ val dataModule = module {
     single<AuthRepository> {
         AuthRepositoryImpl(
             client = get(),
-            dataStore = get(),
-            socketClient = get()
+            socketClient = get(),
+            dataStore = get()
         )
     }
 
     single<LoggerRepository> {
         LoggerRepositoryImpl(
-            logger = get(),
-            logcatMessageDao = get(),
-            coroutineScope = get()
+            logger = get(), logcatMessageDao = get(), coroutineScope = get()
         )
     }
 
@@ -76,12 +78,13 @@ val dataModule = module {
     }
 
     single {
-        get<DatabaseFactory>().create()
-            .setDriver(BundledSQLiteDriver())
-            .build()
+        get<DatabaseFactory>().create().setDriver(BundledSQLiteDriver()).build()
     }
 
     single<LogcatMessageDao> { get<AppDatabase>().logcatMessagesDao() }
+
+    single<WidgetsRepository> { WidgetRepositoryImpl(get()) }
+
     includes(platformDataModule)
 }
 
@@ -118,12 +121,20 @@ val dataModulePreview = module {
     }
 
     single {
-        get<DatabaseFactory>().create()
-            .setDriver(BundledSQLiteDriver())
-            .build()
+        get<DatabaseFactory>().create().setDriver(BundledSQLiteDriver()).build()
+    }
+
+    single<CoroutineScope> {
+        CoroutineScope(SupervisorJob() + Dispatchers.Main)
+    }
+
+    single<SocketRepository> {
+        SocketRepositoryPreview()
     }
 
     single<LogcatMessageDao> { get<AppDatabase>().logcatMessagesDao() }
+
+    single<WidgetsRepository> { WidgetRepositoryPreview(get()) }
 
     includes(platformDataModulePreview)
 }

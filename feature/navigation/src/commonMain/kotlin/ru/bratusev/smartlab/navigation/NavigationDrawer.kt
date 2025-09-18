@@ -48,9 +48,11 @@ fun NavigationDrawer(
     isHidden: Boolean = false,
     navigateTo: (Screen) -> Unit,
     currentScreenRoute: String,
+    onMenuClick: () -> Unit,
     content: @Composable () -> Unit,
 ) {
     ModalNavigationDrawer(
+        drawerState = drawerState,
         modifier = Modifier.wrapContentWidth(), gesturesEnabled = !isHidden, drawerContent = {
             if (!isHidden) {
                 ModalDrawerSheet {
@@ -83,6 +85,11 @@ fun NavigationDrawer(
                             navigateTo = navigateTo
                         )
                         NavigationDrawerItemComponent(
+                            NavigationDrawerItems.CustomScreen,
+                            currentScreenRoute = currentScreenRoute,
+                            navigateTo = navigateTo
+                        )
+                        NavigationDrawerItemComponent(
                             NavigationDrawerItems.Logs,
                             currentScreenRoute = currentScreenRoute,
                             navigateTo = navigateTo
@@ -107,7 +114,7 @@ fun NavigationDrawer(
                     }
                 }
             }
-        }, drawerState = drawerState
+        }
     ) {
         if (isHidden) {
             content()
@@ -124,9 +131,7 @@ fun NavigationDrawer(
                                 drawerState.open()
                             }
                         },
-                        onMenuClick = {
-                            // TODO: :-()
-                        }
+                        onMenuClick = onMenuClick
                     )
                 }
             ) { paddingValues ->
@@ -164,6 +169,7 @@ private fun NavigationDrawerPreview() {
             drawerState = drawerState,
             navigateTo = {},
             currentScreenRoute = Screen.Home.route,
+            onMenuClick = {}
         ) {
             Text(text = "Контент. Очень длинный контент. Прям чтобы его было видно. Нужно прям много контента.")
         }

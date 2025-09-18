@@ -22,9 +22,7 @@ val androidDataModule = module {
 
 val androidDataModulePreview = module {
     single<DataStoreFactoryPreview> {
-        DataStoreFactoryPreview(
-            context = get()
-        )
+        DataStoreFactoryPreview()
     }
     single<LoggerPreview> {
         LoggerPreview()

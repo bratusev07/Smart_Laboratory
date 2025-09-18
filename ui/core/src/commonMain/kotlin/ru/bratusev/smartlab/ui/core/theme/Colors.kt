@@ -17,4 +17,8 @@ object SensorCardCommonColors {
     }
 }
 
+object Colors {
+    val success = Color(0xFF00FF00)
+}
+
 

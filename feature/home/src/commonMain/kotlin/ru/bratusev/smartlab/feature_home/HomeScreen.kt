@@ -5,7 +5,6 @@ import androidx.compose.runtime.collectAsState
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.context.startKoin
-import ru.bratusev.smartlab.feature_home.mappers.mapToServicePagerUi
 import ru.bratusev.smartlab.feature_home.models.Event
 import ru.bratusev.smartlab.navigation.api.NavigationApi
 import ru.bratusev.smartlab.navigation.api.Screen
@@ -18,16 +17,11 @@ fun HomeScreen(
     navigationApi: NavigationApi,
 ) {
     val state = vm.uiState.collectAsState()
-
-    if(state.value.serviceEntities.isNotEmpty()) {
-
+    if (state.value.sensorCardGridPagerUiData.sensors.isNotEmpty()) {
         SensorCardGridPager(
-            uiData = state.value.serviceEntities
-                .filter { it.domain == "switch" || it.domain == "button" }
-                .mapToServicePagerUi(),
-        ) {
-            vm.handleEvent(Event.OnSwitchUpdated(it))
-        }
+            uiData = state.value.sensorCardGridPagerUiData,
+            onSensorCardClicked = { vm.handleEvent(Event.OnSwitchUpdated(it)) }
+        )
     }
 }
 
@@ -46,6 +40,7 @@ private fun HomeScreenPreview() {
                 override fun navigateToLogin() {}
                 override fun navigateToSettings() {}
                 override fun navigateToLogcat() {}
+                override fun navigateToAddWidgetCustomScreen() {}
                 override fun popBackStack() {}
             }
         )

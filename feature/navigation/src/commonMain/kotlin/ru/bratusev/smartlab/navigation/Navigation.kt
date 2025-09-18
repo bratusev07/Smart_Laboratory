@@ -4,16 +4,23 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect // Added import
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.backhandler.BackHandler
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.navigation
+import kotlinx.coroutines.launch // Added import
+import ru.bratusev.smartlab.feature_addWidgetScreen.AddWidgetScreen
+import ru.bratusev.smartlab.feature_customScreen.CustomScreen
 import ru.bratusev.smartlab.feature_home.HomeScreen
 import ru.bratusev.smartlab.feature_logcat.LogcatScreen
 import ru.bratusev.smartlab.feature_login.LoginScreen
@@ -28,11 +35,25 @@ fun AppNavigation(navController: NavHostController) {
     val navigationApi = NavigationApiImpl(navController)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
+    var onMenuClickAction by remember { mutableStateOf({}) }
+    val setMenuAction: (() -> Unit) -> Unit = { newAction ->
+        onMenuClickAction = newAction
+    }
+
     val isDrawerHidden by remember {
         derivedStateOf {
             when (navBackStackEntry?.destination?.route) {
                 Screen.Login.route -> true
+                Screen.CustomScreen.AddWidget.route -> true
                 else -> false
+            }
+        }
+    }
+
+    LaunchedEffect(isDrawerHidden) {
+        if (!isDrawerHidden) {
+            if (drawerState.currentValue == DrawerValue.Open) {
+                drawerScope.launch { drawerState.close() }
             }
         }
     }
@@ -41,11 +62,13 @@ fun AppNavigation(navController: NavHostController) {
         drawerState = drawerState,
         isHidden = isDrawerHidden,
         navigateTo = { screen ->
+            drawerScope.launch { drawerState.close() }
             navigationApi.navigateTo(screen = screen)
         },
         currentScreenRoute = navBackStackEntry?.destination?.route ?: "",
+        onMenuClick = onMenuClickAction,
     ) {
-        AppNavHost(navController, navigationApi)
+        AppNavHost(navController, navigationApi, setMenuAction)
     }
 }
 
@@ -54,6 +77,7 @@ fun AppNavigation(navController: NavHostController) {
 private fun AppNavHost(
     navController: NavHostController,
     navigationApi: NavigationApi,
+    setMenuAction: (action: () -> Unit) -> Unit,
 ) {
     NavHost(
         navController = navController, startDestination = Screen.Login.route
@@ -69,19 +93,45 @@ private fun AppNavHost(
             HomeScreen(navigationApi = navigationApi)
         }
 
-        composable(Screen.Settings.route) {
-            SettingsScreen(navigationApi = navigationApi)
+
+        navigation(
+            startDestination = Screen.CustomScreen.Main.route,
+            route = Screen.CustomScreen.route
+        ) {
+            composable(Screen.CustomScreen.Main.route) {
+
+                CustomScreen(
+                    setMenuAction = setMenuAction,
+                    goToAddWidgetScreen = {
+                        navigationApi.navigateToAddWidgetCustomScreen()
+                    },
+                )
+            }
+            composable(
+                Screen.CustomScreen.AddWidget.route
+            ) {
+                AddWidgetScreen(
+                    onGoBack = { navigationApi.popBackStack() }
+                )
+            }
         }
 
         composable(Screen.Logcat.route) {
             LogcatScreen(navigationApi = navigationApi)
         }
 
+        composable(Screen.Settings.route) {
+            SettingsScreen(navigationApi = navigationApi)
+        }
+
+
         composable(Screen.Notifications.route) {
             Text(Screen.Notifications.route)
         }
+
         composable(Screen.UserProfile.route) {
             Text(Screen.UserProfile.route)
         }
+
     }
 }
