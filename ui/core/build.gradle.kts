@@ -1,4 +1,4 @@
-
+import jdk.tools.jlink.resources.plugins
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -30,6 +30,8 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor3)
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -37,6 +39,12 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+        }
+        androidMain.dependencies {
+            implementation(libs.ktor.client.android)
+        }
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
         }
     }
 }
