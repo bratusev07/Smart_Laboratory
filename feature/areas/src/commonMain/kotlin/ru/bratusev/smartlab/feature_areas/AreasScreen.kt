@@ -20,7 +20,6 @@ import ru.bratusev.smartlab.ui.core.theme.AppTheme
 @Composable
 fun AreasScreen(
     vm: AreasScreenViewModel = koinViewModel(),
-    setMenuAction: (action: () -> Unit) -> Unit,
 ) {
     val state = vm.uiState.collectAsState()
     LazyColumn {
@@ -40,7 +39,6 @@ private fun AreasScreenPreview() {
     }
     AppTheme {
         AreasScreen(
-            setMenuAction = {},
         )
     }
 }
