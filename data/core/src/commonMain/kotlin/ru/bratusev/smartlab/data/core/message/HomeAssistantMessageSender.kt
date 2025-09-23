@@ -4,4 +4,6 @@ import ru.bratusev.smartlab.data.core.model.ServiceEntity
 
 interface HomeAssistantMessageSender {
     fun updateSensorState(sensor: ServiceEntity)
+
+    fun fetchAreas()
 }

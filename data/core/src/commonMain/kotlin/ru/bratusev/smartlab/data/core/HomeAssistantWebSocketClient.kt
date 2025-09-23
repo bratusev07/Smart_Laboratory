@@ -25,6 +25,7 @@ import ru.bratusev.smartlab.data.core.message.HomeAssistantMessageHandlers
 import ru.bratusev.smartlab.data.core.message.HomeAssistantMessageHandlersImpl
 import ru.bratusev.smartlab.data.core.message.HomeAssistantMessageSender
 import ru.bratusev.smartlab.data.core.message.HomeAssistantMessageSenderImpl
+import ru.bratusev.smartlab.data.core.model.AreaEntity
 import ru.bratusev.smartlab.data.core.model.ServiceEntity
 
 
@@ -54,6 +55,9 @@ class HomeAssistantWebSocketClient() {
     private val _serviceEntitiesFlow = MutableSharedFlow<List<ServiceEntity>>(replay = 1)
     internal var _serviceEntityCopy: List<ServiceEntity> = emptyList()
     val serviceEntitiesFlow: SharedFlow<List<ServiceEntity>> = _serviceEntitiesFlow
+
+    private val _areasFlow = MutableSharedFlow<List<AreaEntity>>(replay = 1)
+    val areasFlow: SharedFlow<List<AreaEntity>> = _areasFlow
 
     private val messageHandlers: HomeAssistantMessageHandlers by lazy {
         HomeAssistantMessageHandlersImpl(
@@ -125,7 +129,10 @@ class HomeAssistantWebSocketClient() {
                 )
 
                 "auth_invalid" -> messageHandlers.handleAuthInvalid(jsonElement = jsonElement)
-                "result" -> messageHandlers.handleResult(jsonElement = jsonElement)
+                "result" -> messageHandlers.handleResult(
+                    jsonElement = jsonElement,
+                    emitAreaEntity = { list -> _areasFlow.tryEmit(list)}
+                )
                 "event" -> messageHandlers.handleEvent(
                     jsonElement = jsonElement,
                     getServiceEntitiesCopy = { _serviceEntityCopy },

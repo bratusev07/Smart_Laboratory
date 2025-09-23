@@ -1,6 +1,7 @@
 package ru.bratusev.smartlab.domain.core
 
 import org.koin.dsl.module
+import ru.bratusev.smartlab.domain.core.usecase.GetAreasUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetButtonTextUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetCustomWidgetsUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetLogcatMessagesUseCase
@@ -21,6 +22,7 @@ val domainModule = module {
     factory<GetLoggerUseCase> { GetLoggerUseCase(get()) }
     factory<UpdateSensorUseCase> { UpdateSensorUseCase(get()) }
     factory<GetServiceEntitiesUseCase> { GetServiceEntitiesUseCase(get()) }
+    factory<GetAreasUseCase> { GetAreasUseCase(get()) }
     factory<ObserveSocketErrorsUseCase> { ObserveSocketErrorsUseCase(get()) }
     factory<GetLogcatMessagesUseCase> { GetLogcatMessagesUseCase(get()) }
     factory<GetCustomWidgetsUseCase> { GetCustomWidgetsUseCase(get()) }

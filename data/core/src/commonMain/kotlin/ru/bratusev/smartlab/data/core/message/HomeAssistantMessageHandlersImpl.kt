@@ -8,15 +8,18 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.booleanOrNull
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.intOrNull
+import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import ru.bratusev.smartlab.data.core.mapper.mapJsonToEventPair
 import ru.bratusev.smartlab.data.core.mapper.mapJsonToServiceEntityList
 import ru.bratusev.smartlab.data.core.model.ApiError
+import ru.bratusev.smartlab.data.core.model.AreaEntity
 import ru.bratusev.smartlab.data.core.model.AuthInvalidResponseMsg
 import ru.bratusev.smartlab.data.core.model.AuthOkResponseMsg
 import ru.bratusev.smartlab.data.core.model.AuthRequiredResponseMsg
@@ -89,7 +92,7 @@ class HomeAssistantMessageHandlersImpl(
         }
     }
 
-    override fun handleResult(jsonElement: JsonElement) {
+    override fun handleResult(jsonElement: JsonElement, emitAreaEntity: (List<AreaEntity>) -> Boolean) {
         try {
             val id = jsonElement.jsonObject["id"]?.jsonPrimitive?.intOrNull ?: return
             val success = jsonElement.jsonObject["success"]?.jsonPrimitive?.booleanOrNull == true
@@ -102,6 +105,19 @@ class HomeAssistantMessageHandlersImpl(
                 val message = "Command failed [${resultResponseMsg.id}]: ${resultResponseMsg.error?.message}"
                 println(message)
                 errorFlow.tryEmit(listOf(Error(message)))
+            }else {
+                if (result != null && result is JsonArray && result.toString().contains("area_id")) {
+                    try {
+                        val areaEntities = result.map { jsonElement ->
+                            json.decodeFromJsonElement<AreaEntity>(jsonElement)
+                        }
+                        emitAreaEntity(areaEntities)
+                    } catch (e: Exception) {
+                        errorFlow.tryEmit(listOf(Error("Failed to decode AreaEntity list: ${e.message ?: e.toString()}")))
+                    }
+                } else {
+                    errorFlow.tryEmit(listOf(Error("Result is not a valid JSON array")))
+                }
             }
         } catch (e: Exception) {
             errorFlow.tryEmit(listOf(Error("Result handler error: ${e.message ?: e.toString()}")))

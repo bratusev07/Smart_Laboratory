@@ -3,8 +3,10 @@ package ru.bratusev.smartlab.data.core.mapper
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.jsonObject
+import ru.bratusev.smartlab.data.core.model.AreaEntity
 import ru.bratusev.smartlab.data.core.model.ServiceEntity
 import ru.bratusev.smartlab.data.core.model.ServiceEntityAttributes
+import ru.bratusev.smartlab.domain.core.model.socket.Area
 import ru.bratusev.smartlab.domain.core.model.socket.ServiceEntity as DomainServiceEntity
 import ru.bratusev.smartlab.domain.core.model.socket.ServiceEntityAttributes as DomainServiceEntityAttributes
 
@@ -57,4 +59,16 @@ internal fun ServiceEntity.mapToDomain() = DomainServiceEntity(
     domain = domain,
     lastUpdate = lastUpdate,
     lastChange = lastChange,
+)
+
+internal fun AreaEntity.mapToDomain() = Area(
+    areaId = areaId,
+    name = name,
+    floorId = floorId,
+    labels = labels,
+    humidityEntityId = humidityEntityId,
+    temperatureEntityId = temperatureEntityId,
+    pictureUrl = pictureUrl,
+    createdAt = createdAt,
+    modifiedAt = modifiedAt
 )

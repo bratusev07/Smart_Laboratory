@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
+import ru.bratusev.smartlab.data.core.model.AreaEntity
 import ru.bratusev.smartlab.data.core.model.ServiceData
 import ru.bratusev.smartlab.data.core.model.ServiceEntity
 import ru.bratusev.smartlab.data.core.model.SocketMessage
@@ -41,6 +42,26 @@ class HomeAssistantMessageSenderImpl(
             }
         } catch (e: Exception) {
             errorFlow.tryEmit(listOf(Error("Failed to build sensor update: ${e.message ?: e.toString()}")))
+        }
+    }
+
+    override fun fetchAreas() {
+        try {
+            incrementMessageId()
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val currentSession = session()
+                    if (currentSession == null) {
+                        errorFlow.tryEmit(listOf(Error("Cannot fetch areas: session is null")))
+                        return@launch
+                    }
+                    currentSession.send(Frame.Text(json.encodeToString(SocketMessage.FetchAreasMsg(id = messageId()))))
+                } catch (e: Exception) {
+                    errorFlow.tryEmit(listOf(Error("Failed to fetch areas: ${e.message ?: e.toString()}")))
+                }
+            }
+        } catch (e: Exception) {
+            errorFlow.tryEmit(listOf(Error("Failed to fetch areas: ${e.message ?: e.toString()}")))
         }
     }
 
