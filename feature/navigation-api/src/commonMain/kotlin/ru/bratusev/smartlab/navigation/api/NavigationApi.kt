@@ -6,6 +6,8 @@ interface NavigationApi {
     fun navigateToLogin()
     fun navigateToSettings()
     fun navigateToLogcat()
+
+    fun navigateToAreasScreen()
     fun navigateToAddWidgetCustomScreen()
     fun popBackStack()
 }

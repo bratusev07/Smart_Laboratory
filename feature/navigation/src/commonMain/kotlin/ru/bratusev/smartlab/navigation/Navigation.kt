@@ -20,6 +20,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navigation
 import kotlinx.coroutines.launch
 import ru.bratusev.smartlab.feature_addWidgetScreen.AddWidgetScreen
+import ru.bratusev.smartlab.feature_areas.AreasScreen
 import ru.bratusev.smartlab.feature_customScreen.CustomScreen
 import ru.bratusev.smartlab.feature_home.HomeScreen
 import ru.bratusev.smartlab.feature_logcat.LogcatScreen
@@ -114,6 +115,10 @@ private fun AppNavHost(
                     onGoBack = { navigationApi.popBackStack() }
                 )
             }
+        }
+
+        composable(Screen.Areas.route) {
+            AreasScreen()
         }
 
         composable(Screen.Logcat.route) {

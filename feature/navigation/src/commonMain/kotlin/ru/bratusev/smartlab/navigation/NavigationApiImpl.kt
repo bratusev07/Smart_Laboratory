@@ -33,6 +33,10 @@ class NavigationApiImpl(
         navController.navigate(Screen.Logcat.route)
     }
 
+    override fun navigateToAreasScreen() {
+        navController.navigate(Screen.Areas.route)
+    }
+
     override fun navigateToAddWidgetCustomScreen() {
         navController.navigate(Screen.CustomScreen.AddWidget.route)
     }

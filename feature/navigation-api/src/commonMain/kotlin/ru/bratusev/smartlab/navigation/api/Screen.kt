@@ -8,6 +8,8 @@ sealed class Screen(val route: String) {
         object AddWidget : Screen("addWidgetCustomScreen")
     }
 
+    object Areas: Screen("areas")
+
     object Settings : Screen("settings")
 
     object Notifications : Screen("notifications")

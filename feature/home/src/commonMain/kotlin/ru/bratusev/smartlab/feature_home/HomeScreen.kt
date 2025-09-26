@@ -40,6 +40,7 @@ private fun HomeScreenPreview() {
                 override fun navigateToLogin() {}
                 override fun navigateToSettings() {}
                 override fun navigateToLogcat() {}
+                override fun navigateToAreasScreen() {}
                 override fun navigateToAddWidgetCustomScreen() {}
                 override fun popBackStack() {}
             }

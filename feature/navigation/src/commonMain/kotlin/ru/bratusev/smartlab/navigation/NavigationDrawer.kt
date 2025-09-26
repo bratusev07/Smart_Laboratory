@@ -94,6 +94,11 @@ fun NavigationDrawer(
                             currentScreenRoute = currentScreenRoute,
                             navigateTo = navigateTo
                         )
+                        NavigationDrawerItemComponent(
+                            NavigationDrawerItems.Areas,
+                            currentScreenRoute = currentScreenRoute,
+                            navigateTo = navigateTo
+                        )
                         Spacer(modifier = Modifier.weight(1f))
                         NavigationDrawerItemComponent(
                             NavigationDrawerItems.Settings,
