@@ -1,4 +1,4 @@
-package ru.bratusev.smartlab.feature_areas
+package ru.bratusev.smartlab.feature_area
 
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -7,14 +7,14 @@ import ru.bratusev.smartlab.data.core.dataModulePreview
 import ru.bratusev.smartlab.domain.core.domainModule
 import ru.bratusev.smartlab.domain.core.domainModulePreview
 
-val areasScreenModule = module {
+val areaScreenModule = module {
     includes(domainModule, dataModule)
 
-    viewModelOf(::AreasScreenViewModel)
+    viewModelOf(::AreaScreenViewModel)
 }
 
-val areasScreenModulePreview = module {
+val areaScreenModulePreview = module {
     includes(domainModulePreview, dataModulePreview)
 
-    viewModelOf(::AreasScreenViewModel)
+    viewModelOf(::AreaScreenViewModel)
 }

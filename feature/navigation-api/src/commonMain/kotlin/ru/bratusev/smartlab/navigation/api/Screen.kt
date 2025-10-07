@@ -1,19 +1,48 @@
 package ru.bratusev.smartlab.navigation.api
 
-sealed class Screen(val route: String) {
-    object Login : Screen("login")
-    object Home : Screen("home")
-    object CustomScreen: Screen("customScreen") {
-        object Main : Screen("mainCustomScreen")
-        object AddWidget : Screen("addWidgetCustomScreen")
+import kotlinx.serialization.Serializable
+
+@Serializable
+sealed class Screen {
+    @Serializable
+    data object Login : Screen()
+
+    @Serializable
+    data object Home : Screen()
+
+    @Serializable
+    sealed class CustomScreen : Screen() {
+        @Serializable
+        data object Root : CustomScreen()
+
+        @Serializable
+        data object Main : CustomScreen()
+
+        @Serializable
+        data object AddWidget : CustomScreen()
     }
 
-    object Areas: Screen("areas")
+    @Serializable
+    sealed class Areas : Screen() {
+        @Serializable
+        data object Root : Areas()
 
-    object Settings : Screen("settings")
+        @Serializable
+        data object All : Areas()
 
-    object Notifications : Screen("notifications")
+        @Serializable
+        data class Detailed(val areaId: String) : Areas()
+    }
 
-    object UserProfile : Screen("UserProfile")
-    object Logcat : Screen("logcat")
+    @Serializable
+    data object Settings : Screen()
+
+    @Serializable
+    data object Notifications : Screen()
+
+    @Serializable
+    data object UserProfile : Screen()
+
+    @Serializable
+    data object Logcat : Screen()
 }

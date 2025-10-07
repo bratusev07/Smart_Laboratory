@@ -15,9 +15,9 @@ import ru.bratusev.smartlab.navigation.api.Screen
 enum class NavigationDrawerItems(val screen: Screen, val label: String, val icon: ImageVector) {
     Home(Screen.Home, "Доска", Icons.Default.Dashboard),
 
-    CustomScreen(Screen.CustomScreen.Main, "Своя панель", Icons.Default.AppRegistration),
+    CustomScreen(Screen.CustomScreen.Root, "Своя панель", Icons.Default.AppRegistration),
     Logs(Screen.Logcat, "Логи", Icons.AutoMirrored.Filled.List),
-    Areas(Screen.Areas, "Пространства", Icons.Outlined.ViewModule),
+    Areas(Screen.Areas.Root, "Пространства", Icons.Outlined.ViewModule),
     Settings(Screen.Settings, "Настройки", Icons.Default.Settings),
     Notifications(Screen.Notifications, "Уведомления", Icons.Default.Notifications),
     Profile(Screen.UserProfile, "<username>", Icons.Default.AccountCircle),

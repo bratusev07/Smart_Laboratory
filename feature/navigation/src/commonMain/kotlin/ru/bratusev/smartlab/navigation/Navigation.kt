@@ -5,6 +5,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -13,14 +14,21 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.backhandler.BackHandler
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.navigation
+import androidx.navigation.compose.navigation
+import androidx.navigation.toRoute
 import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
 import ru.bratusev.smartlab.feature_addWidgetScreen.AddWidgetScreen
-import ru.bratusev.smartlab.feature_areas.AreasScreen
+import ru.bratusev.smartlab.feature_area.AreaScreen
+import ru.bratusev.smartlab.feature_area.AreaScreenViewModel
+import ru.bratusev.smartlab.feature_areas.AllAreasScreen
+import ru.bratusev.smartlab.feature_areas.AllAreasScreenViewModel
 import ru.bratusev.smartlab.feature_customScreen.CustomScreen
 import ru.bratusev.smartlab.feature_home.HomeScreen
 import ru.bratusev.smartlab.feature_logcat.LogcatScreen
@@ -41,13 +49,13 @@ fun AppNavigation(navController: NavHostController) {
         onMenuClickAction = newAction
     }
 
-    val isDrawerHidden by remember {
+    val isDrawerHidden by remember(navBackStackEntry) {
         derivedStateOf {
-            when (navBackStackEntry?.destination?.route) {
-                Screen.Login.route -> true
-                Screen.CustomScreen.AddWidget.route -> true
-                else -> false
-            }
+            navBackStackEntry?.destination?.hierarchy?.any {
+                it.hasRoute(Screen.Login::class) || it.hasRoute(
+                    Screen.CustomScreen.AddWidget::class
+                )
+            } ?: false
         }
     }
 
@@ -66,7 +74,7 @@ fun AppNavigation(navController: NavHostController) {
             drawerScope.launch { drawerState.close() }
             navigationApi.navigateTo(screen = screen)
         },
-        currentScreenRoute = navBackStackEntry?.destination?.route ?: "",
+        navigationHierarchy = navBackStackEntry?.destination?.hierarchy,
         onMenuClick = onMenuClickAction,
     ) {
         AppNavHost(navController, navigationApi, setMenuAction)
@@ -81,26 +89,22 @@ private fun AppNavHost(
     setMenuAction: (action: () -> Unit) -> Unit,
 ) {
     NavHost(
-        navController = navController, startDestination = Screen.Login.route
+        navController = navController, startDestination = Screen.Login
     ) {
-
-        composable(Screen.Login.route) {
+        composable<Screen.Login> {
             BackHandler(true) { /* Отключаем кнопку назад и т.п */ }
             LoginScreen(
                 navigateToHome = { navigationApi.navigateToHome() })
         }
 
-        composable(Screen.Home.route) {
+        composable<Screen.Home> {
             HomeScreen(navigationApi = navigationApi)
         }
 
-
-        navigation(
-            startDestination = Screen.CustomScreen.Main.route,
-            route = Screen.CustomScreen.route
+        navigation<Screen.CustomScreen.Root>(
+            startDestination = Screen.CustomScreen.Main
         ) {
-            composable(Screen.CustomScreen.Main.route) {
-
+            composable<Screen.CustomScreen.Main> {
                 CustomScreen(
                     setMenuAction = setMenuAction,
                     goToAddWidgetScreen = {
@@ -108,34 +112,45 @@ private fun AppNavHost(
                     },
                 )
             }
-            composable(
-                Screen.CustomScreen.AddWidget.route
-            ) {
+            composable<Screen.CustomScreen.AddWidget> {
                 AddWidgetScreen(
-                    onGoBack = { navigationApi.popBackStack() }
-                )
+                    onGoBack = { navigationApi.popBackStack() })
             }
         }
 
-        composable(Screen.Areas.route) {
-            AreasScreen()
+        navigation<Screen.Areas.Root>(startDestination = Screen.Areas.All) {
+            composable<Screen.Areas.All> {
+                val allAreasScreenViewModel: AllAreasScreenViewModel = koinViewModel()
+                val state = allAreasScreenViewModel.uiState.collectAsState()
+                AllAreasScreen(
+                    areas = state.value.areas,
+                    navigateToArea = navigationApi::navigateToDetailedArea
+                )
+            }
+            composable<Screen.Areas.Detailed> { backStackEntry ->
+                val areaScreenViewModel: AreaScreenViewModel = koinViewModel()
+                val state = areaScreenViewModel.uiState.collectAsState()
+                val areaId = (backStackEntry.toRoute() as Screen.Areas.Detailed).areaId
+                val area = state.value.areas.first { it.areaId == areaId }
+                AreaScreen(area)
+            }
         }
 
-        composable(Screen.Logcat.route) {
+        composable<Screen.Logcat> {
             LogcatScreen(navigationApi = navigationApi)
         }
 
-        composable(Screen.Settings.route) {
+        composable<Screen.Settings> {
             SettingsScreen(navigationApi = navigationApi)
         }
 
 
-        composable(Screen.Notifications.route) {
-            Text(Screen.Notifications.route)
+        composable<Screen.Notifications> {
+            Text(Screen.Notifications.toString())
         }
 
-        composable(Screen.UserProfile.route) {
-            Text(Screen.UserProfile.route)
+        composable<Screen.UserProfile> {
+            Text(Screen.UserProfile.toString())
         }
 
     }

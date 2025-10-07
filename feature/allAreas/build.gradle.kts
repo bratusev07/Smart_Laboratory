@@ -1,4 +1,3 @@
-
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -23,7 +22,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "DomainCore"
+            baseName = "AllAreasScreen"
             isStatic = true
         }
     }
@@ -31,16 +30,27 @@ kotlin {
     sourceSets {
 
         commonMain.dependencies {
-            implementation(libs.koin.core)
-            implementation(libs.koin.compose)
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material3)
+            implementation(compose.materialIconsExtended)
+            implementation(compose.ui)
+            implementation(compose.components.resources)
+            implementation(compose.components.uiToolingPreview)
 
-            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.koin.core)
+            implementation(libs.bundles.koin.compose)
+
+            implementation(projects.domain.core)
+            implementation(projects.data.core)
+            implementation(projects.feature.navigationApi)
+            implementation(projects.ui.core)
         }
     }
 }
 
 android {
-    namespace = "ru.bratusev.smartlab.domain.core"
+    namespace = "ru.bratusev.smartlab.feature.allAreas"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {

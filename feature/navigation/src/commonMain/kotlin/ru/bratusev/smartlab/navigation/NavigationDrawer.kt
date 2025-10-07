@@ -30,6 +30,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hasRoute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -47,9 +49,9 @@ fun NavigationDrawer(
     drawerScope: CoroutineScope = rememberCoroutineScope(),
     isHidden: Boolean = false,
     navigateTo: (Screen) -> Unit,
-    currentScreenRoute: String,
+    navigationHierarchy: Sequence<NavDestination>?,
     onMenuClick: () -> Unit,
-    content: @Composable () -> Unit,
+    content: @Composable (() -> Unit),
 ) {
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -81,39 +83,39 @@ fun NavigationDrawer(
                         HorizontalDivider()
                         NavigationDrawerItemComponent(
                             NavigationDrawerItems.Home,
-                            currentScreenRoute = currentScreenRoute,
+                            selected = navigationHierarchy?.any { it.hasRoute(NavigationDrawerItems.Home.screen::class) } ?: false,
                             navigateTo = navigateTo
                         )
                         NavigationDrawerItemComponent(
                             NavigationDrawerItems.CustomScreen,
-                            currentScreenRoute = currentScreenRoute,
+                            selected = navigationHierarchy?.any { it.hasRoute(NavigationDrawerItems.CustomScreen.screen::class) } ?: false,
                             navigateTo = navigateTo
                         )
                         NavigationDrawerItemComponent(
                             NavigationDrawerItems.Logs,
-                            currentScreenRoute = currentScreenRoute,
+                            selected = navigationHierarchy?.any { it.hasRoute(NavigationDrawerItems.Logs.screen::class) } ?: false,
                             navigateTo = navigateTo
                         )
                         NavigationDrawerItemComponent(
                             NavigationDrawerItems.Areas,
-                            currentScreenRoute = currentScreenRoute,
+                            selected = navigationHierarchy?.any { it.hasRoute(NavigationDrawerItems.Areas.screen::class) } ?: false,
                             navigateTo = navigateTo
                         )
                         Spacer(modifier = Modifier.weight(1f))
                         NavigationDrawerItemComponent(
                             NavigationDrawerItems.Settings,
-                            currentScreenRoute = currentScreenRoute,
+                            selected = navigationHierarchy?.any { it.hasRoute(NavigationDrawerItems.Settings.screen::class) } ?: false,
                             navigateTo = navigateTo
                         )
                         HorizontalDivider()
                         NavigationDrawerItemComponent(
                             NavigationDrawerItems.Notifications,
-                            currentScreenRoute = currentScreenRoute,
+                            selected = navigationHierarchy?.any { it.hasRoute(NavigationDrawerItems.Notifications.screen::class) } ?: false,
                             navigateTo = navigateTo
                         )
                         NavigationDrawerItemComponent(
                             NavigationDrawerItems.Profile,
-                            currentScreenRoute = currentScreenRoute,
+                            selected = navigationHierarchy?.any { it.hasRoute(NavigationDrawerItems.Profile.screen::class) } ?: false,
                             navigateTo = navigateTo
                         )
                     }
@@ -151,13 +153,13 @@ fun NavigationDrawer(
 @Composable
 private fun NavigationDrawerItemComponent(
     item: NavigationDrawerItems,
-    currentScreenRoute: String,
+    selected: Boolean,
     navigateTo: (Screen) -> Unit,
 ) {
     NavigationDrawerItem(
         label = { Text(item.label) },
-        badge = { if (currentScreenRoute == item.screen.route) Text("<") },
-        selected = currentScreenRoute == item.screen.route,
+        badge = { if (selected) Text("<") },
+        selected = selected,
         onClick = { navigateTo(item.screen) },
         icon = { Icon(item.icon, contentDescription = null) })
 }
@@ -173,7 +175,7 @@ private fun NavigationDrawerPreview() {
         NavigationDrawer(
             drawerState = drawerState,
             navigateTo = {},
-            currentScreenRoute = Screen.Home.route,
+            navigationHierarchy = null,
             onMenuClick = {}
         ) {
             Text(text = "Контент. Очень длинный контент. Прям чтобы его было видно. Нужно прям много контента.")

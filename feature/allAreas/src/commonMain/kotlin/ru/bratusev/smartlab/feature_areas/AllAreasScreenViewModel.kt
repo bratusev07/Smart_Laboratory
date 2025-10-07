@@ -14,7 +14,7 @@ import ru.bratusev.smartlab.feature_areas.mappers.toDomain
 import ru.bratusev.smartlab.feature_areas.models.AreasScreenState
 import ru.bratusev.smartlab.feature_areas.models.Event
 
-class AreasScreenViewModel(
+class AllAreasScreenViewModel(
     getAreasUseCase: GetAreasUseCase,
     private val logger: GetLoggerUseCase,
 ) : ViewModel() {
@@ -29,6 +29,7 @@ class AreasScreenViewModel(
     }
 
     private fun onAreasUpdate(domainAreas: List<Area>) {
+        logger.d("AreasScreenViewModel/onAreasUpdate", "Loaded ares: $domainAreas")
         updateState(
             _uiState.value.copy(
             areas = domainAreas.map { it.toDomain() }

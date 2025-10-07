@@ -22,7 +22,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "AreasScreen"
+            baseName = "AreaScreen"
             isStatic = true
         }
     }
@@ -50,7 +50,7 @@ kotlin {
 }
 
 android {
-    namespace = "ru.bratusev.smartlab.feature.areas"
+    namespace = "ru.bratusev.smartlab.feature.area"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
