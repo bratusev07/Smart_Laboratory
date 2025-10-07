@@ -13,7 +13,6 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.booleanOrNull
 import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.intOrNull
-import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import ru.bratusev.smartlab.data.core.mapper.mapJsonToEventPair
@@ -27,11 +26,12 @@ import ru.bratusev.smartlab.data.core.model.EventResponseMsg
 import ru.bratusev.smartlab.data.core.model.ResultResponseMsg
 import ru.bratusev.smartlab.data.core.model.ServiceEntity
 import ru.bratusev.smartlab.data.core.model.SocketMessage
+import ru.bratusev.smartlab.data.core.model.SocketResponseModel
 import ru.bratusev.smartlab.data.core.model.TriggerResponseMsg
 
 class HomeAssistantMessageHandlersImpl(
     val json: Json,
-    val errorFlow: MutableSharedFlow<List<Error>>,
+    val errorFlow: MutableSharedFlow<SocketResponseModel>,
     val session: DefaultClientWebSocketSession?
 ) : HomeAssistantMessageHandlers {
 
@@ -47,13 +47,13 @@ class HomeAssistantMessageHandlersImpl(
                                 SocketMessage.AuthMsg(type = "auth", accessToken = it).toString()
                             )
                         )
-                    } ?: errorFlow.tryEmit(listOf(Error("Access token is null during auth_required")))
+                    } ?: errorFlow.tryEmit(SocketResponseModel.ErrorMessage(listOf(Error("Access token is null during auth_required"))))
                 } catch (e: Exception) {
-                    errorFlow.tryEmit(listOf(Error("Failed to send auth message: ${e.message ?: e.toString()}")))
+                    errorFlow.tryEmit(SocketResponseModel.ErrorMessage(listOf(Error("Failed to send auth message: ${e.message ?: e.toString()}"))))
                 }
             }
         } catch (e: Exception) {
-            errorFlow.tryEmit(listOf(Error("AuthRequired handler error: ${e.message ?: e.toString()}")))
+            errorFlow.tryEmit(SocketResponseModel.ErrorMessage(listOf(Error("AuthRequired handler error: ${e.message ?: e.toString()}"))))
         }
     }
 
@@ -74,11 +74,11 @@ class HomeAssistantMessageHandlersImpl(
                         )
                     )
                 } catch (e: Exception) {
-                    errorFlow.tryEmit(listOf(Error("Failed to send subscribe_entities: ${e.message ?: e.toString()}")))
+                    errorFlow.tryEmit(SocketResponseModel.ErrorMessage(listOf(Error("Failed to send subscribe_entities: ${e.message ?: e.toString()}"))))
                 }
             }
         } catch (e: Exception) {
-            errorFlow.tryEmit(listOf(Error("AuthOk handler error: ${e.message ?: e.toString()}")))
+            errorFlow.tryEmit(SocketResponseModel.ErrorMessage(listOf(Error("AuthOk handler error: ${e.message ?: e.toString()}"))))
         }
     }
 
@@ -86,9 +86,9 @@ class HomeAssistantMessageHandlersImpl(
         try {
             val msg = json.decodeFromJsonElement<AuthInvalidResponseMsg>(jsonElement)
             println("Auth failed: ${msg.message}")
-            errorFlow.tryEmit(listOf(Error("Auth failed: ${msg.message}")))
+            errorFlow.tryEmit(SocketResponseModel.ErrorMessage(listOf(Error("Auth failed: ${msg.message}"))))
         } catch (e: Exception) {
-            errorFlow.tryEmit(listOf(Error("AuthInvalid handler error: ${e.message ?: e.toString()}")))
+            errorFlow.tryEmit(SocketResponseModel.ErrorMessage(listOf(Error("AuthInvalid handler error: ${e.message ?: e.toString()}"))))
         }
     }
 
@@ -104,7 +104,7 @@ class HomeAssistantMessageHandlersImpl(
             if (!success) {
                 val message = "Command failed [${resultResponseMsg.id}]: ${resultResponseMsg.error?.message}"
                 println(message)
-                errorFlow.tryEmit(listOf(Error(message)))
+                errorFlow.tryEmit(SocketResponseModel.ErrorMessage(listOf(Error(message))))
             }else {
                 if (result != null && result is JsonArray && result.toString().contains("area_id")) {
                     try {
@@ -113,14 +113,14 @@ class HomeAssistantMessageHandlersImpl(
                         }
                         emitAreaEntity(areaEntities)
                     } catch (e: Exception) {
-                        errorFlow.tryEmit(listOf(Error("Failed to decode AreaEntity list: ${e.message ?: e.toString()}")))
+                        errorFlow.tryEmit(SocketResponseModel.ErrorMessage(listOf(Error("Failed to decode AreaEntity list: ${e.message ?: e.toString()}"))))
                     }
                 } else {
-                    errorFlow.tryEmit(listOf(Error("Result is not a valid JSON array")))
+                    errorFlow.tryEmit(SocketResponseModel.ErrorMessage(listOf(Error("Result is not a valid JSON array"))))
                 }
             }
         } catch (e: Exception) {
-            errorFlow.tryEmit(listOf(Error("Result handler error: ${e.message ?: e.toString()}")))
+            errorFlow.tryEmit(SocketResponseModel.ErrorMessage(listOf(Error("Result handler error: ${e.message ?: e.toString()}"))))
         }
     }
 
@@ -157,7 +157,7 @@ class HomeAssistantMessageHandlersImpl(
                 }
             }
         } catch (e: Exception) {
-            errorFlow.tryEmit(listOf(Error("Event handler error: ${e.message ?: e.toString()}")))
+            errorFlow.tryEmit(SocketResponseModel.ErrorMessage(listOf(Error("Event handler error: ${e.message ?: e.toString()}"))))
         }
     }
 
@@ -166,7 +166,7 @@ class HomeAssistantMessageHandlersImpl(
             val id = jsonElement.jsonObject["id"]?.jsonPrimitive?.intOrNull ?: return
             println("Pong received: $id")
         } catch (e: Exception) {
-            errorFlow.tryEmit(listOf(Error("Pong handler error: ${e.message ?: e.toString()}")))
+            errorFlow.tryEmit(SocketResponseModel.ErrorMessage(listOf(Error("Pong handler error: ${e.message ?: e.toString()}"))))
         }
     }
 }

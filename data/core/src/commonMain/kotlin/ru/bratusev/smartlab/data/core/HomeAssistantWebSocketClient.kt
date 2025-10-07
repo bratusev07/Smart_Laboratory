@@ -25,58 +25,48 @@ import ru.bratusev.smartlab.data.core.message.HomeAssistantMessageHandlers
 import ru.bratusev.smartlab.data.core.message.HomeAssistantMessageHandlersImpl
 import ru.bratusev.smartlab.data.core.message.HomeAssistantMessageSender
 import ru.bratusev.smartlab.data.core.message.HomeAssistantMessageSenderImpl
-import ru.bratusev.smartlab.data.core.model.AreaEntity
-import ru.bratusev.smartlab.data.core.model.ServiceEntity
+import ru.bratusev.smartlab.data.core.model.SocketResponseModel
 
 
 class HomeAssistantWebSocketClient() {
 
     private var accessToken: String? = null
-
     private val client = HttpClient(CIO) {
         install(HttpTimeout) {
             requestTimeoutMillis = 10000
         }
         install(WebSockets)
     }
-
     private val json = Json {
         ignoreUnknownKeys = true
         encodeDefaults = true
     }
+
     private var messageId = 1
 
     private var session: DefaultClientWebSocketSession? = null
     private var job: Job? = null
 
-    private val _socketErrorsFlow = MutableSharedFlow<List<Error>>()
-    val socketErrorsFlow: SharedFlow<List<Error>> = _socketErrorsFlow
-
-    private val _serviceEntitiesFlow = MutableSharedFlow<List<ServiceEntity>>(replay = 1)
-    internal var _serviceEntityCopy: List<ServiceEntity> = emptyList()
-    val serviceEntitiesFlow: SharedFlow<List<ServiceEntity>> = _serviceEntitiesFlow
-
-    private val _areasFlow = MutableSharedFlow<List<AreaEntity>>(replay = 1)
-    val areasFlow: SharedFlow<List<AreaEntity>> = _areasFlow
+    private val _socketResponseFlow = MutableSharedFlow<SocketResponseModel>(replay = 1)
+    val socketResponseFlow: SharedFlow<SocketResponseModel> = _socketResponseFlow
+    var serviceEntityCopy: SocketResponseModel.DeviceEntity? = null
 
     private val messageHandlers: HomeAssistantMessageHandlers by lazy {
         HomeAssistantMessageHandlersImpl(
             json = json,
             session = session,
-            errorFlow = _socketErrorsFlow
+            errorFlow = _socketResponseFlow
         )
     }
-
     private val messageSender: HomeAssistantMessageSender by lazy {
         HomeAssistantMessageSenderImpl(
             json = json,
             session = { session },
             messageId = { messageId },
             incrementMessageId = { messageId++ },
-            errorFlow = _socketErrorsFlow
+            errorFlow = _socketResponseFlow
         )
     }
-
     internal val sender: HomeAssistantMessageSender get() = messageSender
 
     internal fun setToken(newToken: String): HomeAssistantWebSocketClient {
@@ -97,7 +87,7 @@ class HomeAssistantWebSocketClient() {
                 }
             } catch (e: Exception) {
                 println("WebSocket error: $e")
-                _socketErrorsFlow.tryEmit(listOf(Error("WebSocket error: ${e.message ?: e.toString()}")))
+                _socketResponseFlow.tryEmit(SocketResponseModel.ErrorMessage(listOf(Error("WebSocket error: ${e.message ?: e.toString()}"))))
             } finally {
                 disconnect()
                 session = null
@@ -131,24 +121,24 @@ class HomeAssistantWebSocketClient() {
                 "auth_invalid" -> messageHandlers.handleAuthInvalid(jsonElement = jsonElement)
                 "result" -> messageHandlers.handleResult(
                     jsonElement = jsonElement,
-                    emitAreaEntity = { list -> _areasFlow.tryEmit(list)}
+                    emitAreaEntity = { list -> _socketResponseFlow.tryEmit(SocketResponseModel.AreasEntity(list))}
                 )
                 "event" -> messageHandlers.handleEvent(
                     jsonElement = jsonElement,
-                    getServiceEntitiesCopy = { _serviceEntityCopy },
-                    setServiceEntitiesCopy = { list -> _serviceEntityCopy = list },
-                    emitServiceEntities = { list -> _serviceEntitiesFlow.tryEmit(list) }
+                    getServiceEntitiesCopy = { serviceEntityCopy?.services ?: emptyList() },
+                    setServiceEntitiesCopy = { list -> serviceEntityCopy = SocketResponseModel.DeviceEntity(list) },
+                    emitServiceEntities = { list -> _socketResponseFlow.tryEmit(SocketResponseModel.DeviceEntity(list)) }
                 )
 
                 "pong" -> messageHandlers.handlePong(jsonElement = jsonElement)
                 else -> {
                     println("Unknown message type: $type")
-                    _socketErrorsFlow.tryEmit(listOf(Error("Unknown message type: $type")))
+                    _socketResponseFlow.tryEmit(SocketResponseModel.ErrorMessage(listOf(Error("Unknown message type: $type"))))
                 }
             }
         } catch (e: Exception) {
             println("Parse error: $e")
-            _socketErrorsFlow.tryEmit(listOf(Error("Parse error: ${e.message ?: e.toString()}")))
+            _socketResponseFlow.tryEmit(SocketResponseModel.ErrorMessage(listOf(Error("Parse error: ${e.message ?: e.toString()}"))))
         }
     }
 

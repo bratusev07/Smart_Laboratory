@@ -9,80 +9,41 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.jsonObject
-import ru.bratusev.smartlab.data.core.model.AreaEntity
 import ru.bratusev.smartlab.data.core.model.ServiceData
 import ru.bratusev.smartlab.data.core.model.ServiceEntity
 import ru.bratusev.smartlab.data.core.model.SocketMessage
+import ru.bratusev.smartlab.data.core.model.SocketResponseModel
 
 class HomeAssistantMessageSenderImpl(
     private val json: Json,
     private val session: () -> DefaultClientWebSocketSession?,
     private val messageId: () -> Int,
     private val incrementMessageId: () -> Unit,
-    private val errorFlow: MutableSharedFlow<List<Error>>
+    private val errorFlow: MutableSharedFlow<SocketResponseModel>
 ) : HomeAssistantMessageSender {
 
     override fun updateSensorState(sensor: ServiceEntity) {
-        try {
-            incrementMessageId()
-            CoroutineScope(Dispatchers.IO).launch {
-                try {
-                    val currentSession = session()
-                    if (currentSession == null) {
-                        errorFlow.tryEmit(listOf(Error("Cannot send sensor update: session is null")))
-                        return@launch
-                    }
-                    sensor.toMsg()?.let {
-                        currentSession.send(Frame.Text(json.encodeToString(it)))
-                    }
-                } catch (e: Exception) {
-                    errorFlow.tryEmit(listOf(Error("Failed to send sensor update: ${e.message ?: e.toString()}")))
-                }
-            }
-        } catch (e: Exception) {
-            errorFlow.tryEmit(listOf(Error("Failed to build sensor update: ${e.message ?: e.toString()}")))
-        }
+        sendMessage(
+            buildMessage = { sensor.toMsg() },
+            actionName = "send sensor update",
+            onSessionNull = { "Cannot send sensor update: session is null" },
+            onBuildFailure = { "Failed to build sensor update: ${it.message ?: it.toString()}" },
+            onSendFailure = { "Failed to send sensor update: ${it.message ?: it.toString()}" }
+        )
     }
 
     override fun fetchAreas() {
-        try {
-            incrementMessageId()
-            CoroutineScope(Dispatchers.IO).launch {
-                try {
-                    val currentSession = session()
-                    if (currentSession == null) {
-                        errorFlow.tryEmit(listOf(Error("Cannot fetch areas: session is null")))
-                        return@launch
-                    }
-                    currentSession.send(Frame.Text(json.encodeToString(SocketMessage.FetchAreasMsg(id = messageId()))))
-                } catch (e: Exception) {
-                    errorFlow.tryEmit(listOf(Error("Failed to fetch areas: ${e.message ?: e.toString()}")))
-                }
-            }
-        } catch (e: Exception) {
-            errorFlow.tryEmit(listOf(Error("Failed to fetch areas: ${e.message ?: e.toString()}")))
-        }
+        sendMessage<SocketMessage.FetchAreasMsg>(
+            buildMessage = { SocketMessage.FetchAreasMsg(id = messageId()) },
+            actionName = "fetch areas"
+        )
     }
 
     override fun fetchAreaDevices() {
-        try {
-            incrementMessageId()
-            CoroutineScope(Dispatchers.IO).launch {
-                try {
-                    val currentSession = session()
-                    if (currentSession == null) {
-                        errorFlow.tryEmit(listOf(Error("Cannot fetch area devices: session is null")))
-                        return@launch
-                    }
-                    currentSession.send(Frame.Text(json.encodeToString(SocketMessage.FetchAreaDevicesMsg(id = messageId()))))
-                } catch (e: Exception) {
-                    errorFlow.tryEmit(listOf(Error("Failed to fetch area devices: ${e.message ?: e.toString()}")))
-                }
-            }
-        } catch (e: Exception) {
-            errorFlow.tryEmit(listOf(Error("Failed to fetch area devices: ${e.message ?: e.toString()}")))
-        }
+        sendMessage(
+            buildMessage = { SocketMessage.FetchAreaDevicesMsg(id = messageId()) },
+            actionName = "fetch area devices"
+        )
     }
 
     private fun ServiceEntity.toMsg(): SocketMessage.SensorMsg? {
@@ -98,4 +59,34 @@ class HomeAssistantMessageSenderImpl(
         if (this.toString().contains("off")) "turn_on"
         else if (this.toString().contains("on")) "turn_off"
         else "press"
+
+    private inline fun <reified T : Any> sendMessage(
+        noinline buildMessage: () -> T?,
+        actionName: String,
+        crossinline onSessionNull: () -> String = { "Cannot $actionName: session is null" },
+        onBuildFailure: (Exception) -> String = { "Failed to $actionName: ${it.message ?: it.toString()}" },
+        crossinline onSendFailure: (Exception) -> String = { "Failed to $actionName: ${it.message ?: it.toString()}" }
+    ) {
+        try {
+            incrementMessageId()
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val currentSession = session()
+                    if (currentSession == null) {
+                        errorFlow.tryEmit(SocketResponseModel.ErrorMessage(listOf(Error(onSessionNull()))))
+                        return@launch
+                    }
+
+                    val message = buildMessage()
+                    if (message != null) {
+                        currentSession.send(Frame.Text(json.encodeToString(message)))
+                    }
+                } catch (e: Exception) {
+                    errorFlow.tryEmit(SocketResponseModel.ErrorMessage(listOf(Error(onSendFailure(e)))))
+                }
+            }
+        } catch (e: Exception) {
+            errorFlow.tryEmit(SocketResponseModel.ErrorMessage(listOf(Error(onBuildFailure(e)))))
+        }
+    }
 }
