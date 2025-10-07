@@ -6,4 +6,6 @@ interface HomeAssistantMessageSender {
     fun updateSensorState(sensor: ServiceEntity)
 
     fun fetchAreas()
+
+    fun fetchAreaDevices()
 }

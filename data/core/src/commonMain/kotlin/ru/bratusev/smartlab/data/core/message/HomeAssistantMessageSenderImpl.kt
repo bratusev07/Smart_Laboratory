@@ -65,6 +65,26 @@ class HomeAssistantMessageSenderImpl(
         }
     }
 
+    override fun fetchAreaDevices() {
+        try {
+            incrementMessageId()
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val currentSession = session()
+                    if (currentSession == null) {
+                        errorFlow.tryEmit(listOf(Error("Cannot fetch area devices: session is null")))
+                        return@launch
+                    }
+                    currentSession.send(Frame.Text(json.encodeToString(SocketMessage.FetchAreaDevicesMsg(id = messageId()))))
+                } catch (e: Exception) {
+                    errorFlow.tryEmit(listOf(Error("Failed to fetch area devices: ${e.message ?: e.toString()}")))
+                }
+            }
+        } catch (e: Exception) {
+            errorFlow.tryEmit(listOf(Error("Failed to fetch area devices: ${e.message ?: e.toString()}")))
+        }
+    }
+
     private fun ServiceEntity.toMsg(): SocketMessage.SensorMsg? {
         return SocketMessage.SensorMsg(
             domain = domain.orEmpty(),
