@@ -7,6 +7,8 @@ import ru.bratusev.smartlab.domain.core.model.socket.ServiceEntity
 interface SocketRepository {
     fun observeServiceEntities(): Flow<List<ServiceEntity>>
 
+    fun observeAreaDevices(areaId: String): Flow<List<ServiceEntity>>
+
     fun observeAreas(): Flow<List<Area>>
 
     fun observeSocketErrors(): Flow<List<Error>>

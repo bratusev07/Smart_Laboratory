@@ -162,7 +162,9 @@ sealed class SocketMessage {
 
     @Serializable
     data class FetchAreaDevicesMsg(
-        val type: String = "config/device_registry/list",
+        val type: String = "search/related",
+        @SerialName("item_type") val itemType: String = "area",
+        @SerialName("item_id") val itemId: String,
         val id: Int,
     ) : SocketMessage() {
 

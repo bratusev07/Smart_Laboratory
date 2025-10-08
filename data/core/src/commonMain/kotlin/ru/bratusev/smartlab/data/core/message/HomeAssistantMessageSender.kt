@@ -7,5 +7,5 @@ interface HomeAssistantMessageSender {
 
     fun fetchAreas()
 
-    fun fetchAreaDevices()
+    fun fetchAreaDevices(areaId: String)
 }

@@ -121,7 +121,11 @@ class HomeAssistantWebSocketClient() {
                 "auth_invalid" -> messageHandlers.handleAuthInvalid(jsonElement = jsonElement)
                 "result" -> messageHandlers.handleResult(
                     jsonElement = jsonElement,
-                    emitAreaEntity = { list -> _socketResponseFlow.tryEmit(SocketResponseModel.AreasEntity(list))}
+                    emitAreaEntity = { list -> _socketResponseFlow.tryEmit(SocketResponseModel.AreasEntity(list))},
+                    emitAreaDevices = { list ->
+                        val devices = SocketResponseModel.AreaDeviceEntity(serviceEntityCopy?.services?.filter { list.contains(it.id) } ?: emptyList())
+                        _socketResponseFlow.tryEmit(devices)
+                    }
                 )
                 "event" -> messageHandlers.handleEvent(
                     jsonElement = jsonElement,

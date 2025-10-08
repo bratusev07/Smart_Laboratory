@@ -41,6 +41,10 @@ class SocketRepositoryPreview(
     override fun observeServiceEntities(): Flow<List<DomainServiceEntity>> =
         devices.asSharedFlow().map { list -> list.map { it } }
 
+    override fun observeAreaDevices(areaId: String): Flow<List<DomainServiceEntity>> {
+        TODO("Not yet implemented")
+    }
+
     override fun observeAreas(): Flow<List<Area>> {
         TODO("Not yet implemented")
     }

@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import ru.bratusev.smartlab.domain.core.model.socket.Area
+import ru.bratusev.smartlab.domain.core.usecase.GetAreaDevicesUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetAreasUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetLoggerUseCase
 import ru.bratusev.smartlab.feature_area.mappers.toDomain
@@ -16,6 +17,7 @@ import ru.bratusev.smartlab.feature_area.models.Event
 
 class AreaScreenViewModel(
     getAreasUseCase: GetAreasUseCase,
+    getAreaDeviceUseCase: GetAreaDevicesUseCase,
     private val logger: GetLoggerUseCase,
 ) : ViewModel() {
 
@@ -25,6 +27,11 @@ class AreaScreenViewModel(
     init {
         getAreasUseCase.invoke().onEach {
             onAreasUpdate(it)
+        }.launchIn(viewModelScope)
+
+        //TODO remove const area id
+        getAreaDeviceUseCase.invoke("clabaratoriia_smarttech").onEach {
+            logger.d("AreasScreenViewModel/OnAreaDevicesUpdated", it.size.toString())
         }.launchIn(viewModelScope)
     }
 

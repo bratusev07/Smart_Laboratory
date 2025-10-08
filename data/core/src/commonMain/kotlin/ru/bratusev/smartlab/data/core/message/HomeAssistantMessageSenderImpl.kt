@@ -39,9 +39,9 @@ class HomeAssistantMessageSenderImpl(
         )
     }
 
-    override fun fetchAreaDevices() {
+    override fun fetchAreaDevices(areaId: String) {
         sendMessage(
-            buildMessage = { SocketMessage.FetchAreaDevicesMsg(id = messageId()) },
+            buildMessage = { SocketMessage.FetchAreaDevicesMsg(id = messageId(), itemId = areaId) },
             actionName = "fetch area devices"
         )
     }

@@ -19,6 +19,13 @@ SocketRepositoryImpl(
             (it as SocketResponseModel.DeviceEntity).services.map { it.mapToDomain() }
         }
 
+    override fun observeAreaDevices(areaId: String): Flow<List<ServiceEntity>> {
+        webSocketClient.sender.fetchAreaDevices(areaId)
+        return webSocketClient.socketResponseFlow.filter { it is SocketResponseModel.AreaDeviceEntity }.map {
+            (it as SocketResponseModel.AreaDeviceEntity).areaDevices.map { it.mapToDomain() }
+        }
+    }
+
     override fun observeAreas(): Flow<List<Area>> {
         webSocketClient.sender.fetchAreas()
         return webSocketClient.socketResponseFlow
