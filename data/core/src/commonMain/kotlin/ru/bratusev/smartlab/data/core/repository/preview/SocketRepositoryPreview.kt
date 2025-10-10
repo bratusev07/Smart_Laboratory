@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import ru.bratusev.smartlab.domain.core.model.socket.Area
 import ru.bratusev.smartlab.domain.core.repository.SocketRepository
 import ru.bratusev.smartlab.domain.core.model.socket.ServiceEntity as DomainServiceEntity
 
@@ -39,6 +40,14 @@ class SocketRepositoryPreview(
 
     override fun observeServiceEntities(): Flow<List<DomainServiceEntity>> =
         devices.asSharedFlow().map { list -> list.map { it } }
+
+    override fun observeAreaDevices(areaId: String): Flow<List<DomainServiceEntity>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun observeAreas(): Flow<List<Area>> {
+        TODO("Not yet implemented")
+    }
 
     override fun observeSocketErrors(): Flow<List<Error>> = emptyFlow()
 

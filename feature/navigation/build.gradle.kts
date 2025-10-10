@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 kotlin {
@@ -36,6 +37,7 @@ kotlin {
             implementation(libs.ui.backhandler)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
+            implementation(libs.ktor.serialization.kotlinx.json)
 
             implementation(libs.koin.core)
             implementation(libs.bundles.koin.compose)
@@ -47,6 +49,8 @@ kotlin {
             implementation(projects.feature.logcat)
             implementation(projects.feature.customScreen)
             implementation(projects.feature.addWidgetScreen)
+            implementation(projects.feature.allAreas)
+            implementation(projects.feature.area)
             implementation(projects.ui.core)
 
         }

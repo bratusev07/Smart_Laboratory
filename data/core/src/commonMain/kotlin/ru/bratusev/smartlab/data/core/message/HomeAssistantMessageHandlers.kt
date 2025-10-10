@@ -1,6 +1,7 @@
 package ru.bratusev.smartlab.data.core.message
 
 import kotlinx.serialization.json.JsonElement
+import ru.bratusev.smartlab.data.core.model.AreaEntity
 import ru.bratusev.smartlab.data.core.model.ServiceEntity
 
 interface HomeAssistantMessageHandlers {
@@ -10,7 +11,11 @@ interface HomeAssistantMessageHandlers {
 
     fun handleAuthInvalid(jsonElement: JsonElement)
 
-    fun handleResult(jsonElement: JsonElement)
+    fun handleResult(
+        jsonElement: JsonElement,
+        emitAreaEntity: (List<AreaEntity>) -> Boolean,
+        emitAreaDevices: (List<String>) -> Unit
+    )
 
     fun handleEvent(
         jsonElement: JsonElement,

@@ -3,6 +3,10 @@ package ru.bratusev.smartlab.navigation
 import org.koin.dsl.module
 import ru.bratusev.smartlab.feature_addWidgetScreen.addWidgetScreenModule
 import ru.bratusev.smartlab.feature_addWidgetScreen.addWidgetScreenPreviewModule
+import ru.bratusev.smartlab.feature_area.areaScreenModule
+import ru.bratusev.smartlab.feature_area.areaScreenModulePreview
+import ru.bratusev.smartlab.feature_areas.allAreasScreenModule
+import ru.bratusev.smartlab.feature_areas.allAreasScreenModulePreview
 import ru.bratusev.smartlab.feature_customScreen.customScreenModule
 import ru.bratusev.smartlab.feature_customScreen.customScreenModulePreview
 import ru.bratusev.smartlab.feature_home.homeModule
@@ -20,8 +24,10 @@ val navigationModule = module {
         settingsModule,
         loginModule,
         logcatModule,
-        customScreenModule,
-        addWidgetScreenModule
+        allAreasScreenModule,
+        areaScreenModule,
+        addWidgetScreenModule,
+        customScreenModule
     )
 }
 
@@ -31,7 +37,9 @@ val navigationModulePreview = module {
         settingsModulePreview,
         loginModulePreview,
         logcatModulePreview,
-        customScreenModulePreview,
-        addWidgetScreenPreviewModule
+        allAreasScreenModulePreview,
+        areaScreenModulePreview,
+        addWidgetScreenPreviewModule,
+        customScreenModulePreview
     )
 }

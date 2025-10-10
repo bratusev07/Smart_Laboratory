@@ -19,6 +19,10 @@ object StringsRes {
 
     val ERROR = "Ошибка"
 
+    // -----------LOGIN SCREEN TEXT---------------------
+
+    val LOADING_INDICATOR = "Загрузка..."
+
     // -----------NAVIGATION DRAWER--------------------
 
     val DRAWER_TITLE = "Умная лаборатория"

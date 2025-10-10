@@ -150,6 +150,30 @@ sealed class SocketMessage {
     }
 
     @Serializable
+    data class FetchAreasMsg(
+        val type: String = "config/area_registry/list",
+        val id: Int,
+    ) : SocketMessage() {
+
+        override fun toString(): String {
+            return """{"type": "$type", "id" : $id}"""
+        }
+    }
+
+    @Serializable
+    data class FetchAreaDevicesMsg(
+        val type: String = "search/related",
+        @SerialName("item_type") val itemType: String = "area",
+        @SerialName("item_id") val itemId: String,
+        val id: Int,
+    ) : SocketMessage() {
+
+        override fun toString(): String {
+            return """{"type": "$type", "id" : $id}"""
+        }
+    }
+
+    @Serializable
     data class SensorMsg(
         val type: String = "call_service",
         val domain: String,

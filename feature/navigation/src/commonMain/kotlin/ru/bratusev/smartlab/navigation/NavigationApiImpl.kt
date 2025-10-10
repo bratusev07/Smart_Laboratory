@@ -9,32 +9,40 @@ class NavigationApiImpl(
 ) : NavigationApi {
 
     override fun navigateTo(screen: Screen) {
-        navController.navigate(screen.route)
+        navController.navigate(screen)
     }
 
     override fun navigateToHome() {
-        navController.navigate(Screen.Home.route) {
+        navController.navigate(Screen.Home) {
             // очищаем стэк, чтобы нельзя было вернуться к авторизации просто нажав назад
-            popUpTo(Screen.Login.route) {
+            popUpTo(Screen.Login) {
                 inclusive = true
             }
         }
     }
 
     override fun navigateToLogin() {
-        navController.navigate(Screen.Login.route)
+        navController.navigate(Screen.Login)
     }
 
     override fun navigateToSettings() {
-        navController.navigate(Screen.Settings.route)
+        navController.navigate(Screen.Settings)
     }
 
     override fun navigateToLogcat() {
-        navController.navigate(Screen.Logcat.route)
+        navController.navigate(Screen.Logcat)
+    }
+
+    override fun navigateToAreasScreen() {
+        navController.navigate(Screen.Areas)
+    }
+
+    override fun navigateToDetailedArea(areaId: String) {
+        navController.navigate(Screen.Areas.Detailed(areaId))
     }
 
     override fun navigateToAddWidgetCustomScreen() {
-        navController.navigate(Screen.CustomScreen.AddWidget.route)
+        navController.navigate(Screen.CustomScreen.AddWidget)
     }
 
     override fun popBackStack() {
