@@ -17,7 +17,7 @@ import ru.bratusev.smartlab.feature_area.models.Event
 
 class AreaScreenViewModel(
     getAreasUseCase: GetAreasUseCase,
-    getAreaDeviceUseCase: GetAreaDevicesUseCase,
+    private val getAreaDeviceUseCase: GetAreaDevicesUseCase,
     private val logger: GetLoggerUseCase,
 ) : ViewModel() {
 
@@ -28,9 +28,10 @@ class AreaScreenViewModel(
         getAreasUseCase.invoke().onEach {
             onAreasUpdate(it)
         }.launchIn(viewModelScope)
+    }
 
-        //TODO remove const area id
-        getAreaDeviceUseCase.invoke("clabaratoriia_smarttech").onEach {
+    private fun loadAreaDevices(areaId: String) {
+        getAreaDeviceUseCase.invoke(areaId).onEach {
             logger.d("AreasScreenViewModel/OnAreaDevicesUpdated", it.size.toString())
         }.launchIn(viewModelScope)
     }
@@ -52,6 +53,7 @@ class AreaScreenViewModel(
     fun handleEvent(event: Event) {
         when (event) {
             Event.ToggleDropDownMenu -> {}
+            is Event.LoadDevices -> loadAreaDevices(event.areaId)
         }
     }
 }

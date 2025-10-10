@@ -2,15 +2,19 @@ package ru.bratusev.smartlab.feature_area
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
+import ru.bratusev.smartlab.feature_area.models.Event
 import ru.bratusev.smartlab.ui.core.models.AreaCardUi
-import ru.bratusev.smartlab.ui.core.theme.AppTheme
 
 @Composable
 fun AreaScreen(
-    area: AreaCardUi,
+    areaId: String,
+    areaScreenViewModel: AreaScreenViewModel = koinViewModel(),
 ) {
-    Text("Area id: ${area.areaId}")
+    areaScreenViewModel.handleEvent(Event.LoadDevices(areaId))
+    Text("Area id: $areaId")
 }
 
 @Preview(
@@ -29,7 +33,4 @@ private fun AreaScreenPreview() {
         createdAt = -1.0,
         modifiedAt = -1.0
     )
-    AppTheme {
-        AreaScreen(area = previewArea)
-    }
 }

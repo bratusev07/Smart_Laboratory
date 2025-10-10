@@ -9,4 +9,5 @@ data class AreaScreenState(
 
 sealed class Event {
     data object ToggleDropDownMenu : Event()
+    data class LoadDevices(val areaId: String) : Event()
 }

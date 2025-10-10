@@ -26,7 +26,6 @@ import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 import ru.bratusev.smartlab.feature_addWidgetScreen.AddWidgetScreen
 import ru.bratusev.smartlab.feature_area.AreaScreen
-import ru.bratusev.smartlab.feature_area.AreaScreenViewModel
 import ru.bratusev.smartlab.feature_areas.AllAreasScreen
 import ru.bratusev.smartlab.feature_areas.AllAreasScreenViewModel
 import ru.bratusev.smartlab.feature_customScreen.CustomScreen
@@ -128,11 +127,7 @@ private fun AppNavHost(
                 )
             }
             composable<Screen.Areas.Detailed> { backStackEntry ->
-                val areaScreenViewModel: AreaScreenViewModel = koinViewModel()
-                val state = areaScreenViewModel.uiState.collectAsState()
-                val areaId = (backStackEntry.toRoute() as Screen.Areas.Detailed).areaId
-                val area = state.value.areas.first { it.areaId == areaId }
-                AreaScreen(area)
+                AreaScreen((backStackEntry.toRoute() as Screen.Areas.Detailed).areaId)
             }
         }
 
