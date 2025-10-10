@@ -24,27 +24,3 @@ fun HomeScreen(
         )
     }
 }
-
-
-@Preview
-@Composable
-private fun HomeScreenPreview() {
-    startKoin {
-        modules(homeModulePreview)
-    }
-    AppTheme {
-        HomeScreen(
-            navigationApi = object : NavigationApi {
-                override fun navigateTo(screen: Screen) {}
-                override fun navigateToHome() {}
-                override fun navigateToLogin() {}
-                override fun navigateToSettings() {}
-                override fun navigateToLogcat() {}
-                override fun navigateToAreasScreen() {}
-                override fun navigateToDetailedArea(areaId: String) {}
-                override fun navigateToAddWidgetCustomScreen() {}
-                override fun popBackStack() {}
-            }
-        )
-    }
-}

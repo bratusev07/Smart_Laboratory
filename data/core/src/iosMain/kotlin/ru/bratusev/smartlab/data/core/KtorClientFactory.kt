@@ -1,5 +1,7 @@
 package ru.bratusev.smartlab.data.core
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.darwin.Darwin
 import io.ktor.client.plugins.auth.Auth
@@ -11,8 +13,6 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import ru.bratusev.smartlab.data.core.auth.AuthTokensStore
 
 actual class KtorClientFactory : KoinComponent {

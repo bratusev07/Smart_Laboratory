@@ -17,7 +17,6 @@ import ru.bratusev.smartlab.domain.core.usecase.UpdateSensorUseCase
 val domainModule = module {
 
     factory<GetButtonTextUseCase> { GetButtonTextUseCase(buttonTextRepository = get()) }
-
     factory<GetTokenUseCase> { GetTokenUseCase(get()) }
     factory<GetLoginUseCase> { GetLoginUseCase(get()) }
     factory<GetLoggerUseCase> { GetLoggerUseCase(get()) }
@@ -25,21 +24,6 @@ val domainModule = module {
     factory<GetServiceEntitiesUseCase> { GetServiceEntitiesUseCase(get()) }
     factory<GetAreasUseCase> { GetAreasUseCase(get()) }
     factory<GetAreaDevicesUseCase> { GetAreaDevicesUseCase(get()) }
-    factory<ObserveSocketErrorsUseCase> { ObserveSocketErrorsUseCase(get()) }
-    factory<GetLogcatMessagesUseCase> { GetLogcatMessagesUseCase(get()) }
-    factory<GetCustomWidgetsUseCase> { GetCustomWidgetsUseCase(get()) }
-    factory<SetCustomWidgetsUseCase> { SetCustomWidgetsUseCase(get()) }
-}
-
-val domainModulePreview = module {
-    factory<GetButtonTextUseCase> { GetButtonTextUseCase(buttonTextRepository = get()) }
-
-    factory<GetTokenUseCase> { GetTokenUseCase(get()) }
-    factory<GetLoginUseCase> { GetLoginUseCase(get()) }
-    factory<GetLoggerUseCase> { GetLoggerUseCase(get()) }
-    factory<GetAreaDevicesUseCase> { GetAreaDevicesUseCase(get()) }
-    factory<UpdateSensorUseCase> { UpdateSensorUseCase(get()) }
-    factory<GetServiceEntitiesUseCase> { GetServiceEntitiesUseCase(get()) }
     factory<ObserveSocketErrorsUseCase> { ObserveSocketErrorsUseCase(get()) }
     factory<GetLogcatMessagesUseCase> { GetLogcatMessagesUseCase(get()) }
     factory<GetCustomWidgetsUseCase> { GetCustomWidgetsUseCase(get()) }

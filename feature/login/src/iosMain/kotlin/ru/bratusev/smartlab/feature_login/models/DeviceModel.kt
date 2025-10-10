@@ -1,6 +1,6 @@
 package ru.bratusev.smartlab.feature_login.models
 
-import platform.Foundation.*
+import platform.Foundation.NSBundle
 import platform.UIKit.UIDevice
 
 actual class Device {
