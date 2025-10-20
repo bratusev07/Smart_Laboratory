@@ -1,6 +1,5 @@
 package ru.bratusev.smartlab.data.core
 
-import android.R.attr.tag
 import android.util.Log
 
 actual class Logger {

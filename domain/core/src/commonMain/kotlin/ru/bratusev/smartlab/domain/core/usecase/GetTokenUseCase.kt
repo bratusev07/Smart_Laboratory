@@ -2,7 +2,6 @@ package ru.bratusev.smartlab.domain.core.usecase
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import ru.bratusev.smartlab.domain.core.model.Device
 import ru.bratusev.smartlab.domain.core.repository.AuthRepository
 
 class GetTokenUseCase(private val authRepository: AuthRepository) {

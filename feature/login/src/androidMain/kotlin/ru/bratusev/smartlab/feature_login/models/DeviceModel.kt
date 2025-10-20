@@ -1,7 +1,7 @@
 package ru.bratusev.smartlab.feature_login.models
 
-import android.os.Build
 import android.content.Context
+import android.os.Build
 import android.provider.Settings
 
 actual class Device(context: Context) {

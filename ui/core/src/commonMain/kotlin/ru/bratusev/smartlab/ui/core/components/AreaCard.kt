@@ -56,7 +56,6 @@ fun AreaCard(
     }
 }
 
-// Coil не работает в preview
 @Composable
 @Preview
 private fun AreaCardPreview() {

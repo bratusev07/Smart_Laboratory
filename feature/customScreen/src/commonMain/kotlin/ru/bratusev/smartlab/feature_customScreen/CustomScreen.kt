@@ -27,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.context.startKoin
 import ru.bratusev.smartlab.feature_customScreen.models.Event
 import ru.bratusev.smartlab.feature_customScreen.models.Event.ChosenManySwitchesChange
 import ru.bratusev.smartlab.feature_customScreen.models.Event.DeleteWidget
@@ -166,22 +165,6 @@ private fun getVmEvent(widgetId: Int, widgetEvent: CustomWidgetEvent): Event {
 
         is CustomWidgetEvent.ChosenSingleSwitchChange -> Event.ChosenSingleSwitchChange(
             widgetId = widgetId, chosenId = widgetEvent.chosenId
-        )
-    }
-}
-
-@Preview(
-    showBackground = true
-)
-@Composable
-private fun CustomScreenPreview() {
-    startKoin {
-        modules(customScreenModulePreview)
-    }
-    AppTheme {
-        CustomScreen(
-            setMenuAction = {},
-            goToAddWidgetScreen = {}
         )
     }
 }
