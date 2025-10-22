@@ -1,3 +1,5 @@
+package ru.bratusev.smartlab.feature_area
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
