@@ -25,8 +25,8 @@ internal fun Area.mapToUi(): AreaCardUi {
 }
 
 internal fun ServiceEntity.mapToUi() = SensorCardUi.Row(
-    title = id ?: "empty name",
-    id = id ?: "empty",
+    title = attributes?.friendlyName ?: id ?: "empty name",
+    id = id ?: "empty id",
     state = SensorState.fromString(state),
     domain = SensorDomain.fromString(domain),
     drawableResource = SensorCardRes.lightBulb,

@@ -37,8 +37,12 @@ class NavigationApiImpl(
         navController.navigate(Screen.Areas)
     }
 
-    override fun navigateToDetailedArea(areaId: String) {
-        navController.navigate(Screen.Areas.Detailed(areaId))
+    override fun navigateToDetailedArea(
+        areaId: String,
+        friendlyName: String?,
+        pictureUrl: String?
+    ) {
+        navController.navigate(Screen.Areas.Detailed(areaId, friendlyName, pictureUrl))
     }
 
     override fun navigateToAddWidgetCustomScreen() {

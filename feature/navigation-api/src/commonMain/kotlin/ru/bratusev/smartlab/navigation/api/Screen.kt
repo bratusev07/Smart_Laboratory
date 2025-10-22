@@ -31,7 +31,7 @@ sealed class Screen {
         data object All : Areas()
 
         @Serializable
-        data class Detailed(val areaId: String) : Areas()
+        data class Detailed(val areaId: String, val friendlyName: String?, val pictureUrl: String?) : Areas()
     }
 
     @Serializable

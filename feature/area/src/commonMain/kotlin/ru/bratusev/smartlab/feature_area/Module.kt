@@ -1,5 +1,6 @@
 package ru.bratusev.smartlab.feature_area
 
+import AreaScreenViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import ru.bratusev.smartlab.data.core.dataModule

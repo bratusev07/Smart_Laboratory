@@ -127,7 +127,12 @@ private fun AppNavHost(
                 )
             }
             composable<Screen.Areas.Detailed> { backStackEntry ->
-                AreaScreen((backStackEntry.toRoute() as Screen.Areas.Detailed).areaId)
+                val areaDetails = backStackEntry.toRoute() as Screen.Areas.Detailed
+                AreaScreen(
+                    areaId = areaDetails.areaId,
+                    friendlyName = areaDetails.friendlyName,
+                    pictureUrl = areaDetails.pictureUrl
+                )
             }
         }
 

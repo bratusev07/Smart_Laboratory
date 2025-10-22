@@ -18,13 +18,13 @@ import ru.bratusev.smartlab.ui.core.theme.AppTheme
 @Composable
 fun AllAreasScreen(
     areas: List<AreaCardUi>,
-    navigateToArea: (areaId: String) -> Unit
+    navigateToArea: (areaId: String, friendlyName: String?, pictureUrl: String?) -> Unit
 ) {
     LazyColumn(verticalArrangement = Arrangement.spacedBy(20.dp)) {
         stickyHeader {
-            AnimatedVisibility(areas.isEmpty()){
+            AnimatedVisibility(areas.isEmpty()) {
                 Column {
-                CircularProgressIndicator()
+                    CircularProgressIndicator()
                     Text(StringsRes.LOADING_INDICATOR)
                 }
             }
@@ -110,7 +110,7 @@ private fun AreasScreenPreview() {
     AppTheme {
         AllAreasScreen(
             areas = previewAreasList,
-            navigateToArea = {}
+            navigateToArea = { _, _, _ -> {} }
         )
     }
 }
