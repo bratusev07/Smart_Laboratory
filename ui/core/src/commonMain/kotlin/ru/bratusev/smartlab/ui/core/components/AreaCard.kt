@@ -1,6 +1,7 @@
 package ru.bratusev.smartlab.ui.core.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -8,9 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -33,11 +33,13 @@ fun AreaCard(
     onClick: (String, String?, String?) -> Unit,
     uiData: AreaCardUi
 ) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        onClick = { onClick(uiData.areaId, uiData.name, uiData.pictureUrl) },
+    Surface(
+        color = MaterialTheme.colorScheme.secondaryContainer,
+        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
+        modifier = modifier.fillMaxWidth().clickable {
+            onClick(uiData.areaId, uiData.name, uiData.pictureUrl)
+        },
         shape = RoundedCornerShape(16.dp), // A slightly larger corner radius can look more modern
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         // Use a Column to structure content inside the card
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
