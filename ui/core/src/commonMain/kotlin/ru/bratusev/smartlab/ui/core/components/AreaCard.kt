@@ -1,11 +1,15 @@
 package ru.bratusev.smartlab.ui.core.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,34 +34,51 @@ fun AreaCard(
     uiData: AreaCardUi
 ) {
     Card(
-        modifier = modifier,
-        onClick = { onClick(uiData.areaId, uiData.name, uiData.pictureUrl) }) {
-        if (uiData.pictureUrl != null) {
-            AsyncImage(
-                model = uiData.pictureUrl,
-                modifier = Modifier.height(240.dp).fillMaxWidth().padding(16.dp)
-                    .clip(RoundedCornerShape(8.dp)),
-                // TODO: найти и сделать адекватный placeholder
-                placeholder = painterResource(Res.drawable.thermometer),
-                contentScale = ContentScale.Fit,
-                contentDescription = null
-            )
-        } else {
-            // TODO: Придумать, что делать с mdi:... картинками
-            Image(
-                painter = painterResource(Res.drawable.thermometer),
-                modifier = Modifier.height(240.dp).fillMaxWidth().padding(16.dp)
-                    .align(Alignment.CenterHorizontally),
-                contentScale = ContentScale.Fit,
-                contentDescription = null
+        modifier = modifier.fillMaxWidth(),
+        onClick = { onClick(uiData.areaId, uiData.name, uiData.pictureUrl) },
+        shape = RoundedCornerShape(16.dp), // A slightly larger corner radius can look more modern
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        // Use a Column to structure content inside the card
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            val imageModifier = Modifier
+                .fillMaxWidth()
+                // Use aspectRatio to maintain a consistent shape (e.g., 16:9)
+                .aspectRatio(16f / 9f)
+                .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+
+            if (uiData.pictureUrl != null) {
+                AsyncImage(
+                    model = uiData.pictureUrl,
+                    modifier = imageModifier,
+                    // A placeholder from your resources
+                    placeholder = painterResource(Res.drawable.thermometer),
+                    error = painterResource(Res.drawable.thermometer), // Show an error image if loading fails
+                    contentScale = ContentScale.Crop, // Crop is often better for filling space
+                    contentDescription = "${uiData.name} image"
+                )
+            } else {
+                // Fallback content when there is no picture URL
+                Image(
+                    painter = painterResource(Res.drawable.thermometer),
+                    modifier = imageModifier.padding(32.dp), // Add padding to the placeholder
+                    contentScale = ContentScale.Fit,
+                    contentDescription = null
+                )
+            }
+
+            // Spacer for better visual separation between image and text
+            Spacer(Modifier.height(8.dp))
+
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 12.dp), // Add padding around the text
+                text = uiData.name,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.titleLarge
             )
         }
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = uiData.name,
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.titleLarge
-        )
     }
 }
 
@@ -71,7 +92,7 @@ private fun AreaCardPreview() {
                 floorId = null,
                 humidity = null,
                 labels = emptyList(),
-                name = "ПревьюИмя",
+                name = "Preview Name",
                 pictureUrl = null,
                 temperature = null,
                 createdAt = 0.0,
