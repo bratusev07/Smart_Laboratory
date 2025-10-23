@@ -29,10 +29,13 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import ru.bratusev.smartlab.feature_customScreen.models.Event
 import ru.bratusev.smartlab.feature_customScreen.models.Event.ChosenManySwitchesChange
+import ru.bratusev.smartlab.feature_customScreen.models.Event.ChosenSingleSwitchChange
 import ru.bratusev.smartlab.feature_customScreen.models.Event.DeleteWidget
 import ru.bratusev.smartlab.feature_customScreen.models.Event.OnSensorStateChanged
 import ru.bratusev.smartlab.ui.core.components.CustomWidget
 import ru.bratusev.smartlab.ui.core.models.CustomWidgetEvent
+import ru.bratusev.smartlab.ui.core.models.CustomWidgetUi
+import ru.bratusev.smartlab.ui.core.resources.StringsRes
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
 
 // TODO: Сделать уведомления, что сохранение произошло успешно.
@@ -74,7 +77,7 @@ fun CustomScreen(
                 CustomWidget(
                     uiData = it.copy(isEditMode = state.value.isEditMode),
                     onEvent = { event ->
-                        vm.handleEvent(getVmEvent(it.id, event))
+                        vm.handleEvent(getVmEvent(it, event))
                     })
             }
         }
@@ -117,7 +120,7 @@ private fun MenuDropDown(
     DropdownMenu(
         expanded = isExpanded, onDismissRequest = onClose, content = {
             DropdownMenuItem(
-                text = { Text("Добавить виджет") },
+                text = { Text(StringsRes.ADD_WIDGET) },
                 onClick = onAddScreen,
                 leadingIcon = {
                     Icon(
@@ -125,7 +128,7 @@ private fun MenuDropDown(
                     )
                 })
             DropdownMenuItem(
-                text = { Text("Редактировать") },
+                text = { Text(StringsRes.EDIT_MODE) },
                 onClick = onEditMode,
                 leadingIcon = {
                     Icon(
@@ -149,22 +152,30 @@ private fun MenuDropDownPreview() {
     }
 }
 
-private fun getVmEvent(widgetId: Int, widgetEvent: CustomWidgetEvent): Event {
+private fun getVmEvent(widgetData: CustomWidgetUi, widgetEvent: CustomWidgetEvent): Event {
     return when (widgetEvent) {
         is CustomWidgetEvent.SensorStateChange -> OnSensorStateChanged(
-            widgetId, widgetEvent.sensorId, widgetEvent.newState
+            widgetData.id, widgetEvent.sensorId, widgetEvent.newState
         )
 
         is CustomWidgetEvent.ChosenManySwitchesChange -> ChosenManySwitchesChange(
-            widgetId = widgetId, chosenIds = widgetEvent.chosenIds
+            widgetId = widgetData.id,
+            chosenIds = widgetEvent.chosenIds,
+            title = widgetData.title ?: ""
         )
 
         CustomWidgetEvent.DeleteWidget -> DeleteWidget(
-            widgetId = widgetId
+            widgetId = widgetData.id
         )
 
-        is CustomWidgetEvent.ChosenSingleSwitchChange -> Event.ChosenSingleSwitchChange(
-            widgetId = widgetId, chosenId = widgetEvent.chosenId
+        is CustomWidgetEvent.ChosenSingleSwitchChange -> ChosenSingleSwitchChange(
+            widgetId = widgetData.id,
+            chosenId = widgetEvent.chosenId,
+            title = widgetData.title ?: ""
+        )
+
+        is CustomWidgetEvent.EditTitle -> Event.EditTitle(
+            widgetId = widgetData.id, title = widgetEvent.title
         )
     }
 }

@@ -1,20 +1,14 @@
 package ru.bratusev.smartlab.ui.core.components.widgets
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import ru.bratusev.smartlab.ui.core.components.WidgetToolBar
 import ru.bratusev.smartlab.ui.core.components.modals.FindManySensorModal
 import ru.bratusev.smartlab.ui.core.components.sensorCard.SensorCardRow
 import ru.bratusev.smartlab.ui.core.models.CustomWidgetUi
@@ -32,33 +26,21 @@ fun ManySensorsWidget(
     uiData: CustomWidgetUi.ManySensorsList,
     onToggle: (id: String, newState: SensorState) -> Unit,
     onSubmit: (chosenIds: List<String>) -> Unit,
-    onDeleteWidgetClick: () -> Unit,
+    onEditEnd: () -> Unit
 ) {
-    var isModalOpen by remember { mutableStateOf(false) }
-    if (isModalOpen) {
+    if (uiData.openModal) {
         FindManySensorModal(
             sensors = uiData.sensorsToChooseFrom,
             filterDomain = SensorDomain.SWITCH,
-            onClose = { isModalOpen = false },
+            onClose = onEditEnd,
             onSubmit = {
-                isModalOpen = false
+                onEditEnd()
                 onSubmit(it)
             })
     }
     Column(
         modifier = modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        AnimatedVisibility(visible = uiData.isEditMode) {
-            WidgetToolBar(
-                title = "Виджет с id: ${uiData.id}",
-                onEditClick = {
-                    isModalOpen = true
-                },
-                onAddClick = {},
-                isEditMode = uiData.isEditMode,
-                onDeleteClick = onDeleteWidgetClick
-            )
-        }
         uiData.sensorsToShow.forEach { sensor ->
             SensorCardRow(
                 uiData = SensorCardUi.Row(
@@ -122,6 +104,7 @@ private fun SensorsWidgetPreview() {
             uiData = CustomWidgetUi.ManySensorsList(
                 sensorsToShow = data, id = 1,
                 sensorsToChooseFrom = data2,
-            ), onToggle = { _, _ -> {} }, onSubmit = {}, onDeleteWidgetClick = {})
+                openModal = false,
+            ), onToggle = { _, _ -> {} }, onSubmit = {}, onEditEnd = {})
     }
 }

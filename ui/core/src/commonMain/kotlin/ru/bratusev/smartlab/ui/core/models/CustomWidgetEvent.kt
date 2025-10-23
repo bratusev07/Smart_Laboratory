@@ -11,5 +11,6 @@ sealed class CustomWidgetEvent {
 
     data class ChosenSingleSwitchChange(val chosenId: String) : CustomWidgetEvent()
 
+    data class EditTitle(val title: String): CustomWidgetEvent()
     data object DeleteWidget : CustomWidgetEvent()
 }

@@ -2,10 +2,38 @@ package ru.bratusev.smartlab.domain.core.model
 
 sealed class CustomWidget {
     abstract val id: Int
+    abstract val title: String?
 
-    class SensorsList(val sensorsIds: List<String>, override val id: Int) :
-        CustomWidget()
+    abstract fun copy(id: Int = this.id, title: String? = this.title): CustomWidget
+    data class SensorsList(
+        val sensorsIds: List<String>,
+        override val id: Int,
+        override val title: String
+    ) :
+        CustomWidget() {
+        override fun copy(
+            id: Int,
+            title: String?,
+        ): CustomWidget = copy(
+            id = id,
+            title = title ?: id.toString(),
+            sensorsIds = this.sensorsIds,
+        )
+    }
 
-    class SingleSensor(val sensorId: String, override val id: Int) :
-        CustomWidget()
+    data class SingleSensor(
+        val sensorId: String,
+        override val id: Int,
+        override val title: String
+    ) :
+        CustomWidget() {
+        override fun copy(
+            id: Int,
+            title: String?,
+        ): CustomWidget = copy(
+            id = id,
+            title = title ?: id.toString(),
+            sensorId = this.sensorId
+        )
+    }
 }

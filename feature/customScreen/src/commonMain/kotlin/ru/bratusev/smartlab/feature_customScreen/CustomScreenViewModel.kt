@@ -109,13 +109,11 @@ class CustomScreenViewModel(
                 updateSensorUseCase.invoke(id).onEach { result ->
                     result.fold(onSuccess = {
                         logger.d(
-                            "CustomScreenViewModel switch switch",
-                            "Switched switch with id: $id"
+                            "CustomScreenViewModel switch switch", "Switched switch with id: $id"
                         )
                     }, onFailure = { error ->
                         logger.e(
-                            "CustomScreenViewModel switch switch",
-                            "Could switch with error: $error"
+                            "CustomScreenViewModel switch switch", "Could switch with error: $error"
                         )
                     })
                 }.launchIn(viewModelScope)
@@ -127,6 +125,12 @@ class CustomScreenViewModel(
         val updatedWidgets = _uiState.value.widgets.filter { it.id != widgetId }
         logger.d("Deleting widget with id$widgetId", "New widgets: $updatedWidgets")
         updateWidgets(updatedWidgets)
+    }
+
+    private fun editWidgetTitle(widgetId: Int, newTitle: String) {
+        val updatedWidget =
+            _uiState.value.widgets.firstOrNull { it.id == widgetId }?.copy(title = newTitle)
+        if (updatedWidget != null) updateWidget(updatedWidget)
     }
 
     private fun updateWidget(newState: CustomWidget) {
@@ -148,7 +152,13 @@ class CustomScreenViewModel(
 
             is Event.ChosenManySwitchesChange -> updateWidget(
                 newState = SensorsList(
-                    sensorsIds = event.chosenIds, id = event.widgetId
+                    sensorsIds = event.chosenIds, id = event.widgetId, title = event.title
+                )
+            )
+
+            is Event.ChosenSingleSwitchChange -> updateWidget(
+                CustomWidget.SingleSensor(
+                    sensorId = event.chosenId, id = event.widgetId, title = event.title
                 )
             )
 
@@ -156,11 +166,8 @@ class CustomScreenViewModel(
             Event.ToggleDropDownMenu -> toggleDropDownMenu()
             is Event.DeleteWidget -> deleteWidget(event.widgetId)
             Event.ToggleEditMode -> toggleEditMode()
-            is Event.ChosenSingleSwitchChange -> updateWidget(
-                CustomWidget.SingleSensor(
-                    sensorId = event.chosenId, id = event.widgetId
-                )
-            )
+
+            is Event.EditTitle -> editWidgetTitle(event.widgetId, event.title)
         }
     }
 }

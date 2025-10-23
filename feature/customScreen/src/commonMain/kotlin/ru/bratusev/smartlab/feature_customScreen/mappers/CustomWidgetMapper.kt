@@ -36,7 +36,9 @@ fun CustomWidget.toUi(sensors: List<ServiceEntity>, id: Int): CustomWidgetUi {
                         tints = SensorCardTints.Common.LightBulb
                     )
                 },
-                isEditMode = false
+                title = title,
+                isEditMode = false,
+                openModal = false,
             )
 
         is CustomWidget.SingleSensor -> {
@@ -70,7 +72,9 @@ fun CustomWidget.toUi(sensors: List<ServiceEntity>, id: Int): CustomWidgetUi {
                         tints = SensorCardTints.Common.LightBulb
                     )
                 },
-                isEditMode = false
+                title = title,
+                isEditMode = false,
+                openModal = false
             )
         }
     }

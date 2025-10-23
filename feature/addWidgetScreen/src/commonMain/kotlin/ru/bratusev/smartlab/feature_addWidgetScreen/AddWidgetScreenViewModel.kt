@@ -36,13 +36,13 @@ class AddWidgetScreenViewModel(
 
             val actualWidget = when (widget) {
                 CustomWidget.SensorsList::class -> {
-                    CustomWidget.SensorsList(sensorsIds = emptyList(), id = newId)
+                    CustomWidget.SensorsList(sensorsIds = emptyList(), id = newId, newId.toString())
                 }
 
                 // TODO: Сделать вместе с добавления этого виджета и выбор сенсора, чтобы id не был случайным
                 CustomWidget.SingleSensor::class -> {
                     CustomWidget.SingleSensor(
-                        sensorId = "-123$newId", id = newId
+                        sensorId = "-123$newId", id = newId, newId.toString()
                     )
                 }
 

@@ -32,4 +32,9 @@ object StringsRes {
     val SENSOR = "Датчик"
     val UNKNOWN = "Неизвестно"
 
+    // -----------CUSTOM SCREEN--------------------
+
+    val ADD_WIDGET = "Добавить виджет"
+    val EDIT_MODE = "Режим редактирования"
+
 }

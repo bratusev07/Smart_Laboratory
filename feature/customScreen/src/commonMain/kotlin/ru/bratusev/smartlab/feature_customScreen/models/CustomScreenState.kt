@@ -37,12 +37,19 @@ sealed class Event {
     data class ChosenManySwitchesChange(
         val widgetId: Int,
         val chosenIds: List<String>,
+        val title: String
     ) : Event()
 
     data class ChosenSingleSwitchChange(
         val widgetId: Int,
         val chosenId: String,
+        val title: String
     ) : Event()
+
+    data class EditTitle(
+        val widgetId: Int,
+        val title: String
+    ): Event()
 
     data object LoadData : Event()
 }
