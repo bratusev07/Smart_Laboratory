@@ -54,8 +54,8 @@ fun CustomWidget.toUi(sensors: List<ServiceEntity>, id: Int): CustomWidgetUi {
                             tints = SensorCardTints.Common.LightBulb
                         )
                     } ?: Switch(
-                        title = "Example",
-                        id = "Example",
+                        title = "Отсутствует",
+                        id = "Отсутствует",
                         state = SensorState.Unavailable,
                         domain = SensorDomain.SWITCH,
                         drawableResource = SensorCardRes.lightBulb,

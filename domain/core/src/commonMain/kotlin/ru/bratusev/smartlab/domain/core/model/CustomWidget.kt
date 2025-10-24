@@ -35,5 +35,10 @@ sealed class CustomWidget {
             title = title ?: id.toString(),
             sensorId = this.sensorId
         )
+
+        companion object {
+            const val NO_SENSOR_ID = "Не назначено"
+            const val NO_SENSOR_TITLE = "Не назначено"
+        }
     }
 }

@@ -39,7 +39,7 @@ fun ManySensorsWidget(
             })
     }
     Column(
-        modifier = modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(15.dp)
+        modifier = modifier, verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         uiData.sensorsToShow.forEach { sensor ->
             SensorCardRow(

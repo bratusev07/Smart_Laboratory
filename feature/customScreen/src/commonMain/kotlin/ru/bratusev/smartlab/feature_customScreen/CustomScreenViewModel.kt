@@ -128,6 +128,7 @@ class CustomScreenViewModel(
     }
 
     private fun editWidgetTitle(widgetId: Int, newTitle: String) {
+        logger.d("CustomScreenViewModel/editWidgetTitle", "Editing title to: $newTitle")
         val updatedWidget =
             _uiState.value.widgets.firstOrNull { it.id == widgetId }?.copy(title = newTitle)
         if (updatedWidget != null) updateWidget(updatedWidget)

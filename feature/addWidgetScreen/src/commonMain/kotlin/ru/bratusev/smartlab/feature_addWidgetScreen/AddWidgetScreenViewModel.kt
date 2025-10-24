@@ -39,10 +39,9 @@ class AddWidgetScreenViewModel(
                     CustomWidget.SensorsList(sensorsIds = emptyList(), id = newId, newId.toString())
                 }
 
-                // TODO: Сделать вместе с добавления этого виджета и выбор сенсора, чтобы id не был случайным
                 CustomWidget.SingleSensor::class -> {
                     CustomWidget.SingleSensor(
-                        sensorId = "-123$newId", id = newId, newId.toString()
+                        sensorId = CustomWidget.SingleSensor.NO_SENSOR_ID, id = newId, "Не назначено"
                     )
                 }
 

@@ -11,7 +11,7 @@ class GetTokenUseCase(private val authRepository: AuthRepository) {
                 Result.success(
                     authRepository.getToken() ?: ""
                 )
-            ) // TODO: продумать обработку отсутствия токена
+            )
         } catch (e: Exception) {
             emit(Result.failure(e))
         }
