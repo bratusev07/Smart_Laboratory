@@ -25,9 +25,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -52,6 +54,7 @@ fun CustomWidget(uiData: CustomWidgetUi, onEvent: (event: CustomWidgetEvent) -> 
         ), horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val focusManager = LocalFocusManager.current
+        val keyboardController = LocalSoftwareKeyboardController.current
         var isDeleteDialogOpen by rememberSaveable { mutableStateOf(false) }
         var isEditButtonClicked by rememberSaveable { mutableStateOf(false) }
         AnimatedVisibility(visible = uiData.isEditMode) {
@@ -94,18 +97,27 @@ fun CustomWidget(uiData: CustomWidgetUi, onEvent: (event: CustomWidgetEvent) -> 
         var title by rememberSaveable { mutableStateOf(uiData.title) }
         if (title != null) {
             BasicTextField(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.onFocusChanged{focusState ->
+                    if (!focusState.isFocused) {
+                        onEvent(CustomWidgetEvent.EditTitle(title!!))
+                        keyboardController?.hide()
+                        focusManager.clearFocus()
+                    }
+                }.fillMaxWidth()
                     .background(MaterialTheme.colorScheme.surfaceContainer).height(32.dp),
                 enabled = uiData.isEditMode,
                 value = title!!,
                 keyboardActions = KeyboardActions(onDone = {
                     onEvent(CustomWidgetEvent.EditTitle(title!!))
+                    keyboardController?.hide()
                     focusManager.clearFocus()
                 }),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Done
                 ),
-                onValueChange = { if (it.length < 20) title = it else it.slice(0..19) },
+                onValueChange = {
+                    if (it.length < 20) title = it else it.slice(0..19)
+                },
                 maxLines = 1,
                 singleLine = true,
                 textStyle = MaterialTheme.typography.titleLarge.copy(

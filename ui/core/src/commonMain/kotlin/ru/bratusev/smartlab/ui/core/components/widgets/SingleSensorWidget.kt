@@ -45,10 +45,12 @@ fun SingleSensorWidget(
                 tints = uiData.sensor.tints
             ),
             onClick = {
-                onToggle(
-                    uiData.sensor.id,
-                    if (uiData.sensor.state == SensorState.On) SensorState.Off else SensorState.On
-                )
+                if (uiData.sensor.id != CustomWidgetUi.SingleSensor.NO_SENSOR_ID) {
+                    onToggle(
+                        uiData.sensor.id,
+                        if (uiData.sensor.state == SensorState.On) SensorState.Off else SensorState.On
+                    )
+                }
             }
         )
     }

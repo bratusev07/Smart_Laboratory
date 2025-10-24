@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -41,27 +42,31 @@ fun ManySensorsWidget(
     Column(
         modifier = modifier, verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        uiData.sensorsToShow.forEach { sensor ->
-            SensorCardRow(
-                uiData = SensorCardUi.Row(
-                    title = sensor.title,
-                    id = sensor.id,
-                    state = sensor.state,
-                    domain = sensor.domain,
-                    drawableResource = sensor.drawableResource,
-                    tints = sensor.tints
-                ), buttonContent = {
-                    Switch(
-                        modifier = Modifier.padding(start = 15.dp),
-                        enabled = sensor.state != SensorState.Unavailable,
-                        checked = sensor.state == SensorState.On,
-                        onCheckedChange = {
-                            onToggle(
-                                sensor.id,
-                                if (sensor.state == SensorState.On) SensorState.Off else SensorState.On
-                            )
-                        })
-                })
+        if (uiData.sensorsToShow.isEmpty()) {
+            Text("Используйте режим редактирования, чтобы выбрать элементы")
+        } else {
+            uiData.sensorsToShow.forEach { sensor ->
+                SensorCardRow(
+                    uiData = SensorCardUi.Row(
+                        title = sensor.title,
+                        id = sensor.id,
+                        state = sensor.state,
+                        domain = sensor.domain,
+                        drawableResource = sensor.drawableResource,
+                        tints = sensor.tints
+                    ), buttonContent = {
+                        Switch(
+                            modifier = Modifier.padding(start = 15.dp),
+                            enabled = sensor.state != SensorState.Unavailable,
+                            checked = sensor.state == SensorState.On,
+                            onCheckedChange = {
+                                onToggle(
+                                    sensor.id,
+                                    if (sensor.state == SensorState.On) SensorState.Off else SensorState.On
+                                )
+                            })
+                    })
+            }
         }
     }
 }

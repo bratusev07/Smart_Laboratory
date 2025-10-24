@@ -18,6 +18,7 @@ import ru.bratusev.smartlab.domain.core.usecase.GetLoggerUseCase
 import ru.bratusev.smartlab.domain.core.usecase.SetCustomWidgetsUseCase
 import ru.bratusev.smartlab.feature_addWidgetScreen.models.AddWidgetScreenState
 import ru.bratusev.smartlab.feature_addWidgetScreen.models.Event
+import ru.bratusev.smartlab.ui.core.models.CustomWidgetUi
 import kotlin.reflect.KClass
 
 class AddWidgetScreenViewModel(
@@ -41,7 +42,7 @@ class AddWidgetScreenViewModel(
 
                 CustomWidget.SingleSensor::class -> {
                     CustomWidget.SingleSensor(
-                        sensorId = CustomWidget.SingleSensor.NO_SENSOR_ID, id = newId, "Не назначено"
+                        sensorId = CustomWidgetUi.SingleSensor.NO_SENSOR_ID, id = newId, "Не назначено"
                     )
                 }
 

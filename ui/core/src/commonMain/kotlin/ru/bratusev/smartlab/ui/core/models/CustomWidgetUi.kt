@@ -49,5 +49,10 @@ sealed class CustomWidgetUi {
             sensor = sensor,
             sensorsToChooseFrom = sensorsToChooseFrom
         )
+
+        companion object {
+            const val NO_SENSOR_ID = "Не назначено"
+            const val NO_SENSOR_TITLE = "Не назначено"
+        }
     }
 }
