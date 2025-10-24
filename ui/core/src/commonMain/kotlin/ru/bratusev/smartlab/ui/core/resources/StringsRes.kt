@@ -36,5 +36,6 @@ object StringsRes {
 
     val ADD_WIDGET = "Добавить виджет"
     val EDIT_MODE = "Режим редактирования"
-
+    val UPDATING = "Ожидание ответа"
+    val SAVING = "Сохранение"
 }

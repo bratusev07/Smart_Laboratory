@@ -15,7 +15,6 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,7 +22,9 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -38,12 +39,7 @@ import ru.bratusev.smartlab.ui.core.models.CustomWidgetUi
 import ru.bratusev.smartlab.ui.core.resources.StringsRes
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
 
-// TODO: Сделать уведомления, что сохранение произошло успешно.
-// Также нужно всегда убеждаться, что сохранение произошло и тогда разблокировать навигацию.
-// Иначе есть риск тупо не сохранить ничего.
-// Похожий механизм уже есть на экране добавления виджетов.
-
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CustomScreen(
     vm: CustomScreenViewModel = koinViewModel(),
@@ -57,8 +53,13 @@ fun CustomScreen(
         vm.handleEvent(Event.LoadData)
     }
 
-    DisposableEffect(Unit) {
+    BackHandler(enabled = state.value.isEditMode || state.value.isSaving) {
+        if (state.value.isEditMode) {
+            vm.handleEvent(Event.ToggleEditMode)
+        }
+    }
 
+    DisposableEffect(Unit) {
         setMenuAction {
             vm.handleEvent(Event.ToggleDropDownMenu)
         }
@@ -85,9 +86,12 @@ fun CustomScreen(
             modifier = Modifier.align(Alignment.TopCenter).padding(top = 48.dp),
         ) {
             AnimatedVisibility(
-                visible = state.value.isUpdating
+                visible = state.value.isUpdating || state.value.isSaving
             ) {
-                CircularProgressIndicator()
+                Column {
+                    CircularProgressIndicator()
+                    Text(if (state.value.isUpdating) StringsRes.UPDATING else StringsRes.SAVING)
+                }
             }
         }
 

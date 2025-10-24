@@ -6,6 +6,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import ru.bratusev.smartlab.domain.core.model.CustomWidget
@@ -89,7 +90,7 @@ class CustomScreenViewModel(
     }
 
     private fun updateWidgets(updatedWidgets: List<CustomWidget>) {
-        updateState(_uiState.value.copy(widgets = updatedWidgets))
+        updateState(_uiState.value.copy(widgets = updatedWidgets, isSaving = true))
         saveWidgets.invoke(updatedWidgets).onEach { result ->
             result.fold(onSuccess = {
                 logger.d("CustomScreenViewModel/updateWidgets", "Successfully saved widgets")
@@ -99,6 +100,8 @@ class CustomScreenViewModel(
                     "Error during saving widgets. Error $error"
                 )
             })
+        }.onCompletion {
+            updateState(_uiState.value.copy(isSaving = false))
         }.launchIn(viewModelScope)
     }
 
