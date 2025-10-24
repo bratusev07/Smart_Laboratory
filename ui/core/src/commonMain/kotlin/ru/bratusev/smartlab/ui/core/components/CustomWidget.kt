@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -18,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -49,74 +49,95 @@ import ru.bratusev.smartlab.ui.core.theme.AppTheme
 @Composable
 fun CustomWidget(uiData: CustomWidgetUi, onEvent: (event: CustomWidgetEvent) -> Unit) {
     Column(
-        modifier = Modifier.fillMaxWidth().clip(shape = RoundedCornerShape(30.dp)).background(
-            color = MaterialTheme.colorScheme.surfaceContainerLow
-        ), horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(shape = RoundedCornerShape(30.dp))
+            .background(
+                color = MaterialTheme.colorScheme.surfaceContainerLow
+            ),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         val focusManager = LocalFocusManager.current
         val keyboardController = LocalSoftwareKeyboardController.current
         var isDeleteDialogOpen by rememberSaveable { mutableStateOf(false) }
         var isEditButtonClicked by rememberSaveable { mutableStateOf(false) }
+
         AnimatedVisibility(visible = uiData.isEditMode) {
             WidgetToolBar(
                 title = "Виджет с id: ${uiData.id}",
                 onEditClick = { isEditButtonClicked = true },
                 onAddClick = {},
                 isEditMode = uiData.isEditMode,
-                onDeleteClick = { isDeleteDialogOpen = true })
+                onDeleteClick = { isDeleteDialogOpen = true }
+            )
         }
+
         if (isDeleteDialogOpen) {
-            Box(modifier = Modifier.fillMaxSize()) {
-                AlertDialog(title = {
-                    Text(text = "Подтвердите удаление")
-                }, onDismissRequest = {
-                    isDeleteDialogOpen = false
-                }, confirmButton = {
+            AlertDialog(
+                title = { Text(text = "Подтвердите удаление") },
+                onDismissRequest = { isDeleteDialogOpen = false },
+                confirmButton = {
                     TextButton(
                         onClick = {
                             onEvent(CustomWidgetEvent.DeleteWidget)
                             isDeleteDialogOpen = false
-                        }) {
+                        }
+                    ) {
                         Text("Подтвердить")
                     }
-                }, dismissButton = {
+                },
+                dismissButton = {
                     TextButton(
-                        onClick = {
-                            isDeleteDialogOpen = false
-                        }) {
+                        onClick = { isDeleteDialogOpen = false }
+                    ) {
                         Text("Отменить")
                     }
-                })
+                }
+            )
+        }
+
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(12.dp)
+                .background(
+                    MaterialTheme.colorScheme.surfaceContainer,
+                )
+        )
+
+        var title by rememberSaveable { mutableStateOf(uiData.title) }
+
+        LaunchedEffect(uiData.title) {
+            if (title != uiData.title) {
+                title = uiData.title
             }
         }
-        Spacer(
-            modifier = Modifier.fillMaxWidth().height(12.dp).background(
-                MaterialTheme.colorScheme.surfaceContainer,
-            )
-        )
-        var title by rememberSaveable { mutableStateOf(uiData.title) }
+
         if (title != null) {
+            val onEditDone = {
+                onEvent(CustomWidgetEvent.EditTitle(title!!))
+                keyboardController?.hide()
+                focusManager.clearFocus()
+            }
+
             BasicTextField(
-                modifier = Modifier.onFocusChanged{focusState ->
-                    if (!focusState.isFocused) {
-                        onEvent(CustomWidgetEvent.EditTitle(title!!))
-                        keyboardController?.hide()
-                        focusManager.clearFocus()
+                modifier = Modifier
+                    .onFocusChanged { focusState ->
+                        if (!focusState.isFocused) {
+                            onEvent(CustomWidgetEvent.EditTitle(title!!))
+                        }
                     }
-                }.fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surfaceContainer).height(32.dp),
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surfaceContainer)
+                    .height(32.dp),
                 enabled = uiData.isEditMode,
                 value = title!!,
-                keyboardActions = KeyboardActions(onDone = {
-                    onEvent(CustomWidgetEvent.EditTitle(title!!))
-                    keyboardController?.hide()
-                    focusManager.clearFocus()
-                }),
+                keyboardActions = KeyboardActions(onDone = { onEditDone() }),
                 keyboardOptions = KeyboardOptions.Default.copy(
                     imeAction = ImeAction.Done
                 ),
                 onValueChange = {
-                    if (it.length < 20) title = it else it.slice(0..19)
+                    title = it.take(20)
                 },
                 maxLines = 1,
                 singleLine = true,
@@ -128,16 +149,21 @@ fun CustomWidget(uiData: CustomWidgetUi, onEvent: (event: CustomWidgetEvent) -> 
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface)
             )
         }
+
         Spacer(
-            modifier = Modifier.fillMaxWidth().height(12.dp).background(
-                Brush.verticalGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.surfaceContainer,
-                        MaterialTheme.colorScheme.surfaceContainerLow
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(12.dp)
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.surfaceContainer,
+                            MaterialTheme.colorScheme.surfaceContainerLow
+                        )
                     )
                 )
-            )
         )
+
         Box(modifier = Modifier.padding(12.dp)) {
             when (uiData) {
                 is CustomWidgetUi.ManySensorsList -> ManySensorsWidget(
@@ -146,13 +172,10 @@ fun CustomWidget(uiData: CustomWidgetUi, onEvent: (event: CustomWidgetEvent) -> 
                         onEvent(CustomWidgetEvent.SensorStateChange(sensorId, newState))
                     },
                     onSubmit = { chosenIds ->
-                        onEvent(
-                            CustomWidgetEvent.ChosenManySwitchesChange(
-                                chosenIds
-                            )
-                        )
+                        onEvent(CustomWidgetEvent.ChosenManySwitchesChange(chosenIds))
                     },
-                    onEditEnd = { isEditButtonClicked = false })
+                    onEditEnd = { isEditButtonClicked = false }
+                )
 
                 is CustomWidgetUi.SingleSensor -> SingleSensorWidget(
                     uiData = uiData.copy(openModal = isEditButtonClicked),
@@ -160,25 +183,31 @@ fun CustomWidget(uiData: CustomWidgetUi, onEvent: (event: CustomWidgetEvent) -> 
                         onEvent(CustomWidgetEvent.SensorStateChange(sensorId, newState))
                     },
                     onSubmit = { chosenId ->
-                        onEvent(
-                            CustomWidgetEvent.ChosenSingleSwitchChange(chosenId)
-                        )
+                        onEvent(CustomWidgetEvent.ChosenSingleSwitchChange(chosenId))
                     },
-                    onEditEnd = { isEditButtonClicked = false })
+                    onEditEnd = { isEditButtonClicked = false }
+                )
             }
         }
+
         Spacer(
-            modifier = Modifier.fillMaxWidth().height(12.dp).background(
-                Brush.verticalGradient(
-                    colors = listOf(
-                        MaterialTheme.colorScheme.surfaceContainerLow,
-                        MaterialTheme.colorScheme.surfaceContainer
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(12.dp)
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            MaterialTheme.colorScheme.surfaceContainerLow,
+                            MaterialTheme.colorScheme.surfaceContainer
+                        )
                     )
                 )
-            )
         )
+
         Spacer(
-            modifier = Modifier.fillMaxWidth().height(24.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(24.dp)
                 .background(MaterialTheme.colorScheme.surfaceContainer)
         )
     }
@@ -225,6 +254,8 @@ private fun SensorListPreview() {
                 sensorsToChooseFrom = data2,
                 openModal = false,
                 title = "Preview title Preview title"
-            ), onEvent = {})
+            ),
+            onEvent = {}
+        )
     }
 }
