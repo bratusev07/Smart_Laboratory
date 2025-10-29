@@ -4,6 +4,7 @@ import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardUi
 
 sealed class CustomWidgetUi {
     abstract val id: Int
+    abstract val title: String?
     abstract val isEditMode: Boolean
     abstract fun copy(
         id: Int = this.id,
@@ -13,7 +14,9 @@ sealed class CustomWidgetUi {
     data class ManySensorsList(
         val sensorsToShow: List<SensorCardUi.Widget.Switch>,
         val sensorsToChooseFrom: List<SensorCardUi.Modal>,
+        val openModal: Boolean,
         override val id: Int,
+        override val title: String? = null,
         override val isEditMode: Boolean = false,
     ) :
         CustomWidgetUi() {
@@ -31,7 +34,9 @@ sealed class CustomWidgetUi {
     data class SingleSensor(
         val sensor: SensorCardUi.Widget.Switch,
         val sensorsToChooseFrom: List<SensorCardUi.Modal>,
+        val openModal: Boolean,
         override val id: Int,
+        override val title: String? = null,
         override val isEditMode: Boolean = false,
     ) :
         CustomWidgetUi() {
@@ -44,5 +49,10 @@ sealed class CustomWidgetUi {
             sensor = sensor,
             sensorsToChooseFrom = sensorsToChooseFrom
         )
+
+        companion object {
+            const val NO_SENSOR_ID = "Не назначено"
+            const val NO_SENSOR_TITLE = "Не назначено"
+        }
     }
 }

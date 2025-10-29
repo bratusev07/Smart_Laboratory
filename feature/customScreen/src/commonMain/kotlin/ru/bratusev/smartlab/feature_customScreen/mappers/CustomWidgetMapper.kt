@@ -36,7 +36,9 @@ fun CustomWidget.toUi(sensors: List<ServiceEntity>, id: Int): CustomWidgetUi {
                         tints = SensorCardTints.Common.LightBulb
                     )
                 },
-                isEditMode = false
+                title = title,
+                isEditMode = false,
+                openModal = false,
             )
 
         is CustomWidget.SingleSensor -> {
@@ -52,8 +54,8 @@ fun CustomWidget.toUi(sensors: List<ServiceEntity>, id: Int): CustomWidgetUi {
                             tints = SensorCardTints.Common.LightBulb
                         )
                     } ?: Switch(
-                        title = "Example",
-                        id = "Example",
+                        title = CustomWidgetUi.SingleSensor.NO_SENSOR_TITLE,
+                        id = CustomWidgetUi.SingleSensor.NO_SENSOR_ID,
                         state = SensorState.Unavailable,
                         domain = SensorDomain.SWITCH,
                         drawableResource = SensorCardRes.lightBulb,
@@ -70,7 +72,9 @@ fun CustomWidget.toUi(sensors: List<ServiceEntity>, id: Int): CustomWidgetUi {
                         tints = SensorCardTints.Common.LightBulb
                     )
                 },
-                isEditMode = false
+                title = title,
+                isEditMode = false,
+                openModal = false
             )
         }
     }

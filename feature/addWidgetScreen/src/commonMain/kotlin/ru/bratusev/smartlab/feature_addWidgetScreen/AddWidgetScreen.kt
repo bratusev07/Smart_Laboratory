@@ -88,7 +88,7 @@ private fun WidgetItem(onAccept: () -> Unit, title: String, content: @Composable
     if (isDialogOpen) {
         Box(modifier = Modifier.fillMaxSize()) {
             AlertDialog(title = {
-                Text(text = "Подтвердить выбор")
+                Text(text = "Подтвердите выбор")
             }, onDismissRequest = {
                 isDialogOpen = false
             }, confirmButton = {
@@ -156,8 +156,11 @@ private fun SingleSensorWidgetPreview() {
     }
     SingleSensorWidget(
         uiData = CustomWidgetUi.SingleSensor(
-            sensor = sensor, sensorsToChooseFrom = data2, id = 1
-        ), onToggle = { _, _ -> }, onSubmit = {}, onDeleteWidgetClick = {})
+            sensor = sensor, sensorsToChooseFrom = data2, id = 1,
+            openModal = false
+        ), onToggle = { _, _ -> }, onSubmit = {},
+        onEditEnd = {}
+    )
 }
 
 @Composable
@@ -193,5 +196,9 @@ private fun ManySensorsListWidgetPreview() {
     ManySensorsWidget(
         uiData = CustomWidgetUi.ManySensorsList(
             sensorsToShow = data, sensorsToChooseFrom = data2, id = 1,
-        ), onToggle = { _, _ -> {} }, onSubmit = {}, onDeleteWidgetClick = {})
+            openModal = false,
+        ),
+        onToggle = { _, _ -> {} }, onSubmit = {},
+        onEditEnd = {},
+    )
 }

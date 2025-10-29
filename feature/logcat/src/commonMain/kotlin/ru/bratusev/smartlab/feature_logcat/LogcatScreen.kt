@@ -14,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
 import ru.bratusev.smartlab.navigation.api.NavigationApi
 import ru.bratusev.smartlab.ui.core.components.LogcatComponent
-import ru.bratusev.smartlab.ui.core.components.verticalScrollbar
 
 @Composable
 fun LogcatScreen(
@@ -26,7 +25,7 @@ fun LogcatScreen(
 
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize().verticalScrollbar(scrollState), state = scrollState
+            modifier = Modifier.fillMaxSize(), state = scrollState
         ) {
             items(state.value.messages) {
                 LogcatComponent(

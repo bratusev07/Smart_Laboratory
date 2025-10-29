@@ -8,8 +8,8 @@ import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorState
 
 data class CustomScreenState(
     val screenName: String = "CustomScreen Screen",
-
     val isUpdating: Boolean = false,
+    val isSaving: Boolean = false,
     val isDropDownMenuExpanded: Boolean = false,
     val isEditMode: Boolean = false,
     val widgets: List<CustomWidget> = emptyList(),
@@ -37,12 +37,19 @@ sealed class Event {
     data class ChosenManySwitchesChange(
         val widgetId: Int,
         val chosenIds: List<String>,
+        val title: String
     ) : Event()
 
     data class ChosenSingleSwitchChange(
         val widgetId: Int,
         val chosenId: String,
+        val title: String
     ) : Event()
+
+    data class EditTitle(
+        val widgetId: Int,
+        val title: String
+    ): Event()
 
     data object LoadData : Event()
 }

@@ -1,6 +1,7 @@
 package ru.bratusev.smartlab.ui.core.components
 
 import androidx.compose.material3.Button
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -22,7 +23,8 @@ fun CustomButton(
     ) {
         Text(
             text = customButtonUi.title,
-            fontWeight = FontWeight(customButtonUi.fontWeight)
+            fontWeight = customButtonUi.fontWeight?.let { FontWeight(it) },
+            style = customButtonUi.textStyle ?: LocalTextStyle.current
         )
     }
 }

@@ -34,6 +34,7 @@ fun SensorCardRow(
     uiData: SensorCardUi.Row,
     buttonContent: @Composable () -> Unit = {},
     label: @Composable () -> Unit = {},
+    fontColor: Color = Color.Unspecified
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -49,7 +50,11 @@ fun SensorCardRow(
                 drawableRes = uiData.drawableResource, state = uiData.state, tints = uiData.tints
             )
             Column(modifier = Modifier.weight(1f)) {
-                Text(uiData.title, style = MaterialTheme.typography.titleMedium)
+                Text(
+                    uiData.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = fontColor
+                )
                 label()
             }
             buttonContent()

@@ -6,6 +6,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import ru.bratusev.smartlab.domain.core.model.CustomWidget
@@ -89,7 +90,7 @@ class CustomScreenViewModel(
     }
 
     private fun updateWidgets(updatedWidgets: List<CustomWidget>) {
-        updateState(_uiState.value.copy(widgets = updatedWidgets))
+        updateState(_uiState.value.copy(widgets = updatedWidgets, isSaving = true))
         saveWidgets.invoke(updatedWidgets).onEach { result ->
             result.fold(onSuccess = {
                 logger.d("CustomScreenViewModel/updateWidgets", "Successfully saved widgets")
@@ -99,6 +100,8 @@ class CustomScreenViewModel(
                     "Error during saving widgets. Error $error"
                 )
             })
+        }.onCompletion {
+            updateState(_uiState.value.copy(isSaving = false))
         }.launchIn(viewModelScope)
     }
 
@@ -109,13 +112,11 @@ class CustomScreenViewModel(
                 updateSensorUseCase.invoke(id).onEach { result ->
                     result.fold(onSuccess = {
                         logger.d(
-                            "CustomScreenViewModel switch switch",
-                            "Switched switch with id: $id"
+                            "CustomScreenViewModel switch switch", "Switched switch with id: $id"
                         )
                     }, onFailure = { error ->
                         logger.e(
-                            "CustomScreenViewModel switch switch",
-                            "Could switch with error: $error"
+                            "CustomScreenViewModel switch switch", "Could switch with error: $error"
                         )
                     })
                 }.launchIn(viewModelScope)
@@ -127,6 +128,13 @@ class CustomScreenViewModel(
         val updatedWidgets = _uiState.value.widgets.filter { it.id != widgetId }
         logger.d("Deleting widget with id$widgetId", "New widgets: $updatedWidgets")
         updateWidgets(updatedWidgets)
+    }
+
+    private fun editWidgetTitle(widgetId: Int, newTitle: String) {
+        logger.d("CustomScreenViewModel/editWidgetTitle", "Editing title to: $newTitle")
+        val updatedWidget =
+            _uiState.value.widgets.firstOrNull { it.id == widgetId }?.copy(title = newTitle)
+        if (updatedWidget != null) updateWidget(updatedWidget)
     }
 
     private fun updateWidget(newState: CustomWidget) {
@@ -148,7 +156,13 @@ class CustomScreenViewModel(
 
             is Event.ChosenManySwitchesChange -> updateWidget(
                 newState = SensorsList(
-                    sensorsIds = event.chosenIds, id = event.widgetId
+                    sensorsIds = event.chosenIds, id = event.widgetId, title = event.title
+                )
+            )
+
+            is Event.ChosenSingleSwitchChange -> updateWidget(
+                CustomWidget.SingleSensor(
+                    sensorId = event.chosenId, id = event.widgetId, title = event.title
                 )
             )
 
@@ -156,11 +170,8 @@ class CustomScreenViewModel(
             Event.ToggleDropDownMenu -> toggleDropDownMenu()
             is Event.DeleteWidget -> deleteWidget(event.widgetId)
             Event.ToggleEditMode -> toggleEditMode()
-            is Event.ChosenSingleSwitchChange -> updateWidget(
-                CustomWidget.SingleSensor(
-                    sensorId = event.chosenId, id = event.widgetId
-                )
-            )
+
+            is Event.EditTitle -> editWidgetTitle(event.widgetId, event.title)
         }
     }
 }
