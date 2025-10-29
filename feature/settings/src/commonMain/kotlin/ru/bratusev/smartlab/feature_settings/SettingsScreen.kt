@@ -1,15 +1,19 @@
 package ru.bratusev.smartlab.feature_settings
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.koin.compose.viewmodel.koinViewModel
+import ru.bratusev.smartlab.feature_settings.models.Event
 import ru.bratusev.smartlab.navigation.api.NavigationApi
-import ru.bratusev.smartlab.ui.core.components.CustomButton
-import ru.bratusev.smartlab.ui.core.models.CustomButtonUi
+import ru.bratusev.smartlab.ui.core.components.SettingsDropDown
+import ru.bratusev.smartlab.ui.core.models.SettingsDropDownUi
 
 @Composable
 fun SettingsScreen(
@@ -19,14 +23,30 @@ fun SettingsScreen(
     val state = vm.uiState.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
-        CustomButton(
-            modifier = Modifier.align(Alignment.Center),
-            customButtonUi = CustomButtonUi(
-                state.value.screenName,
-                fontWeight = 50
+        Column {
+            Button(
+                enabled = state.value.isChanged,
+                onClick = { vm.handleEvent(Event.Confirm) },
+                content = {
+                    Text(text = "Принять изменения")
+                }
             )
-        ) {
-            navigationApi.popBackStack()
+            SettingsDropDown(
+                settingsDropDownUi = SettingsDropDownUi(
+                    values = state.value.languages,
+                    currentValue = state.value.newSettings.language.localeName
+                ),
+                onValueChange = { vm.handleEvent(Event.ChangeLanguage(it)) }
+            )
+            if (state.value.isLoading) {
+                Text("Загрузка")
+                CircularProgressIndicator()
+            }
+            if (state.value.isSaving) {
+                Text("Сохранение")
+                CircularProgressIndicator()
+            }
         }
     }
 }
+
