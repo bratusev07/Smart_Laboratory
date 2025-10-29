@@ -9,5 +9,6 @@ data class AreaCardUi(
     val temperature: Float?,
     val pictureUrl: String?,
     val createdAt: Double,
-    val modifiedAt: Double
+    val modifiedAt: Double,
+    val isClickable: Boolean = true
 )

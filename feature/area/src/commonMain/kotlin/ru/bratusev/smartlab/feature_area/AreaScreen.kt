@@ -5,10 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -54,31 +51,26 @@ fun AreaScreen(
                 pictureUrl = pictureUrl,
                 createdAt = -1.0,
                 modifiedAt = -1.0,
+                isClickable = false
             )
         )
 
-        Surface(
-            color = MaterialTheme.colorScheme.secondaryContainer,
-            shape = RoundedCornerShape(16.dp),
-            contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-        ) {
-            if (!state.value.areaDevices.isEmpty()) {
-                Column(
-                    modifier = Modifier.padding(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    state.value.areaDevices.forEach { deviceUiData ->
-                        SensorCardRow(
-                            uiData = deviceUiData
-                        )
-                    }
+        if (!state.value.areaDevices.isEmpty()) {
+            Column(
+                modifier = Modifier.padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                state.value.areaDevices.forEach { deviceUiData ->
+                    SensorCardRow(
+                        uiData = deviceUiData
+                    )
                 }
-            } else {
-                AnimatedVisibility(!state.value.areaDevices.isEmpty()) {
-                    Column {
-                        CircularProgressIndicator()
-                        Text(StringsRes.LOADING_INDICATOR)
-                    }
+            }
+        } else {
+            AnimatedVisibility(!state.value.areaDevices.isEmpty()) {
+                Column {
+                    CircularProgressIndicator()
+                    Text(StringsRes.LOADING_INDICATOR)
                 }
             }
         }

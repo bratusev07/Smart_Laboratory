@@ -33,12 +33,13 @@ fun AreaCard(
     onClick: (String, String?, String?) -> Unit,
     uiData: AreaCardUi
 ) {
+    val clickableModifier = if (!uiData.isClickable) Modifier else Modifier.clickable {
+        onClick(uiData.areaId, uiData.name, uiData.pictureUrl)
+    }
     Surface(
-        color = MaterialTheme.colorScheme.secondaryContainer,
-        contentColor = MaterialTheme.colorScheme.onSecondaryContainer,
-        modifier = modifier.fillMaxWidth().clickable {
-            onClick(uiData.areaId, uiData.name, uiData.pictureUrl)
-        },
+        color = MaterialTheme.colorScheme.secondary,
+        contentColor = MaterialTheme.colorScheme.onSecondary,
+        modifier = modifier.fillMaxWidth().then(clickableModifier),
         shape = RoundedCornerShape(16.dp), // A slightly larger corner radius can look more modern
     ) {
         // Use a Column to structure content inside the card
