@@ -10,10 +10,12 @@ data class SettingsState(
     val newSettings: UiSettings = UiSettings()
 ) {
     val languages = UiSettings.Language.entries.map { it.localeName }
+    val themes = UiSettings.Theme.entries.map { it.localeName }
     val isChanged = oldSettings != newSettings
 }
 
 sealed class Event {
     data class ChangeLanguage(val localeName: String) : Event()
+    data class ChangeTheme(val localName: String): Event()
     object Confirm : Event()
 }

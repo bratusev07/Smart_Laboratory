@@ -38,6 +38,13 @@ fun SettingsScreen(
                 ),
                 onValueChange = { vm.handleEvent(Event.ChangeLanguage(it)) }
             )
+            SettingsDropDown(
+                settingsDropDownUi = SettingsDropDownUi(
+                    values = state.value.themes,
+                    currentValue = state.value.newSettings.theme.localeName
+                ),
+                onValueChange = { vm.handleEvent(Event.ChangeTheme(it)) }
+            )
             if (state.value.isLoading) {
                 Text("Загрузка")
                 CircularProgressIndicator()

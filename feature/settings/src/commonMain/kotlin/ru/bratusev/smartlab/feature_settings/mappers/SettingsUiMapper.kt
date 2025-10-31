@@ -7,8 +7,9 @@ import ru.bratusev.smartlab.feature_settings.models.UiSettings.Theme.LIGHT
 import ru.bratusev.smartlab.feature_settings.models.UiSettings.Theme.SYSTEM
 
 fun UiSettings.toDomain(): Settings = Settings(
-    isoLanguage = this.language.isoLanguage, theme = when (this.theme) {
-        LIGHT -> Settings.Theme.SYSTEM
+    isoLanguage = this.language.isoLanguage,
+    theme = when (this.theme) {
+        LIGHT -> Settings.Theme.LIGHT
         DARK -> Settings.Theme.DARK
         else -> Settings.Theme.SYSTEM
     }

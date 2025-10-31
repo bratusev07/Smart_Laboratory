@@ -6,6 +6,8 @@ import ru.bratusev.smartlab.domain.core.repository.SettingsRepository
 class UpdateSettingsUseCase(
     private val settingsRepository: SettingsRepository
 ) {
-    suspend operator fun invoke(newSettings: Settings) = settingsRepository.updateSettings(newSettings)
+    suspend operator fun invoke(newSettings: Settings) {
+        settingsRepository.updateSettings(newSettings)
+    }
 }
 

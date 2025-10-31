@@ -1,8 +1,9 @@
 package ru.bratusev.smartlab.domain.core.repository
 
+import kotlinx.coroutines.flow.Flow
 import ru.bratusev.smartlab.domain.core.model.Settings
 
 interface SettingsRepository {
-    suspend fun getSettings(): Settings?
+    fun observeSettings(): Flow<Settings?>
     suspend fun updateSettings(newSettings: Settings)
 }

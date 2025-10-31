@@ -51,6 +51,9 @@ kotlin {
             implementation(libs.koin.core)
 
             implementation(projects.ui.core)
+            implementation(projects.domain.core)
+
+            implementation(projects.feature.settings)
 
             implementation(libs.bundles.koin.compose)
         }

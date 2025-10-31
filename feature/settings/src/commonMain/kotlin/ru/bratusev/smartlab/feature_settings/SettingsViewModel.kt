@@ -2,8 +2,10 @@ package ru.bratusev.smartlab.feature_settings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import ru.bratusev.smartlab.data.core.Logger
 import ru.bratusev.smartlab.domain.core.usecase.GetSettingsUseCase
@@ -30,7 +32,8 @@ class SettingsViewModel(
     private fun getSettings() {
         viewModelScope.launch {
             updateState(_uiState.value.copy(isLoading = true))
-            val settings = getSettingsUseCase()?.toUi() ?: UiSettings()
+            val settings = getSettingsUseCase().first()?.toUi() ?: UiSettings()
+            delay(100)
             logger.d("SettingsViewModel/getSettings", "Loaded settings: $settings")
             updateState(_uiState.value.copy(oldSettings = settings))
             updateState(_uiState.value.copy(newSettings = settings))
@@ -49,10 +52,20 @@ class SettingsViewModel(
 
     private fun changeLanguage(localeName: String) {
         val newLanguage = UiSettings.Language.fromLocaleName(localeName)
-        logger.d("SettingsViewModel/changeLanguage", "Changed language to $localeName")
+        logger.d("SettingsViewModel/changeLanguage", "Changed language to ${newLanguage.localeName}")
         updateSettings(
             newSettings = _uiState.value.newSettings.copy(
                 language = newLanguage
+            )
+        )
+    }
+
+    private fun changeTheme(localeName: String) {
+        val newTheme = UiSettings.Theme.fromLocaleName(localeName)
+        logger.d("SettingsViewModel/changeTheme", "Changed theme to ${newTheme.localeName}")
+        updateSettings(
+            newSettings = _uiState.value.newSettings.copy(
+                theme = newTheme
             )
         )
     }
@@ -70,6 +83,7 @@ class SettingsViewModel(
     internal fun handleEvent(event: Event) {
         when (event) {
             is Event.ChangeLanguage -> changeLanguage(event.localeName)
+            is Event.ChangeTheme -> changeTheme(event.localName)
             is Event.Confirm -> saveSettings()
         }
     }

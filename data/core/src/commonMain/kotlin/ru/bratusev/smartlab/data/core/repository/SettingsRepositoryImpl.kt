@@ -4,7 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
 import ru.bratusev.smartlab.data.core.mapper.toDomain
@@ -14,12 +14,15 @@ import ru.bratusev.smartlab.domain.core.model.Settings
 import ru.bratusev.smartlab.domain.core.repository.SettingsRepository
 
 class SettingsRepositoryImpl(private val dataStore: DataStore<Preferences>) : SettingsRepository {
-    override suspend fun getSettings(): Settings? {
-        val settingsJsonString = dataStore.data.map { preferences ->
-            preferences[SETTINGS_KEY]
-        }.first() ?: return null
-        val result = Json.decodeFromString<SettingsEntity>(settingsJsonString).toDomain()
-        return result
+    override fun observeSettings(): Flow<Settings?> {
+        return dataStore.data.map { preferences ->
+            val settingsJsonString = preferences[SETTINGS_KEY]
+            if (settingsJsonString != null) {
+                Json.decodeFromString<SettingsEntity>(settingsJsonString).toDomain()
+            } else {
+                null
+            }
+        }
     }
 
     override suspend fun updateSettings(newSettings: Settings) {
