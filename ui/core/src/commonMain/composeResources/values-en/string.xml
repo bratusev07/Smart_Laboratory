@@ -1,0 +1,37 @@
+<resources>
+    <!-- AUTH STAGES -->
+    <string name="auth_not_started">Authorization has not started</string>
+    <string name="auth_started">Authorization started</string>
+    <string name="token_saving">Saving token</string>
+    <string name="token_checking">Checking token</string>
+    <string name="auth_success">Authorization successful</string>
+    <string name="auth_failed">Authorization failed</string>
+    <string name="token_save_failed">Failed to save token</string>
+
+    <!-- LOGIN SCREEN TEXT -->
+    <string name="auth_title">Authorization</string>
+    <string name="auth_button">Authorize</string>
+    <string name="current_stage">Current stage</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+
+    <string name="error">Error</string>
+
+    <!-- LOADING -->
+    <string name="loading">Loading...</string>
+    <string name="loading_settings">Loading settings...</string>
+
+    <!-- NAVIGATION DRAWER -->
+    <string name="drawer_title">Smart Laboratory</string>
+
+    <!-- SENSOR DOMAIN -->
+    <string name="switch_label">Switch</string>
+    <string name="sensor">Sensor</string>
+    <string name="unknown">Unknown</string>
+
+    <!-- CUSTOM SCREEN -->
+    <string name="add_widget">Add widget</string>
+    <string name="edit_mеode">Edit mode</string>
+    <string name="updating">Waiting for a response</string>
+    <string name="saving">Saving</string>
+</resources>

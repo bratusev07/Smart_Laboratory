@@ -13,15 +13,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import ru.bratusev.smartlab.navigation.AppNavigation
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
 import smartlaboratory.composeapp.generated.resources.Res
 import smartlaboratory.composeapp.generated.resources.compose_multiplatform
+import smartlaboratory.ui.core.generated.resources.loading_settings
 
 @Composable
 fun App(vm: AppViewModel = koinViewModel()) {
     val state by vm.uiState.collectAsState()
+    customAppLocale = if (state.isoLangName == "system") null else state.isoLangName
+    println("Current language is ${state.isoLangName}")
     AppTheme(
         darkTheme =
             state.isDarkTheme
@@ -34,16 +38,17 @@ fun App(vm: AppViewModel = koinViewModel()) {
                     verticalArrangement = Arrangement.Center
                 ) {
                     CircularProgressIndicator()
-                    Text("Загрузка настроек")
+                    Text(stringResource(smartlaboratory.ui.core.generated.resources.Res.string.loading_settings))
                 }
             } else {
-                println("Is dark theme: ${state.isDarkTheme}")
                 val navController = rememberNavController()
-                Box {
-                    AppNavigation(navController = navController)
+                AppEnvironment {
+                    Box {
+                        AppNavigation(navController = navController)
+                    }
                 }
+                Res.drawable.compose_multiplatform
             }
-            Res.drawable.compose_multiplatform
         }
     }
 }

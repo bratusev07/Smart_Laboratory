@@ -12,9 +12,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.stringResource
 import ru.bratusev.smartlab.ui.core.models.AnimatedLoadUi
-import ru.bratusev.smartlab.ui.core.resources.StringsRes
+import smartlaboratory.ui.core.generated.resources.Res
+import smartlaboratory.ui.core.generated.resources.current_stage
+import smartlaboratory.ui.core.generated.resources.error
 
 @Composable
 fun AnimatedLoadComponent(modifier: Modifier, animatedLoadUi: AnimatedLoadUi) {
@@ -24,7 +28,8 @@ fun AnimatedLoadComponent(modifier: Modifier, animatedLoadUi: AnimatedLoadUi) {
         Column(modifier = Modifier.fillMaxWidth()) {
             Text(
                 maxLines = 1,
-                text = "${StringsRes.CURRENT_STAGE}: ${if (animatedLoadUi.isError) StringsRes.ERROR else animatedLoadUi.stageName}",
+                textAlign = TextAlign.Center,
+                text = "${stringResource(Res.string.current_stage)}: ${if (animatedLoadUi.isError) stringResource(Res.string.error) else animatedLoadUi.stageNameRes}",
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.alpha(0.85f)

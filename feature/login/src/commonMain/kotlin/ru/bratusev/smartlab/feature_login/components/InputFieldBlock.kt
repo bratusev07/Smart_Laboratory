@@ -9,14 +9,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ru.bratusev.smartlab.feature_login.models.LoginState
 import ru.bratusev.smartlab.ui.core.components.CustomButton
 import ru.bratusev.smartlab.ui.core.components.OutlinedTextFieldComponent
 import ru.bratusev.smartlab.ui.core.models.CustomButtonUi
 import ru.bratusev.smartlab.ui.core.models.OutlinedTextFieldUi
-import ru.bratusev.smartlab.ui.core.resources.StringsRes
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
+import smartlaboratory.ui.core.generated.resources.Res
+import smartlaboratory.ui.core.generated.resources.auth_button
+import smartlaboratory.ui.core.generated.resources.login
+import smartlaboratory.ui.core.generated.resources.password
 
 @Composable
 fun InputFieldBlock(
@@ -33,7 +37,7 @@ fun InputFieldBlock(
             modifier = textFieldModifier,
             outlinedTextFieldUi = OutlinedTextFieldUi(
                 value = screenState.login,
-                placeholder = StringsRes.LOGIN
+                placeholder = stringResource(Res.string.login)
             ) {
                 onLoginChanged(it)
             }
@@ -45,7 +49,9 @@ fun InputFieldBlock(
             modifier = textFieldModifier,
             outlinedTextFieldUi = OutlinedTextFieldUi(
                 value = screenState.password,
-                placeholder = StringsRes.PASSWORD,
+                placeholder = stringResource(
+                    Res.string.password
+                ),
                 isSecret = true
             ) {
                 onPasswordChanged(it)
@@ -57,7 +63,7 @@ fun InputFieldBlock(
         CustomButton(
             modifier = textFieldModifier,
             customButtonUi = CustomButtonUi(
-                title = StringsRes.AUTH,
+                title = stringResource(Res.string.auth_button),
                 textStyle = MaterialTheme.typography.labelLarge,
                 isEnabled = isButtonEnabled
             )

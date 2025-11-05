@@ -12,12 +12,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import ru.bratusev.smartlab.feature_area.models.Event
 import ru.bratusev.smartlab.ui.core.components.AreaCard
 import ru.bratusev.smartlab.ui.core.components.sensorCard.SensorCardRow
 import ru.bratusev.smartlab.ui.core.models.AreaCardUi
-import ru.bratusev.smartlab.ui.core.resources.StringsRes
+import smartlaboratory.ui.core.generated.resources.Res
+import smartlaboratory.ui.core.generated.resources.loading
 
 @Composable
 fun AreaScreen(
@@ -31,7 +33,6 @@ fun AreaScreen(
     LaunchedEffect(areaId) {
         areaScreenViewModel.handleEvent(Event.FetchData(areaId))
     }
-
     // Use a single LazyColumn for the entire screen content.
     // This is more efficient and handles scrolling for all elements together.
     Column(
@@ -70,7 +71,7 @@ fun AreaScreen(
             AnimatedVisibility(!state.value.areaDevices.isEmpty()) {
                 Column {
                     CircularProgressIndicator()
-                    Text(StringsRes.LOADING_INDICATOR)
+                    Text(stringResource(Res.string.loading))
                 }
             }
         }

@@ -2,11 +2,14 @@ package ru.bratusev.smartlab.ui.core.models.sensorCard
 
 import androidx.compose.ui.graphics.Color
 import org.jetbrains.compose.resources.DrawableResource
-import ru.bratusev.smartlab.ui.core.resources.StringsRes
+import org.jetbrains.compose.resources.StringResource
 import ru.bratusev.smartlab.ui.core.theme.SensorCardCommonColors
 import smartlaboratory.ui.core.generated.resources.Res
 import smartlaboratory.ui.core.generated.resources.light_bulb
+import smartlaboratory.ui.core.generated.resources.sensor
+import smartlaboratory.ui.core.generated.resources.switch_label
 import smartlaboratory.ui.core.generated.resources.thermometer
+import smartlaboratory.ui.core.generated.resources.unknown
 
 sealed class SensorCardUi {
 
@@ -136,8 +139,8 @@ sealed class SensorState(val localeName: String) {
 
 }
 
-enum class SensorDomain(val localeName: String) {
-    SWITCH(StringsRes.SWITCH), SENSOR(StringsRes.SENSOR), UNKNOWN(StringsRes.UNKNOWN);
+enum class SensorDomain(val nameResource: StringResource) {
+    SWITCH(Res.string.switch_label), SENSOR(Res.string.sensor), UNKNOWN(Res.string.unknown);
 
     companion object {
 

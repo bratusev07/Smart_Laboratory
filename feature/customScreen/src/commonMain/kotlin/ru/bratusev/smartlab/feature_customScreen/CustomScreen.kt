@@ -26,6 +26,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import ru.bratusev.smartlab.feature_customScreen.models.Event
@@ -36,8 +37,12 @@ import ru.bratusev.smartlab.feature_customScreen.models.Event.OnSensorStateChang
 import ru.bratusev.smartlab.ui.core.components.CustomWidget
 import ru.bratusev.smartlab.ui.core.models.CustomWidgetEvent
 import ru.bratusev.smartlab.ui.core.models.CustomWidgetUi
-import ru.bratusev.smartlab.ui.core.resources.StringsRes
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
+import smartlaboratory.ui.core.generated.resources.Res
+import smartlaboratory.ui.core.generated.resources.add_widget
+import smartlaboratory.ui.core.generated.resources.edit_mode
+import smartlaboratory.ui.core.generated.resources.saving
+import smartlaboratory.ui.core.generated.resources.updating
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -90,7 +95,7 @@ fun CustomScreen(
             ) {
                 Column {
                     CircularProgressIndicator()
-                    Text(if (state.value.isUpdating) StringsRes.UPDATING else StringsRes.SAVING)
+                    Text(if (state.value.isUpdating) stringResource(Res.string.updating) else stringResource(Res.string.saving))
                 }
             }
         }
@@ -124,7 +129,7 @@ private fun MenuDropDown(
     DropdownMenu(
         expanded = isExpanded, onDismissRequest = onClose, content = {
             DropdownMenuItem(
-                text = { Text(StringsRes.ADD_WIDGET) },
+                text = { Text(stringResource(Res.string.add_widget)) },
                 onClick = onAddScreen,
                 leadingIcon = {
                     Icon(
@@ -132,7 +137,7 @@ private fun MenuDropDown(
                     )
                 })
             DropdownMenuItem(
-                text = { Text(StringsRes.EDIT_MODE) },
+                text = { Text(stringResource(Res.string.edit_mode)) },
                 onClick = onEditMode,
                 leadingIcon = {
                     Icon(

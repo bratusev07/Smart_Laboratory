@@ -13,11 +13,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ru.bratusev.smartlab.ui.core.components.AreaCard
 import ru.bratusev.smartlab.ui.core.models.AreaCardUi
-import ru.bratusev.smartlab.ui.core.resources.StringsRes
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
+import smartlaboratory.ui.core.generated.resources.Res
+import smartlaboratory.ui.core.generated.resources.loading
 
 @Composable
 fun AllAreasScreen(
@@ -33,7 +35,7 @@ fun AllAreasScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     CircularProgressIndicator()
-                    Text(StringsRes.LOADING_INDICATOR)
+                    Text(stringResource(Res.string.loading))
                 }
             }
         }

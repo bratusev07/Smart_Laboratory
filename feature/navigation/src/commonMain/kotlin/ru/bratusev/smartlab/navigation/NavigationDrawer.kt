@@ -34,13 +34,15 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ru.bratusev.smartlab.navigation.api.Screen
 import ru.bratusev.smartlab.navigation.models.NavigationDrawerItems
 import ru.bratusev.smartlab.ui.core.components.AppTopBar
 import ru.bratusev.smartlab.ui.core.models.AppTopBarUi
-import ru.bratusev.smartlab.ui.core.resources.StringsRes
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
+import smartlaboratory.ui.core.generated.resources.Res
+import smartlaboratory.ui.core.generated.resources.drawer_title
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,7 +57,9 @@ fun NavigationDrawer(
 ) {
     ModalNavigationDrawer(
         drawerState = drawerState,
-        modifier = Modifier.wrapContentWidth(), gesturesEnabled = !isHidden, drawerContent = {
+        modifier = Modifier.wrapContentWidth(),
+        gesturesEnabled = !isHidden,
+        drawerContent = {
             if (!isHidden) {
                 ModalDrawerSheet {
                     Column(
@@ -75,7 +79,9 @@ fun NavigationDrawer(
                                 Icon(Icons.Default.Close, contentDescription = null)
                             }
                             Text(
-                                StringsRes.DRAWER_TITLE,
+                                stringResource(
+                                    Res.string.drawer_title
+                                ),
                                 modifier = Modifier.padding(vertical = 16.dp),
                                 style = MaterialTheme.typography.titleLarge
                             )
@@ -83,46 +89,45 @@ fun NavigationDrawer(
                         HorizontalDivider()
                         NavigationDrawerItemComponent(
                             NavigationDrawerItems.Home,
-                            selected = navigationHierarchy?.any { it.hasRoute(NavigationDrawerItems.Home.screen::class) } ?: false,
-                            navigateTo = navigateTo
-                        )
+                            selected = navigationHierarchy?.any { it.hasRoute(NavigationDrawerItems.Home.screen::class) }
+                                ?: false,
+                            navigateTo = navigateTo)
                         NavigationDrawerItemComponent(
                             NavigationDrawerItems.CustomScreen,
-                            selected = navigationHierarchy?.any { it.hasRoute(NavigationDrawerItems.CustomScreen.screen::class) } ?: false,
-                            navigateTo = navigateTo
-                        )
+                            selected = navigationHierarchy?.any { it.hasRoute(NavigationDrawerItems.CustomScreen.screen::class) }
+                                ?: false,
+                            navigateTo = navigateTo)
                         NavigationDrawerItemComponent(
                             NavigationDrawerItems.Logs,
-                            selected = navigationHierarchy?.any { it.hasRoute(NavigationDrawerItems.Logs.screen::class) } ?: false,
-                            navigateTo = navigateTo
-                        )
+                            selected = navigationHierarchy?.any { it.hasRoute(NavigationDrawerItems.Logs.screen::class) }
+                                ?: false,
+                            navigateTo = navigateTo)
                         NavigationDrawerItemComponent(
                             NavigationDrawerItems.Areas,
-                            selected = navigationHierarchy?.any { it.hasRoute(NavigationDrawerItems.Areas.screen::class) } ?: false,
-                            navigateTo = navigateTo
-                        )
+                            selected = navigationHierarchy?.any { it.hasRoute(NavigationDrawerItems.Areas.screen::class) }
+                                ?: false,
+                            navigateTo = navigateTo)
                         Spacer(modifier = Modifier.weight(1f))
                         NavigationDrawerItemComponent(
                             NavigationDrawerItems.Settings,
-                            selected = navigationHierarchy?.any { it.hasRoute(NavigationDrawerItems.Settings.screen::class) } ?: false,
-                            navigateTo = navigateTo
-                        )
+                            selected = navigationHierarchy?.any { it.hasRoute(NavigationDrawerItems.Settings.screen::class) }
+                                ?: false,
+                            navigateTo = navigateTo)
                         HorizontalDivider()
                         NavigationDrawerItemComponent(
                             NavigationDrawerItems.Notifications,
-                            selected = navigationHierarchy?.any { it.hasRoute(NavigationDrawerItems.Notifications.screen::class) } ?: false,
-                            navigateTo = navigateTo
-                        )
+                            selected = navigationHierarchy?.any { it.hasRoute(NavigationDrawerItems.Notifications.screen::class) }
+                                ?: false,
+                            navigateTo = navigateTo)
                         NavigationDrawerItemComponent(
                             NavigationDrawerItems.Profile,
-                            selected = navigationHierarchy?.any { it.hasRoute(NavigationDrawerItems.Profile.screen::class) } ?: false,
-                            navigateTo = navigateTo
-                        )
+                            selected = navigationHierarchy?.any { it.hasRoute(NavigationDrawerItems.Profile.screen::class) }
+                                ?: false,
+                            navigateTo = navigateTo)
                     }
                 }
             }
-        }
-    ) {
+        }) {
         if (isHidden) {
             content()
         } else {
@@ -132,16 +137,13 @@ fun NavigationDrawer(
                         uiData = AppTopBarUi(
                             // TODO: Убрать захардкоженное значение
                             title = "Лаборатория 1",
-                        ),
-                        onTitleClick = {
+                        ), onTitleClick = {
                             drawerScope.launch {
                                 drawerState.open()
                             }
-                        },
-                        onMenuClick = onMenuClick
+                        }, onMenuClick = onMenuClick
                     )
-                }
-            ) { paddingValues ->
+                }) { paddingValues ->
                 Box(modifier = Modifier.padding(paddingValues)) {
                     content()
                 }
@@ -176,8 +178,7 @@ private fun NavigationDrawerPreview() {
             drawerState = drawerState,
             navigateTo = {},
             navigationHierarchy = null,
-            onMenuClick = {}
-        ) {
+            onMenuClick = {}) {
             Text(text = "Контент. Очень длинный контент. Прям чтобы его было видно. Нужно прям много контента.")
         }
     }

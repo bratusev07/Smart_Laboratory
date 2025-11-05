@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- AUTH STAGES -->
+    <string name="auth_not_started">Авторизация еще не началась</string>
+    <string name="auth_started">Авторизация началась</string>
+    <string name="token_saving">Сохранение токена</string>
+    <string name="token_checking">Проверка токена</string>
+    <string name="auth_success">Авторизация успешно завершена</string>
+    <string name="auth_failed">Ошибка во время авторизации</string>
+    <string name="token_save_failed">Ошибка во время сохранения токена</string>
+
+    <!-- LOGIN SCREEN TEXT -->
+    <string name="auth_title">Авторизация</string>
+    <string name="auth_button">Авторизоваться</string>
+    <string name="current_stage">Текущий этап</string>
+    <string name="login">Логин</string>
+    <string name="password">Пароль</string>
+
+    <string name="error">Ошибка</string>
+
+    <!-- LOADING -->
+    <string name="loading">Загрузка...</string>
+    <string name="loading_settings">Загрузка настроек...</string>
+
+    <!-- NAVIGATION DRAWER -->
+    <string name="drawer_title">Умная лаборатория</string>
+
+    <!-- SENSOR DOMAIN -->
+    <string name="switch_label">Переключатель</string>
+    <string name="sensor">Датчик</string>
+    <string name="unknown">Неизвестно</string>
+
+    <!-- CUSTOM SCREEN -->
+    <string name="add_widget">Добавить виджет</string>
+    <string name="edit_mode">Режим редактирования</string>
+    <string name="updating">Ожидание ответа</string>
+    <string name="saving">Сохранение</string>
+</resources>
