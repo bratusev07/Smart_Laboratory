@@ -40,13 +40,11 @@ fun AreaCard(
         color = MaterialTheme.colorScheme.secondary,
         contentColor = MaterialTheme.colorScheme.onSecondary,
         modifier = modifier.fillMaxWidth().then(clickableModifier),
-        shape = RoundedCornerShape(16.dp), // A slightly larger corner radius can look more modern
+        shape = RoundedCornerShape(16.dp),
     ) {
-        // Use a Column to structure content inside the card
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             val imageModifier = Modifier
                 .fillMaxWidth()
-                // Use aspectRatio to maintain a consistent shape (e.g., 16:9)
                 .aspectRatio(16f / 9f)
                 .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
 
@@ -54,29 +52,26 @@ fun AreaCard(
                 AsyncImage(
                     model = uiData.pictureUrl,
                     modifier = imageModifier,
-                    // A placeholder from your resources
                     placeholder = painterResource(Res.drawable.thermometer),
-                    error = painterResource(Res.drawable.thermometer), // Show an error image if loading fails
-                    contentScale = ContentScale.Crop, // Crop is often better for filling space
+                    error = painterResource(Res.drawable.thermometer),
+                    contentScale = ContentScale.Crop,
                     contentDescription = "${uiData.name} image"
                 )
             } else {
-                // Fallback content when there is no picture URL
                 Image(
                     painter = painterResource(Res.drawable.thermometer),
-                    modifier = imageModifier.padding(32.dp), // Add padding to the placeholder
+                    modifier = imageModifier.padding(32.dp),
                     contentScale = ContentScale.Fit,
                     contentDescription = null
                 )
             }
 
-            // Spacer for better visual separation between image and text
             Spacer(Modifier.height(8.dp))
 
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp), // Add padding around the text
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
                 text = uiData.name,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.titleLarge

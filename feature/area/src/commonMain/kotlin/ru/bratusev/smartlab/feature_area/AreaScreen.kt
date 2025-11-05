@@ -33,13 +33,10 @@ fun AreaScreen(
     LaunchedEffect(areaId) {
         areaScreenViewModel.handleEvent(Event.FetchData(areaId))
     }
-    // Use a single LazyColumn for the entire screen content.
-    // This is more efficient and handles scrolling for all elements together.
     Column(
         modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Item 1: The AreaCard
         AreaCard(
             onClick = { _, _, _ -> { /* Handle click */ } },
             uiData = AreaCardUi(
