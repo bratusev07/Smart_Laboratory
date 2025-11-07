@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import ru.bratusev.smartlab.domain.core.model.CustomWidget
 import ru.bratusev.smartlab.feature_addWidgetScreen.models.Event
@@ -40,6 +41,13 @@ import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardTints
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardUi
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorDomain
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorState
+import smartlaboratory.ui.core.generated.resources.Res
+import smartlaboratory.ui.core.generated.resources.add_widget
+import smartlaboratory.ui.core.generated.resources.cancel
+import smartlaboratory.ui.core.generated.resources.confirm
+import smartlaboratory.ui.core.generated.resources.confirm_action
+import smartlaboratory.ui.core.generated.resources.many_sensors_list_widget
+import smartlaboratory.ui.core.generated.resources.single_sensor_widget
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,7 +66,7 @@ fun AddWidgetScreen(
     Scaffold(topBar = {
         AppTopBar(
             uiData = AppTopBarUi(
-                title = "Добавить виджет"
+                title = stringResource(Res.string.add_widget)
             ), onTitleClick = {}, onMenuClick = {})
     }) { paddingValues ->
         LazyColumn(modifier = Modifier.padding(paddingValues)) {
@@ -66,14 +74,14 @@ fun AddWidgetScreen(
                 WidgetItem(
                     onAccept = {
                         vm.handleEvent(Event.OnSaveWidget(CustomWidget.SensorsList::class))
-                    }, title = "Переключатели списком"
+                    }, title = stringResource(Res.string.many_sensors_list_widget)
                 ) { ManySensorsListWidgetPreview() }
             }
             item {
                 WidgetItem(
                     onAccept = {
                         vm.handleEvent(Event.OnSaveWidget(CustomWidget.SingleSensor::class))
-                    }, title = "Большой переключатель"
+                    }, title = stringResource(Res.string.single_sensor_widget)
                 ) { SingleSensorWidgetPreview() }
             }
         }
@@ -88,7 +96,7 @@ private fun WidgetItem(onAccept: () -> Unit, title: String, content: @Composable
     if (isDialogOpen) {
         Box(modifier = Modifier.fillMaxSize()) {
             AlertDialog(title = {
-                Text(text = "Подтвердите выбор")
+                Text(stringResource(Res.string.confirm_action))
             }, onDismissRequest = {
                 isDialogOpen = false
             }, confirmButton = {
@@ -97,14 +105,14 @@ private fun WidgetItem(onAccept: () -> Unit, title: String, content: @Composable
                         onAccept()
                         isDialogOpen = false
                     }) {
-                    Text("Подтвердить")
+                    Text(stringResource(Res.string.confirm))
                 }
             }, dismissButton = {
                 TextButton(
                     onClick = {
                         isDialogOpen = false
                     }) {
-                    Text("Отменить")
+                    Text(stringResource(Res.string.cancel))
                 }
             })
         }

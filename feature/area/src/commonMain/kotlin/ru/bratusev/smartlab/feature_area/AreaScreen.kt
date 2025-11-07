@@ -1,23 +1,23 @@
 package ru.bratusev.smartlab.feature_area
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import ru.bratusev.smartlab.feature_area.models.Event
 import ru.bratusev.smartlab.ui.core.components.AreaCard
+import ru.bratusev.smartlab.ui.core.components.LoadingIndicator
 import ru.bratusev.smartlab.ui.core.components.sensorCard.SensorCardRow
 import ru.bratusev.smartlab.ui.core.models.AreaCardUi
-import ru.bratusev.smartlab.ui.core.resources.StringsRes
+import smartlaboratory.ui.core.generated.resources.Res
+import smartlaboratory.ui.core.generated.resources.loading
 
 @Composable
 fun AreaScreen(
@@ -31,17 +31,12 @@ fun AreaScreen(
     LaunchedEffect(areaId) {
         areaScreenViewModel.handleEvent(Event.FetchData(areaId))
     }
-
-    // Use a single LazyColumn for the entire screen content.
-    // This is more efficient and handles scrolling for all elements together.
     Column(
         modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 24.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        // Item 1: The AreaCard
         AreaCard(
-            onClick = { _, _, _ -> { /* Handle click */ } },
-            uiData = AreaCardUi(
+            onClick = { _, _, _ -> { /* Handle click */ } }, uiData = AreaCardUi(
                 areaId = areaId,
                 name = friendlyName ?: areaId,
                 floorId = null,
@@ -57,8 +52,7 @@ fun AreaScreen(
 
         if (!state.value.areaDevices.isEmpty()) {
             Column(
-                modifier = Modifier.padding(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                modifier = Modifier.padding(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 state.value.areaDevices.forEach { deviceUiData ->
                     SensorCardRow(
@@ -67,12 +61,7 @@ fun AreaScreen(
                 }
             }
         } else {
-            AnimatedVisibility(!state.value.areaDevices.isEmpty()) {
-                Column {
-                    CircularProgressIndicator()
-                    Text(StringsRes.LOADING_INDICATOR)
-                }
-            }
+            LoadingIndicator(!state.value.areaDevices.isEmpty(), stringResource(Res.string.loading))
         }
     }
 }

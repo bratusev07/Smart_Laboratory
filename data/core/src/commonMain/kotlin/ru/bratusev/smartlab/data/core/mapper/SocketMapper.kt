@@ -11,7 +11,7 @@ import ru.bratusev.smartlab.domain.core.model.socket.Area
 import ru.bratusev.smartlab.domain.core.model.socket.ServiceEntity as DomainServiceEntity
 import ru.bratusev.smartlab.domain.core.model.socket.ServiceEntityAttributes as DomainServiceEntityAttributes
 
-fun mapJsonToServiceEntityList(jsonString: String): List<ServiceEntity> {
+internal fun mapJsonToServiceEntityList(jsonString: String): List<ServiceEntity> {
     val json = Json {
         isLenient = true
         ignoreUnknownKeys = true
@@ -30,7 +30,7 @@ fun mapJsonToServiceEntityList(jsonString: String): List<ServiceEntity> {
 }
 
 
-fun mapJsonToEventPair(jsonString: String): Pair<String, String> {
+internal fun mapJsonToEventPair(jsonString: String): Pair<String, String> {
     val json = Json {
         isLenient = true
         ignoreUnknownKeys = true
@@ -45,7 +45,7 @@ fun mapJsonToEventPair(jsonString: String): Pair<String, String> {
     return entityId to entityState
 }
 
-fun ServiceEntityAttributes.toDomain() = DomainServiceEntityAttributes(
+internal fun ServiceEntityAttributes.toDomain() = DomainServiceEntityAttributes(
     icon = icon,
     measurementUnit = measurementUnit,
     friendlyName = friendlyName,

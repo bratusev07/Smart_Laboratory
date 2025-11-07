@@ -34,6 +34,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ru.bratusev.smartlab.ui.core.components.widgets.ManySensorsWidget
 import ru.bratusev.smartlab.ui.core.components.widgets.SingleSensorWidget
@@ -45,6 +46,11 @@ import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardUi
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorDomain
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorState
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
+import smartlaboratory.ui.core.generated.resources.Res
+import smartlaboratory.ui.core.generated.resources.cancel
+import smartlaboratory.ui.core.generated.resources.confirm
+import smartlaboratory.ui.core.generated.resources.confirm_changes
+import smartlaboratory.ui.core.generated.resources.widget_id_is
 
 @Composable
 fun CustomWidget(uiData: CustomWidgetUi, onEvent: (event: CustomWidgetEvent) -> Unit) {
@@ -64,7 +70,7 @@ fun CustomWidget(uiData: CustomWidgetUi, onEvent: (event: CustomWidgetEvent) -> 
 
         AnimatedVisibility(visible = uiData.isEditMode) {
             WidgetToolBar(
-                title = "Виджет с id: ${uiData.id}",
+                title = "${stringResource(Res.string.widget_id_is)} ${uiData.id}",
                 onEditClick = { isEditButtonClicked = true },
                 onAddClick = {},
                 isEditMode = uiData.isEditMode,
@@ -74,7 +80,7 @@ fun CustomWidget(uiData: CustomWidgetUi, onEvent: (event: CustomWidgetEvent) -> 
 
         if (isDeleteDialogOpen) {
             AlertDialog(
-                title = { Text(text = "Подтвердите удаление") },
+                title = { Text(stringResource(Res.string.confirm_changes)) },
                 onDismissRequest = { isDeleteDialogOpen = false },
                 confirmButton = {
                     TextButton(
@@ -83,14 +89,14 @@ fun CustomWidget(uiData: CustomWidgetUi, onEvent: (event: CustomWidgetEvent) -> 
                             isDeleteDialogOpen = false
                         }
                     ) {
-                        Text("Подтвердить")
+                        Text(stringResource(Res.string.confirm))
                     }
                 },
                 dismissButton = {
                     TextButton(
                         onClick = { isDeleteDialogOpen = false }
                     ) {
-                        Text("Отменить")
+                        Text(stringResource(Res.string.cancel))
                     }
                 }
             )

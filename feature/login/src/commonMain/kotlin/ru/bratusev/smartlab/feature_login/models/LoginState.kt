@@ -1,5 +1,6 @@
 package ru.bratusev.smartlab.feature_login.models
 
+import org.jetbrains.compose.resources.StringResource
 import ru.bratusev.smartlab.ui.core.models.AnimatedLoadUi
 
 data class LoginState(
@@ -22,11 +23,11 @@ data class LoginState(
             LoginStage.FAILED_DURING_TOKEN -> true
             else -> false
         }
-    val errorText: String
-        get() = loginStage.stateText
+    val errorTextRes: StringResource
+        get() = loginStage.stateStringRes
 
     val animatedLoadUi: AnimatedLoadUi
-        get() = AnimatedLoadUi(loginStage.stateText, loginStage.isShowing, false)
+        get() = AnimatedLoadUi(loginStage.stateStringRes, loginStage.isShowing, false)
 }
 
 sealed class Event {

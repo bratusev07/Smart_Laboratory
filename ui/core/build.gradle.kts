@@ -48,6 +48,10 @@ kotlin {
     }
 }
 
+compose.resources {
+    publicResClass = true
+}
+
 android {
     namespace = "ru.bratusev.smartlab.ui.core"
     compileSdk = libs.versions.android.compileSdk.get().toInt()

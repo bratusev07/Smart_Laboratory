@@ -2,11 +2,18 @@ package ru.bratusev.smartlab.ui.core.models.sensorCard
 
 import androidx.compose.ui.graphics.Color
 import org.jetbrains.compose.resources.DrawableResource
-import ru.bratusev.smartlab.ui.core.resources.StringsRes
+import org.jetbrains.compose.resources.StringResource
 import ru.bratusev.smartlab.ui.core.theme.SensorCardCommonColors
 import smartlaboratory.ui.core.generated.resources.Res
 import smartlaboratory.ui.core.generated.resources.light_bulb
+import smartlaboratory.ui.core.generated.resources.sensor
+import smartlaboratory.ui.core.generated.resources.sensor_state_disabled
+import smartlaboratory.ui.core.generated.resources.sensor_state_off
+import smartlaboratory.ui.core.generated.resources.sensor_state_on
+import smartlaboratory.ui.core.generated.resources.sensor_state_value
+import smartlaboratory.ui.core.generated.resources.switch_label
 import smartlaboratory.ui.core.generated.resources.thermometer
+import smartlaboratory.ui.core.generated.resources.unknown
 
 sealed class SensorCardUi {
 
@@ -111,11 +118,11 @@ open class SensorCardTints(
 
 }
 
-sealed class SensorState(val localeName: String) {
-    data object On : SensorState("Включено")
-    data object Off : SensorState("Выключено")
-    data object Unavailable : SensorState("Отключено")
-    data class SensorValue(val value: Float) : SensorState("Значение сенсора") {
+sealed class SensorState(val localeNameRes: StringResource) {
+    data object On : SensorState(Res.string.sensor_state_on)
+    data object Off : SensorState(Res.string.sensor_state_off)
+    data object Unavailable : SensorState(Res.string.sensor_state_disabled)
+    data class SensorValue(val value: Float) : SensorState(Res.string.sensor_state_value) {
         companion object {
             fun floatFromString(str: String?): SensorValue {
                 val string = str?.replace("\"", "")
@@ -136,8 +143,8 @@ sealed class SensorState(val localeName: String) {
 
 }
 
-enum class SensorDomain(val localeName: String) {
-    SWITCH(StringsRes.SWITCH), SENSOR(StringsRes.SENSOR), UNKNOWN(StringsRes.UNKNOWN);
+enum class SensorDomain(val nameResource: StringResource) {
+    SWITCH(Res.string.switch_label), SENSOR(Res.string.sensor), UNKNOWN(Res.string.unknown);
 
     companion object {
 

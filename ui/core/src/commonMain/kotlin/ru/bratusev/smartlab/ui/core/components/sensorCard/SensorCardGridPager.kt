@@ -1,6 +1,5 @@
 package ru.bratusev.smartlab.ui.core.components.sensorCard
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -22,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import ru.bratusev.smartlab.ui.core.components.LoadingIndicator
 import ru.bratusev.smartlab.ui.core.models.TabBarUi
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardGridPagerUi
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardRes
@@ -48,6 +47,7 @@ fun SensorCardGridPager(
     val pagerState: PagerState = rememberPagerState(pageCount = { sensorsByDomain.keys.size })
     val pagerScope: CoroutineScope = rememberCoroutineScope()
 
+    LoadingIndicator(uiData.isUpdating)
     Column(
         modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
     ) {
@@ -78,11 +78,6 @@ fun SensorCardGridPager(
                         sensors = sensorsForPage, columnsAmount = 2
                     ), onSensorCardClicked = onSensorCardClicked
                 )
-            }
-            this@Column.AnimatedVisibility(
-                uiData.isUpdating, modifier = Modifier.align(Alignment.TopCenter).padding(48.dp)
-            ) {
-                CircularProgressIndicator()
             }
         }
     }

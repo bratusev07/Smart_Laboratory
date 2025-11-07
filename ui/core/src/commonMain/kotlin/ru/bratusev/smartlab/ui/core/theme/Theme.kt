@@ -250,13 +250,13 @@ val unspecified_scheme = ColorFamily(
 
 @Composable
 fun AppTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean? = isSystemInDarkTheme(),
     content: @Composable() () -> Unit
 ) {
-
+    val isActuallyDarkTheme = darkTheme ?: isSystemInDarkTheme()
 
     val colorScheme = when {
-        darkTheme -> darkScheme
+        isActuallyDarkTheme -> darkScheme
         else -> lightScheme
     }
 

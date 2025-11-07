@@ -19,12 +19,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import ru.bratusev.smartlab.feature_login.components.InputFieldBlock
 import ru.bratusev.smartlab.feature_login.models.Event
 import ru.bratusev.smartlab.feature_login.models.LoginStage
 import ru.bratusev.smartlab.ui.core.components.AnimatedLoadComponent
-import ru.bratusev.smartlab.ui.core.resources.StringsRes
+import smartlaboratory.ui.core.generated.resources.Res
+import smartlaboratory.ui.core.generated.resources.auth_title
 
 @Composable
 fun LoginScreen(
@@ -48,7 +50,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.weight(1f))
 
         Text(
-            text = StringsRes.AUTH,
+            text = stringResource(Res.string.auth_title),
             style = MaterialTheme.typography.headlineSmall,
             textAlign = TextAlign.Center
         )
@@ -75,7 +77,7 @@ fun LoginScreen(
         ) {
             AnimatedVisibility(state.value.showError) {
                 Text(
-                    state.value.errorText
+                    stringResource(state.value.errorTextRes)
                 )
             }
             AnimatedLoadComponent(

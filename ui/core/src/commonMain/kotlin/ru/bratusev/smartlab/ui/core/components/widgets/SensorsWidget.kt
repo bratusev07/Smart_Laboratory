@@ -9,6 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ru.bratusev.smartlab.ui.core.components.modals.FindManySensorModal
 import ru.bratusev.smartlab.ui.core.components.sensorCard.SensorCardRow
@@ -19,6 +20,8 @@ import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardUi
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorDomain
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorState
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
+import smartlaboratory.ui.core.generated.resources.Res
+import smartlaboratory.ui.core.generated.resources.use_edit_mode_to_add_elements
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,7 +46,7 @@ fun ManySensorsWidget(
         modifier = modifier, verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         if (uiData.sensorsToShow.isEmpty()) {
-            Text("Используйте режим редактирования, чтобы выбрать элементы")
+            Text(stringResource(Res.string.use_edit_mode_to_add_elements))
         } else {
             uiData.sensorsToShow.forEach { sensor ->
                 SensorCardRow(

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- AUTH STAGES -->
+    <string name="auth_not_started">Авторизация еще не началась</string>
+    <string name="auth_started">Авторизация началась</string>
+    <string name="token_saving">Сохранение токена</string>
+    <string name="token_checking">Проверка токена</string>
+    <string name="auth_success">Авторизация успешно завершена</string>
+    <string name="auth_failed">Ошибка во время авторизации</string>
+    <string name="token_save_failed">Ошибка во время сохранения токена</string>
+
+    <!-- LOGIN SCREEN TEXT -->
+    <string name="auth_title">Авторизация</string>
+    <string name="auth_button">Авторизоваться</string>
+    <string name="current_stage">Текущий этап</string>
+    <string name="login">Логин</string>
+    <string name="password">Пароль</string>
+
+    <string name="error">Ошибка</string>
+
+    <!-- LOADING -->
+    <string name="loading">Загрузка...</string>
+    <string name="loading_settings">Загрузка настроек...</string>
+
+    <!-- NAVIGATION DRAWER -->
+    <string name="drawer_title">Умная лаборатория</string>
+    <string name="drawer_dashboard">Доска</string>
+    <string name="drawer_custom_screen">Своя панель</string>
+    <string name="drawer_logs">Логи</string>
+    <string name="drawer_zones">Пространства</string>
+    <string name="drawer_settings">Настройки</string>
+    <string name="drawer_notifications">Уведомления</string>
+    <string name="drawer_profile">Аккаунт</string>
+    <string name="drawer_quit">Выйти</string>
+
+    <!-- SENSOR DOMAIN -->
+    <string name="switch_label">Переключатель</string>
+    <string name="sensor">Датчик</string>
+    <string name="unknown">Неизвестно</string>
+
+    <!-- CUSTOM SCREEN -->
+    <string name="add_widget">Добавить виджет</string>
+    <string name="edit_mode">Режим редактирования</string>
+    <string name="updating">Ожидание ответа</string>
+    <string name="saving">Сохранение</string>
+    <string name="confirm_delete">Подтвердите удаление</string>
+    <string name="confirm_action">Подтвердите выбор</string>
+
+    <!-- SETTINGS SCREEN -->
+    <string name="confirm_changes">Принять изменения</string>
+    <string name="language">Язык</string>
+    <string name="theme">Тема</string>
+
+    <!-- THEMES -->
+    <string name="theme_system">Системная</string>
+    <string name="theme_light">Светлая</string>
+    <string name="theme_dark">Тёмная</string>
+
+    <!-- LANGUAGES -->
+    <string name="language_system">Системная</string>
+    <string name="language_russian">Русский</string>
+    <string name="language_english">English</string>
+
+    <!-- WIDGET -->
+    <string name="widget_id_is">id виджета: </string>
+    <string name="choose_from_available">Выберите из доступного</string>
+    <string name="use_edit_mode_to_add_elements">Используйте режим редактирования, чтобы выбрать элементы</string>
+    <string name="no_sensor_id">Не назначено</string>
+    <string name="no_sensor_title">Не назначено</string>
+    <string name="confirm">Подтвердить</string>
+    <string name="cancel">Отменить</string>
+    <string name="many_sensors_list_widget">Переключатели списком</string>
+    <string name="single_sensor_widget">Большой переключатель</string>
+
+    <!-- SENSOR -->
+    <string name="sensor_state_on">Включено</string>
+    <string name="sensor_state_off">Выключено</string>
+    <string name="sensor_state_disabled">Отключено</string>
+    <string name="sensor_state_value">Значение сенсора</string>
+
+</resources>
