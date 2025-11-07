@@ -1,13 +1,17 @@
 package ru.bratusev.smartlab.feature_settings
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import ru.bratusev.smartlab.feature_settings.models.Event
@@ -25,9 +29,9 @@ fun SettingsScreen(
 ) {
     val state = vm.uiState.collectAsState()
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column {
-            Button(
+    Box(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        Column(modifier = Modifier.background(MaterialTheme.colorScheme.surface)) {
+            OutlinedButton(
                 enabled = state.value.isChanged,
                 onClick = { vm.handleEvent(Event.Confirm) },
                 content = {
@@ -36,21 +40,26 @@ fun SettingsScreen(
             )
             SettingsDropDown(
                 settingsDropDownUi = SettingsDropDownUi(
+                    label = "Язык",
                     values = state.value.languages,
-                    currentValue = state.value.newSettings.language.localeName
+                    currentValue = state.value.newSettings.language.localeName,
+                    originalValue = state.value.oldSettings.language.localeName
                 ),
                 onValueChange = { vm.handleEvent(Event.ChangeLanguage(it)) }
             )
             SettingsDropDown(
                 settingsDropDownUi = SettingsDropDownUi(
+                    label = "Тема",
                     values = state.value.themes,
-                    currentValue = state.value.newSettings.theme.localeName
+                    currentValue = state.value.newSettings.theme.localeName,
+                    originalValue = state.value.oldSettings.theme.localeName
+
                 ),
                 onValueChange = { vm.handleEvent(Event.ChangeTheme(it)) }
             )
-            LoadingIndicator(state.value.isLoading)
-            LoadingIndicator(state.value.isSaving, text = stringResource(Res.string.saving))
         }
     }
+    LoadingIndicator(state.value.isLoading)
+    LoadingIndicator(state.value.isSaving, text = stringResource(Res.string.saving))
 }
 

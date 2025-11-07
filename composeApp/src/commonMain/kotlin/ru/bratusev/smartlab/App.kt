@@ -1,10 +1,13 @@
 package ru.bratusev.smartlab
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -26,10 +29,12 @@ fun App(vm: AppViewModel = koinViewModel()) {
     ) {
         Surface {
             if (state.isLoadingSettings) {
-                LoadingIndicator(
-                    state.isLoadingSettings,
-                    stringResource(smartlaboratory.ui.core.generated.resources.Res.string.loading_settings)
-                )
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    LoadingIndicator(
+                        state.isLoadingSettings,
+                        stringResource(smartlaboratory.ui.core.generated.resources.Res.string.loading_settings)
+                    )
+                }
             } else {
                 val navController = rememberNavController()
                 AppEnvironment {
