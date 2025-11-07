@@ -159,7 +159,7 @@ private fun NavigationDrawerItemComponent(
     navigateTo: (Screen) -> Unit,
 ) {
     NavigationDrawerItem(
-        label = { Text(item.label) },
+        label = { Text(stringResource(item.labelRes)) },
         badge = { if (selected) Text("<") },
         selected = selected,
         onClick = { navigateTo(item.screen) },

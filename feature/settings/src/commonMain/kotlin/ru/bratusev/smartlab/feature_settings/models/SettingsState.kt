@@ -1,5 +1,7 @@
 package ru.bratusev.smartlab.feature_settings.models
 
+import org.jetbrains.compose.resources.StringResource
+
 
 data class SettingsState(
     val screenName: String = "Settings Screen",
@@ -9,13 +11,13 @@ data class SettingsState(
     val oldSettings: UiSettings = UiSettings(),
     val newSettings: UiSettings = UiSettings()
 ) {
-    val languages = UiSettings.Language.entries.map { it.localeName }
-    val themes = UiSettings.Theme.entries.map { it.localeName }
+    val languages = UiSettings.Language.entries.map { it.localNameRes}
+    val themes = UiSettings.Theme.entries.map { it.localeNameRes }
     val isChanged = oldSettings != newSettings
 }
 
 sealed class Event {
-    data class ChangeLanguage(val localeName: String) : Event()
-    data class ChangeTheme(val localName: String): Event()
+    data class ChangeLanguage(val localeName: StringResource) : Event()
+    data class ChangeTheme(val localName: StringResource): Event()
     object Confirm : Event()
 }

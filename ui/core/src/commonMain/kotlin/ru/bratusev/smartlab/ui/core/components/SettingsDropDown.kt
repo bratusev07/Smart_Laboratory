@@ -15,15 +15,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ru.bratusev.smartlab.ui.core.models.SettingsDropDownUi
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
+import smartlaboratory.ui.core.generated.resources.Res
+import smartlaboratory.ui.core.generated.resources.theme_system
 
 @Composable
 fun SettingsDropDown(
     modifier: Modifier = Modifier,
     settingsDropDownUi: SettingsDropDownUi,
-    onValueChange: (String) -> Unit
+    onValueChange: (StringResource) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     Row(
@@ -38,7 +42,7 @@ fun SettingsDropDown(
                     contentColor = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             ) {
-                Text(settingsDropDownUi.currentValue)
+                Text(stringResource(settingsDropDownUi.currentValue))
             }
             DropdownMenu(
                 expanded = expanded,
@@ -46,7 +50,7 @@ fun SettingsDropDown(
             ) {
                 settingsDropDownUi.values.forEach {
                     DropdownMenuItem(
-                        text = { Text(it) },
+                        text = { Text(stringResource(it)) },
                         onClick = {
                             onValueChange(it)
                             expanded = false
@@ -64,13 +68,13 @@ fun SettingsDropDown(
 @Composable
 private fun SettingsDropDownPreview() {
     AppTheme {
-        var settingValue by mutableStateOf("preview1")
+        var settingValue by mutableStateOf(Res.string.theme_system)
         SettingsDropDown(
             settingsDropDownUi = SettingsDropDownUi(
                 label = "Preview",
-                values = listOf("preview1", "preview2", "preview3"),
+                values = emptyList(),
                 currentValue = settingValue,
-                originalValue = settingValue
+                originalValue = Res.string.theme_system
             ),
             onValueChange = {
                 settingValue = it

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- AUTH STAGES -->
     <string name="auth_not_started">Authorization has not started</string>
@@ -5,8 +6,8 @@
     <string name="token_saving">Saving token</string>
     <string name="token_checking">Checking token</string>
     <string name="auth_success">Authorization successful</string>
-    <string name="auth_failed">Authorization failed</string>
-    <string name="token_save_failed">Failed to save token</string>
+    <string name="auth_failed">Error during authorization</string>
+    <string name="token_save_failed">Error while saving token</string>
 
     <!-- LOGIN SCREEN TEXT -->
     <string name="auth_title">Authorization</string>
@@ -22,7 +23,15 @@
     <string name="loading_settings">Loading settings...</string>
 
     <!-- NAVIGATION DRAWER -->
-    <string name="drawer_title">Smart Laboratory</string>
+    <string name="drawer_title">Smart Lab</string>
+    <string name="drawer_dashboard">Dashboard</string>
+    <string name="drawer_custom_screen">Custom panel</string>
+    <string name="drawer_logs">Logs</string>
+    <string name="drawer_zones">Zones</string>
+    <string name="drawer_settings">Settings</string>
+    <string name="drawer_notifications">Notifications</string>
+    <string name="drawer_profile">Account</string>
+    <string name="drawer_quit">Quit</string>
 
     <!-- SENSOR DOMAIN -->
     <string name="switch_label">Switch</string>
@@ -31,7 +40,41 @@
 
     <!-- CUSTOM SCREEN -->
     <string name="add_widget">Add widget</string>
-    <string name="edit_mеode">Edit mode</string>
-    <string name="updating">Waiting for a response</string>
+    <string name="edit_mode">Edit mode</string>
+    <string name="updating">Waiting for response</string>
     <string name="saving">Saving</string>
+    <string name="confirm_delete">Confirm deletion</string>
+    <string name="confirm_action">Confirm action</string>
+
+    <!-- SETTINGS SCREEN -->
+    <string name="confirm_changes">Apply changes</string>
+    <string name="language">Language</string>
+    <string name="theme">Theme</string>
+
+    <!-- THEMES -->
+    <string name="theme_system">System</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+
+    <!-- LANGUAGES -->
+    <!-- only language_system changes -->
+    <string name="language_system">System</string>
+
+    <!-- WIDGET -->
+    <string name="widget_id_is">widget id: </string>
+    <string name="choose_from_available">Choose from available</string>
+    <string name="use_edit_mode_to_add_elements">Use edit mode to select items</string>
+    <string name="no_sensor_id">Not assigned</string>
+    <string name="no_sensor_title">Not assigned</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="many_sensors_list_widget">List of switches</string>
+    <string name="single_sensor_widget">Big switch</string>
+
+    <!-- SENSOR -->
+    <string name="sensor_state_on">On</string>
+    <string name="sensor_state_off">Off</string>
+    <string name="sensor_state_disabled">Disabled</string>
+    <string name="sensor_state_value">Sensor value</string>
+
 </resources>

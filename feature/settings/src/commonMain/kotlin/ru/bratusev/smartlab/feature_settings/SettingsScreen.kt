@@ -20,7 +20,10 @@ import ru.bratusev.smartlab.ui.core.components.LoadingIndicator
 import ru.bratusev.smartlab.ui.core.components.SettingsDropDown
 import ru.bratusev.smartlab.ui.core.models.SettingsDropDownUi
 import smartlaboratory.ui.core.generated.resources.Res
+import smartlaboratory.ui.core.generated.resources.confirm_changes
+import smartlaboratory.ui.core.generated.resources.language
 import smartlaboratory.ui.core.generated.resources.saving
+import smartlaboratory.ui.core.generated.resources.theme
 
 @Composable
 fun SettingsScreen(
@@ -35,24 +38,24 @@ fun SettingsScreen(
                 enabled = state.value.isChanged,
                 onClick = { vm.handleEvent(Event.Confirm) },
                 content = {
-                    Text(text = "Принять изменения")
+                    Text(text = stringResource(Res.string.confirm_changes))
                 }
             )
             SettingsDropDown(
                 settingsDropDownUi = SettingsDropDownUi(
-                    label = "Язык",
+                    label = stringResource(Res.string.language),
                     values = state.value.languages,
-                    currentValue = state.value.newSettings.language.localeName,
-                    originalValue = state.value.oldSettings.language.localeName
+                    currentValue = state.value.newSettings.language.localNameRes,
+                    originalValue = state.value.oldSettings.language.localNameRes
                 ),
                 onValueChange = { vm.handleEvent(Event.ChangeLanguage(it)) }
             )
             SettingsDropDown(
                 settingsDropDownUi = SettingsDropDownUi(
-                    label = "Тема",
+                    label = stringResource(Res.string.theme),
                     values = state.value.themes,
-                    currentValue = state.value.newSettings.theme.localeName,
-                    originalValue = state.value.oldSettings.theme.localeName
+                    currentValue = state.value.newSettings.theme.localeNameRes,
+                    originalValue = state.value.oldSettings.theme.localeNameRes
 
                 ),
                 onValueChange = { vm.handleEvent(Event.ChangeTheme(it)) }

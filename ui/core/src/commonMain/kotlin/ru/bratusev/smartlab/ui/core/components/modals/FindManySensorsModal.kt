@@ -30,6 +30,8 @@ import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorDomain
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorState
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
 import ru.bratusev.smartlab.ui.core.theme.Colors
+import smartlaboratory.ui.core.generated.resources.Res
+import smartlaboratory.ui.core.generated.resources.choose_from_available
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,7 +71,7 @@ private fun ModalBottomSheetContent(
         item {
             ModalToolBar(
                 modifier = Modifier.padding(bottom = 24.dp),
-                title = "Выберите из доступного",
+                title = stringResource(Res.string.choose_from_available),
                 onSubmit = {
                     println("checkedIds: $checkedIds")
                     onSubmit(checkedIds)
@@ -113,7 +115,7 @@ private fun SensorModalItem(
                     text = stringResource(sensor.domain.nameResource),
                 )
                 SensorCardRowLabel(
-                    text = sensor.state.localeName,
+                    text = stringResource(sensor.state.localeNameRes),
                     borderColor = when (sensor.state) {
                         SensorState.On -> Colors.success
                         SensorState.Off -> MaterialTheme.colorScheme.errorContainer

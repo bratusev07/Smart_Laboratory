@@ -6,12 +6,16 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.stringResource
 import ru.bratusev.smartlab.ui.core.components.modals.FindSingleSensorModal
 import ru.bratusev.smartlab.ui.core.components.sensorCard.SensorCardTile
 import ru.bratusev.smartlab.ui.core.models.CustomWidgetUi
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardUi
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorDomain
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorState
+import smartlaboratory.ui.core.generated.resources.Res
+import smartlaboratory.ui.core.generated.resources.no_sensor_id
+import smartlaboratory.ui.core.generated.resources.no_sensor_title
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,8 +41,12 @@ fun SingleSensorWidget(
     ) {
         SensorCardTile(
             sensorCardUi = SensorCardUi.Tile.Medium(
-                title = uiData.sensor.title.ifEmpty { uiData.sensor.id },
-                id = uiData.sensor.id,
+                title = if (uiData.sensor.id != CustomWidgetUi.SingleSensor.NO_SENSOR_ID) uiData.sensor.title.ifEmpty { uiData.sensor.id } else stringResource(
+                    Res.string.no_sensor_title
+                ),
+                id = if (uiData.sensor.id != CustomWidgetUi.SingleSensor.NO_SENSOR_ID) uiData.sensor.id else stringResource(
+                    Res.string.no_sensor_id
+                ),
                 state = uiData.sensor.state,
                 domain = uiData.sensor.domain,
                 drawableResource = uiData.sensor.drawableResource,

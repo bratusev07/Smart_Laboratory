@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.StringResource
 import ru.bratusev.smartlab.data.core.Logger
 import ru.bratusev.smartlab.domain.core.usecase.GetSettingsUseCase
 import ru.bratusev.smartlab.domain.core.usecase.UpdateSettingsUseCase
@@ -50,9 +51,8 @@ class SettingsViewModel(
         }
     }
 
-    private fun changeLanguage(localeName: String) {
-        val newLanguage = UiSettings.Language.fromLocaleName(localeName)
-        logger.d("SettingsViewModel/changeLanguage", "Changed language to ${newLanguage.localeName}")
+    private fun changeLanguage(localeNameRes: StringResource) {
+        val newLanguage = UiSettings.Language.fromLocaleNameRes(localeNameRes)
         updateSettings(
             newSettings = _uiState.value.newSettings.copy(
                 language = newLanguage
@@ -60,9 +60,9 @@ class SettingsViewModel(
         )
     }
 
-    private fun changeTheme(localeName: String) {
-        val newTheme = UiSettings.Theme.fromLocaleName(localeName)
-        logger.d("SettingsViewModel/changeTheme", "Changed theme to ${newTheme.localeName}")
+    private fun changeTheme(localeNameRes: StringResource) {
+        val newTheme = UiSettings.Theme.fromLocaleNameRes(localeNameRes)
+        logger.d("SettingsViewModel/changeTheme", "Changed theme to ${newTheme.localeNameRes}")
         updateSettings(
             newSettings = _uiState.value.newSettings.copy(
                 theme = newTheme

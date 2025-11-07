@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
 import ru.bratusev.smartlab.domain.core.model.CustomWidget
 import ru.bratusev.smartlab.domain.core.usecase.GetCustomWidgetsUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetLoggerUseCase
@@ -19,6 +20,8 @@ import ru.bratusev.smartlab.domain.core.usecase.SetCustomWidgetsUseCase
 import ru.bratusev.smartlab.feature_addWidgetScreen.models.AddWidgetScreenState
 import ru.bratusev.smartlab.feature_addWidgetScreen.models.Event
 import ru.bratusev.smartlab.ui.core.models.CustomWidgetUi
+import smartlaboratory.ui.core.generated.resources.Res
+import smartlaboratory.ui.core.generated.resources.no_sensor_title
 import kotlin.reflect.KClass
 
 class AddWidgetScreenViewModel(
@@ -42,7 +45,9 @@ class AddWidgetScreenViewModel(
 
                 CustomWidget.SingleSensor::class -> {
                     CustomWidget.SingleSensor(
-                        sensorId = CustomWidgetUi.SingleSensor.NO_SENSOR_ID, id = newId, "Не назначено"
+                        sensorId = CustomWidgetUi.SingleSensor.NO_SENSOR_ID, id = newId, getString(
+                            Res.string.no_sensor_title
+                        )
                     )
                 }
 

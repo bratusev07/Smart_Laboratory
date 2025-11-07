@@ -42,7 +42,7 @@ fun LoadingIndicator(
             animationSpec = tween(100), targetScale = 0.8f
         )
     ) {
-        Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+        Box(Modifier.fillMaxWidth().padding(bottom = 6.dp), contentAlignment = Alignment.Center) {
             Column(
                 modifier = Modifier.wrapContentWidth().padding(top = 72.dp)
                     .dropShadow(MaterialTheme.shapes.medium) {
