@@ -29,7 +29,7 @@ fun AnimatedLoadComponent(modifier: Modifier, animatedLoadUi: AnimatedLoadUi) {
             Text(
                 maxLines = 1,
                 textAlign = TextAlign.Center,
-                text = "${stringResource(Res.string.current_stage)}: ${if (animatedLoadUi.isError) stringResource(Res.string.error) else animatedLoadUi.stageNameRes}",
+                text = "${stringResource(Res.string.current_stage)}: ${stringResource(if (animatedLoadUi.isError) Res.string.error else animatedLoadUi.stageNameRes)}",
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = MaterialTheme.typography.bodyLarge,
                 modifier = Modifier.alpha(0.85f)

@@ -1,6 +1,5 @@
 package ru.bratusev.smartlab.feature_customScreen
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,7 +11,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -35,6 +33,7 @@ import ru.bratusev.smartlab.feature_customScreen.models.Event.ChosenSingleSwitch
 import ru.bratusev.smartlab.feature_customScreen.models.Event.DeleteWidget
 import ru.bratusev.smartlab.feature_customScreen.models.Event.OnSensorStateChanged
 import ru.bratusev.smartlab.ui.core.components.CustomWidget
+import ru.bratusev.smartlab.ui.core.components.LoadingIndicator
 import ru.bratusev.smartlab.ui.core.models.CustomWidgetEvent
 import ru.bratusev.smartlab.ui.core.models.CustomWidgetUi
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
@@ -81,8 +80,7 @@ fun CustomScreen(
         ) {
             items(state.value.widgetsUi) {
                 CustomWidget(
-                    uiData = it.copy(isEditMode = state.value.isEditMode),
-                    onEvent = { event ->
+                    uiData = it.copy(isEditMode = state.value.isEditMode), onEvent = { event ->
                         vm.handleEvent(getVmEvent(it, event))
                     })
             }
@@ -90,14 +88,12 @@ fun CustomScreen(
         Column(
             modifier = Modifier.align(Alignment.TopCenter).padding(top = 48.dp),
         ) {
-            AnimatedVisibility(
-                visible = state.value.isUpdating || state.value.isSaving
-            ) {
-                Column {
-                    CircularProgressIndicator()
-                    Text(if (state.value.isUpdating) stringResource(Res.string.updating) else stringResource(Res.string.saving))
-                }
-            }
+            LoadingIndicator(
+                state.value.isUpdating || state.value.isSaving,
+                if (state.value.isUpdating) stringResource(Res.string.updating) else stringResource(
+                    Res.string.saving
+                )
+            )
         }
 
 
@@ -154,10 +150,7 @@ private fun MenuDropDown(
 @Composable
 private fun MenuDropDownPreview() {
     AppTheme {
-        MenuDropDown(
-            isExpanded = true, onAddScreen = {}, onClose = {},
-            onEditMode = {}
-        )
+        MenuDropDown(isExpanded = true, onAddScreen = {}, onClose = {}, onEditMode = {})
     }
 }
 
