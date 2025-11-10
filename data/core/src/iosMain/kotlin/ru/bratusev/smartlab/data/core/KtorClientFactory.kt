@@ -13,7 +13,7 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import ru.bratusev.smartlab.data.core.auth.AuthTokensStore
+import ru.bratusev.smartlab.data.core.local_storage.dataStore.AuthTokensStore
 
 actual class KtorClientFactory : KoinComponent {
     actual fun createClient(): HttpClient {
@@ -43,4 +43,4 @@ actual class KtorClientFactory : KoinComponent {
             }
         }
     }
-} 
+}

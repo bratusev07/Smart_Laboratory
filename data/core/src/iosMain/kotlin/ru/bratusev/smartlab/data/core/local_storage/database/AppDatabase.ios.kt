@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalForeignApi::class)
 
-package ru.bratusev.smartlab.data.core.database
+package ru.bratusev.smartlab.data.core.local_storage.database
 
 import androidx.room.Room
 import androidx.room.RoomDatabase

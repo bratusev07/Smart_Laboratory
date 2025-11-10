@@ -1,4 +1,4 @@
-package ru.bratusev.smartlab.data.core.message
+package ru.bratusev.smartlab.data.core.remote_storage.message
 
 import kotlinx.serialization.json.JsonElement
 import ru.bratusev.smartlab.data.core.model.AreaEntity

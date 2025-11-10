@@ -1,4 +1,4 @@
-package ru.bratusev.smartlab.data.core.dataStore
+package ru.bratusev.smartlab.data.core.local_storage.dataStore
 
 import android.content.Context
 import androidx.datastore.core.DataStore
@@ -12,4 +12,3 @@ actual class DataStoreFactory(val context: Context) {
         )
     }
 }
-

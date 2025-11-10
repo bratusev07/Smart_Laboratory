@@ -9,10 +9,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import org.koin.core.module.Module
 import org.koin.dsl.module
-import ru.bratusev.smartlab.data.core.dataStore.DataStoreFactory
-import ru.bratusev.smartlab.data.core.database.AppDatabase
-import ru.bratusev.smartlab.data.core.database.DatabaseFactory
-import ru.bratusev.smartlab.data.core.database.LogcatMessageDao
+import ru.bratusev.smartlab.data.core.local_storage.dataStore.DataStoreFactory
+import ru.bratusev.smartlab.data.core.local_storage.database.AppDatabase
+import ru.bratusev.smartlab.data.core.local_storage.database.DatabaseFactory
+import ru.bratusev.smartlab.data.core.local_storage.database.LogcatMessageDao
+import ru.bratusev.smartlab.data.core.remote_storage.HomeAssistantWebSocketClient
 import ru.bratusev.smartlab.data.core.repository.AuthRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.ButtonTextRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.LoggerRepositoryImpl

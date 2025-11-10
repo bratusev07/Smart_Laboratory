@@ -1,4 +1,4 @@
-package ru.bratusev.smartlab.data.core.auth
+package ru.bratusev.smartlab.data.core.local_storage.dataStore
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -20,7 +20,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import ru.bratusev.smartlab.data.core.Constants
+import ru.bratusev.smartlab.data.core.remote_storage.Constants
 
 object AuthTokensStore {
 
@@ -61,7 +61,7 @@ object AuthTokensStore {
         val prefs = dataStore.data.first()
         val refresh = prefs[KEY_REFRESH] ?: return null
 
-        val body = Parameters.build {
+        val body = Parameters.Companion.build {
             append("grant_type", "refresh_token")
             append("refresh_token", refresh)
             append("client_id", "https://home-assistant.io/android")
@@ -72,7 +72,7 @@ object AuthTokensStore {
             setBody(body)
         }
 
-        val json = Json.parseToJsonElement(response.bodyAsText()).jsonObject
+        val json = Json.Default.parseToJsonElement(response.bodyAsText()).jsonObject
         val newAccess = json["access_token"]?.jsonPrimitive?.content ?: return null
         val newRefresh = json["refresh_token"]?.jsonPrimitive?.content ?: refresh
         val expiresIn = json["expires_in"]?.jsonPrimitive?.intOrNull
@@ -87,5 +87,3 @@ object AuthTokensStore {
         return BearerTokens(accessToken = newAccess, refreshToken = newRefresh)
     }
 }
-
-

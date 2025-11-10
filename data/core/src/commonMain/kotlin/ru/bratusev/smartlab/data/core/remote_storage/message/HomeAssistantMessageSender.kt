@@ -1,4 +1,4 @@
-package ru.bratusev.smartlab.data.core.message
+package ru.bratusev.smartlab.data.core.remote_storage.message
 
 import ru.bratusev.smartlab.data.core.model.ServiceEntity
 

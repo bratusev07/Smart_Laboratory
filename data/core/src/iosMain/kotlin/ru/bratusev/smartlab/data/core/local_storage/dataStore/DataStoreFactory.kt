@@ -1,4 +1,4 @@
-package ru.bratusev.smartlab.data.core.dataStore
+package ru.bratusev.smartlab.data.core.local_storage.dataStore
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -14,15 +14,14 @@ actual class DataStoreFactory {
         println("creating ios dataStore")
         return createDataStore(
             producePath = {
-                val documentDirectory: NSURL? = NSFileManager.defaultManager.URLForDirectory(
+                val documentDirectory: NSURL? = NSFileManager.Companion.defaultManager.URLForDirectory(
                     directory = NSDocumentDirectory,
                     inDomain = NSUserDomainMask,
                     appropriateForURL = null,
                     create = false,
                     error = null,
                 )
-                requireNotNull(documentDirectory).path + "/$dataStoreFileName"
+                requireNotNull(documentDirectory).path + "/${dataStoreFileName}"
             })
     }
 }
-

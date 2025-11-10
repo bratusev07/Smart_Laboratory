@@ -1,4 +1,4 @@
-package ru.bratusev.smartlab.data.core
+package ru.bratusev.smartlab.data.core.remote_storage
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
@@ -21,11 +21,11 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import ru.bratusev.smartlab.data.core.message.HomeAssistantMessageHandlers
-import ru.bratusev.smartlab.data.core.message.HomeAssistantMessageHandlersImpl
-import ru.bratusev.smartlab.data.core.message.HomeAssistantMessageSender
-import ru.bratusev.smartlab.data.core.message.HomeAssistantMessageSenderImpl
 import ru.bratusev.smartlab.data.core.model.SocketResponseModel
+import ru.bratusev.smartlab.data.core.remote_storage.message.HomeAssistantMessageHandlers
+import ru.bratusev.smartlab.data.core.remote_storage.message.HomeAssistantMessageHandlersImpl
+import ru.bratusev.smartlab.data.core.remote_storage.message.HomeAssistantMessageSender
+import ru.bratusev.smartlab.data.core.remote_storage.message.HomeAssistantMessageSenderImpl
 
 
 class HomeAssistantWebSocketClient() {

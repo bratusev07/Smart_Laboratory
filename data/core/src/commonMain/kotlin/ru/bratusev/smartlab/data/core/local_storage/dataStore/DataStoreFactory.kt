@@ -1,4 +1,4 @@
-package ru.bratusev.smartlab.data.core.dataStore
+package ru.bratusev.smartlab.data.core.local_storage.dataStore
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences

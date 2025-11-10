@@ -1,4 +1,4 @@
-package ru.bratusev.smartlab.data.core.message
+package ru.bratusev.smartlab.data.core.remote_storage.message
 
 import io.ktor.client.plugins.websocket.DefaultClientWebSocketSession
 import io.ktor.websocket.Frame
