@@ -41,9 +41,9 @@ fun SensorCardTile(
     Button(
         enabled = when (sensorCardUi) {
             is SensorCardUi.Tile.Sensor -> false
-            else -> true
+            else -> sensorCardUi.state != SensorState.Unavailable
         },
-        onClick = onClick,
+        onClick = { if (sensorCardUi.state != SensorState.Unavailable) onClick() },
         shape = RoundedCornerShape(10.dp),
         modifier = modifier.fillMaxSize().aspectRatio(1f, true),
         colors = ButtonColors(
