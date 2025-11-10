@@ -24,6 +24,7 @@ import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import ru.bratusev.smartlab.data.core.local_storage.dataStore.AuthTokensStore
+import ru.bratusev.smartlab.data.core.local_storage.dataStore.AuthTokensStore.KEY_ACCESS
 import ru.bratusev.smartlab.data.core.model.AppData
 import ru.bratusev.smartlab.data.core.model.ConfigRequestBody
 import ru.bratusev.smartlab.data.core.model.LoginFlowRequestBody
@@ -166,15 +167,11 @@ class AuthRepositoryImpl(
 
     override suspend fun getToken(): String? {
         return dataStore.data.map { preferences ->
-            preferences[TOKEN_KEY]
+            preferences[KEY_ACCESS]
         }.first()
     }
 
     override suspend fun subscribeToken(): Flow<String> = dataStore.data.mapNotNull { preferences ->
-            preferences[TOKEN_KEY]
-    }
-
-    private companion object {
-        val TOKEN_KEY = stringPreferencesKey("auth_token")
+            preferences[KEY_ACCESS]
     }
 }

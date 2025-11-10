@@ -24,7 +24,7 @@ import ru.bratusev.smartlab.data.core.remote_storage.Constants
 
 object AuthTokensStore {
 
-    private val KEY_ACCESS = stringPreferencesKey("auth_access_token")
+    internal val KEY_ACCESS = stringPreferencesKey("auth_token")
     private val KEY_REFRESH = stringPreferencesKey("auth_refresh_token")
     private val KEY_EXPIRES_AT = longPreferencesKey("auth_expires_at_ms")
 
