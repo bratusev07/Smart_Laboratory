@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import ru.bratusev.smartlab.ui.core.components.LoadingIndicator
 import ru.bratusev.smartlab.ui.core.models.TabBarUi
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardGridPagerUi
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardRes
@@ -39,6 +38,7 @@ fun SensorCardGridPager(
 ) {
     val sensorsByDomain: Map<String, List<SensorCardUi.Tile>> by remember(uiData) {
         derivedStateOf {
+            println("Derived state worked")
             uiData.sensors.groupBy { it.domain.name }
         }
     }
@@ -47,9 +47,8 @@ fun SensorCardGridPager(
     val pagerState: PagerState = rememberPagerState(pageCount = { sensorsByDomain.keys.size })
     val pagerScope: CoroutineScope = rememberCoroutineScope()
 
-    LoadingIndicator(uiData.isUpdating)
     Column(
-        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
+        modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
     ) {
         SensorCardTabBar(
             onDomainClick = { domain ->

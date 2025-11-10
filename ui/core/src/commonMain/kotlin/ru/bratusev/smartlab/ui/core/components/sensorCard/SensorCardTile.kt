@@ -41,7 +41,8 @@ fun SensorCardTile(
     Button(
         enabled = when (sensorCardUi) {
             is SensorCardUi.Tile.Sensor -> false
-            else -> sensorCardUi.state != SensorState.Unavailable
+            else -> sensorCardUi.state != SensorState.Unavailable &&
+                    sensorCardUi.domain != SensorDomain.UNKNOWN
         },
         onClick = { if (sensorCardUi.state != SensorState.Unavailable) onClick() },
         shape = RoundedCornerShape(10.dp),
