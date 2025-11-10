@@ -39,6 +39,7 @@ fun SensorCardGridPager(
 ) {
     val sensorsByDomain: Map<String, List<SensorCardUi.Tile>> by remember(uiData) {
         derivedStateOf {
+            println("Derived state worked")
             uiData.sensors.groupBy { it.domain.name }
         }
     }
@@ -49,7 +50,7 @@ fun SensorCardGridPager(
 
     LoadingIndicator(uiData.isUpdating)
     Column(
-        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
+        modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
     ) {
         SensorCardTabBar(
             onDomainClick = { domain ->

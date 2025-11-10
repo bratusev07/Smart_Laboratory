@@ -12,7 +12,10 @@ data class HomeState(
     val socketErrors: List<String> = emptyList(),
 ) {
     val sensorCardGridPagerUiData: SensorCardGridPagerUi
-        get() = serviceEntities.mapToServicePagerUi(isUpdating)
+        get() {
+            println("Mapping serviceEntities to SensorCardGridPagerUi")
+            return serviceEntities.mapToServicePagerUi(isUpdating)
+        }
 }
 
 sealed class Event {
