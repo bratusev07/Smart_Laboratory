@@ -14,4 +14,6 @@ interface SocketRepository {
     fun observeSocketErrors(): Flow<List<Error>>
 
     fun updateSensor(sensorId: String): Boolean
+
+    fun fetchAutomation()
 }

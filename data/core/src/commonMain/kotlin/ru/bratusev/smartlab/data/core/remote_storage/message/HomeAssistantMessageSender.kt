@@ -8,4 +8,6 @@ interface HomeAssistantMessageSender {
     fun fetchAreas()
 
     fun fetchAreaDevices(areaId: String)
+
+    fun fetchAutomations()
 }

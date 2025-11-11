@@ -43,4 +43,8 @@ SocketRepositoryImpl(
         }
         return false
     }
+
+    override fun fetchAutomation() {
+        webSocketClient.sender.fetchAutomations()
+    }
 }

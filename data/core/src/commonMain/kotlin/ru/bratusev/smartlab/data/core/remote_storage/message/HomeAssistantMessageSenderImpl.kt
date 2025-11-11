@@ -46,6 +46,13 @@ class HomeAssistantMessageSenderImpl(
         )
     }
 
+    override fun fetchAutomations() {
+        sendMessage(
+            buildMessage = { SocketMessage.ConfigurationInfo(id = messageId()) },
+            actionName = "fetch automations"
+        )
+    }
+
     private fun ServiceEntity.toMsg(): SocketMessage.SensorMsg? {
         return SocketMessage.SensorMsg(
             domain = domain.orEmpty(),

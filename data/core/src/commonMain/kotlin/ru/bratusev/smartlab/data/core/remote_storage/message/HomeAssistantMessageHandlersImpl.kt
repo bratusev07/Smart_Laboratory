@@ -115,11 +115,17 @@ class HomeAssistantMessageHandlersImpl(
                     } catch (e: Exception) {
                         errorFlow.tryEmit(SocketResponseModel.ErrorMessage(listOf(Error("Failed to decode AreaEntity list: ${e.message ?: e.toString()}"))))
                     }
-                } else if (result != null && result !is JsonArray && result.toString().contains("entity")) {
+                } else if (result != null && result !is JsonArray && result.toString().contains("entity") && !result.toString().contains("ingress_entry")) {
                     try {
                         result.jsonObject["entity"]?.let {
                             emitAreaDevices(json.decodeFromJsonElement<List<String>>(it))
                         }
+                    } catch (e: Exception) {
+                        errorFlow.tryEmit(SocketResponseModel.ErrorMessage(listOf(Error("Failed to decode AreaEntity list: ${e.message ?: e.toString()}"))))
+                    }
+                } else if (result != null && result.toString().contains("ingress_entry")) {
+                    try {
+                        result.jsonObject["ingress_entry"]
                     } catch (e: Exception) {
                         errorFlow.tryEmit(SocketResponseModel.ErrorMessage(listOf(Error("Failed to decode AreaEntity list: ${e.message ?: e.toString()}"))))
                     }
