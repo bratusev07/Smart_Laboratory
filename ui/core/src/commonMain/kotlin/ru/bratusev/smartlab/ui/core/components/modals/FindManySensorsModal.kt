@@ -13,6 +13,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -33,11 +34,13 @@ import ru.bratusev.smartlab.ui.core.theme.Colors
 import smartlaboratory.ui.core.generated.resources.Res
 import smartlaboratory.ui.core.generated.resources.choose_from_available
 
-@OptIn(ExperimentalMaterial3Api::class)
+@ExperimentalMaterial3Api
 @Composable
 fun FindManySensorModal(
     sensors: List<SensorCardUi.Modal>,
+    currentSensorsIds: List<String>,
     filterDomain: SensorDomain,
+    isAddMode: Boolean,
     sheetState: SheetState = rememberModalBottomSheetState(),
     onClose: () -> Unit,
     onSubmit: (checkedIds: List<String>) -> Unit,
@@ -54,7 +57,8 @@ fun FindManySensorModal(
     ) {
         ModalBottomSheetContent(
             modifier = Modifier.padding(horizontal = 12.dp),
-            sensors = filteredSensors,
+            allSensors = filteredSensors,
+            currentSensorsIds = if (isAddMode) currentSensorsIds else emptyList(),
             onSubmit = onSubmit
         )
     }
@@ -63,10 +67,14 @@ fun FindManySensorModal(
 @Composable
 private fun ModalBottomSheetContent(
     modifier: Modifier = Modifier,
-    sensors: List<SensorCardUi.Modal>,
+    allSensors: List<SensorCardUi.Modal>,
+    currentSensorsIds: List<String>,
     onSubmit: (checkedIds: List<String>) -> Unit,
 ) {
     val checkedIds = rememberSaveable { mutableStateListOf<String>() }
+    LaunchedEffect(currentSensorsIds) {
+        checkedIds.addAll(currentSensorsIds)
+    }
     LazyColumn(modifier = modifier) {
         item {
             ModalToolBar(
@@ -77,7 +85,7 @@ private fun ModalBottomSheetContent(
                     onSubmit(checkedIds)
                 })
         }
-        items(sensors, key = { it.id }) { sensor ->
+        items(allSensors, key = { it.id }) { sensor ->
             SensorModalItem(
                 sensor = sensor,
                 checked = sensor.id in checkedIds,
@@ -148,8 +156,9 @@ private fun FindSenorModalContent() {
     }
     AppTheme {
         ModalBottomSheetContent(
-            sensors = sensors,
-            onSubmit = {},
+            allSensors = sensors,
+            currentSensorsIds = emptyList(),
+            onSubmit = {}
         )
     }
 }

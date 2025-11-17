@@ -67,14 +67,19 @@ fun CustomWidget(uiData: CustomWidgetUi, onEvent: (event: CustomWidgetEvent) -> 
         val keyboardController = LocalSoftwareKeyboardController.current
         var isDeleteDialogOpen by rememberSaveable { mutableStateOf(false) }
         var isEditButtonClicked by rememberSaveable { mutableStateOf(false) }
+        var isAddButtonClicked by rememberSaveable { mutableStateOf(false) }
 
         AnimatedVisibility(visible = uiData.isEditMode) {
             WidgetToolBar(
                 title = "${stringResource(Res.string.widget_id_is)} ${uiData.id}",
                 onEditClick = { isEditButtonClicked = true },
-                onAddClick = {},
+                onAddClick = {
+                    isEditButtonClicked = true
+                    isAddButtonClicked = true
+                },
                 isEditMode = uiData.isEditMode,
-                onDeleteClick = { isDeleteDialogOpen = true }
+                onDeleteClick = { isDeleteDialogOpen = true },
+                showAddButton = uiData.showAddButton
             )
         }
 
@@ -173,25 +178,37 @@ fun CustomWidget(uiData: CustomWidgetUi, onEvent: (event: CustomWidgetEvent) -> 
         Box(modifier = Modifier.padding(12.dp)) {
             when (uiData) {
                 is CustomWidgetUi.ManySensorsList -> ManySensorsWidget(
-                    uiData = uiData.copy(openModal = isEditButtonClicked),
+                    uiData = uiData.copy(
+                        openModal = isEditButtonClicked,
+                        isAddMode = isAddButtonClicked
+                    ),
                     onToggle = { sensorId, newState ->
                         onEvent(CustomWidgetEvent.SensorStateChange(sensorId, newState))
                     },
                     onSubmit = { chosenIds ->
                         onEvent(CustomWidgetEvent.ChosenManySwitchesChange(chosenIds))
                     },
-                    onEditEnd = { isEditButtonClicked = false }
+                    onEditEnd = {
+                        isEditButtonClicked = false
+                        isAddButtonClicked = false
+                    }
                 )
 
                 is CustomWidgetUi.SingleSensor -> SingleSensorWidget(
-                    uiData = uiData.copy(openModal = isEditButtonClicked),
+                    uiData = uiData.copy(
+                        openModal = isEditButtonClicked,
+                        isAddMode = isAddButtonClicked
+                    ),
                     onToggle = { sensorId, newState ->
                         onEvent(CustomWidgetEvent.SensorStateChange(sensorId, newState))
                     },
                     onSubmit = { chosenId ->
                         onEvent(CustomWidgetEvent.ChosenSingleSwitchChange(chosenId))
                     },
-                    onEditEnd = { isEditButtonClicked = false }
+                    onEditEnd = {
+                        isEditButtonClicked = false
+                        isAddButtonClicked = false
+                    }
                 )
             }
         }

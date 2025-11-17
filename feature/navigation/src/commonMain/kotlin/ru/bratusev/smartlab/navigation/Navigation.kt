@@ -87,9 +87,6 @@ private fun AppNavHost(
     navigationApi: NavigationApi,
     setMenuAction: (action: () -> Unit) -> Unit,
 ) {
-    val a: Float = 1f
-    val notSoFloat = a.isFinite()
-
     NavHost(
         navController = navController, startDestination = Screen.Login
     ) {

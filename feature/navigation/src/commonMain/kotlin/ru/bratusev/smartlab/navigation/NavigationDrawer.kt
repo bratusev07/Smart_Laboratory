@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -29,9 +29,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.compose.ComposeNavigator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
@@ -57,14 +59,16 @@ fun NavigationDrawer(
 ) {
     ModalNavigationDrawer(
         drawerState = drawerState,
-        modifier = Modifier.wrapContentWidth(),
+        modifier = Modifier,
         gesturesEnabled = !isHidden,
         drawerContent = {
             if (!isHidden) {
-                ModalDrawerSheet {
+                ModalDrawerSheet(
+                    modifier = Modifier.width(300.dp)
+                ) {
                     Column(
                         modifier = Modifier.fillMaxHeight().verticalScroll(rememberScrollState()),
-                        verticalArrangement = Arrangement.spacedBy(5.dp)
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         Row(
                             modifier = Modifier.padding(top = 12.dp),
@@ -159,7 +163,14 @@ private fun NavigationDrawerItemComponent(
     navigateTo: (Screen) -> Unit,
 ) {
     NavigationDrawerItem(
-        label = { Text(stringResource(item.labelRes)) },
+        modifier = Modifier,
+        label = {
+            Text(
+                textDecoration = if (selected) TextDecoration.Underline else null,
+                maxLines = 1,
+                text = stringResource(item.labelRes)
+            )
+        },
         badge = { if (selected) Text("<") },
         selected = selected,
         onClick = { navigateTo(item.screen) },
@@ -167,18 +178,38 @@ private fun NavigationDrawerItemComponent(
 }
 
 @Preview(
-    widthDp = 700, showBackground = true
+    widthDp = 600, showBackground = true
 )
 @Composable
 private fun NavigationDrawerPreview() {
     val drawerState = rememberDrawerState(DrawerValue.Open)
 
+    // --- Create the Mock Hierarchy ---
+
+    val navigator = ComposeNavigator()
+
+    // 1. CHOOSE THE SCREEN TO MOCK.
+    val currentScreen: Screen = Screen.Home // Change this to test other screens
+
+    // 2. Create a mock destination.
+    val mockDestination = ComposeNavigator.Destination(navigator) {}.apply {
+        // 3. SET THE ROUTE TO THE CLASS'S FULLY QUALIFIED NAME.
+        //    This is the string representation that hasRoute(KClass) expects.
+        route = currentScreen::class.qualifiedName
+    }
+
+    // 4. Create the hierarchy sequence.
+    val mockHierarchy = sequenceOf(mockDestination)
+
+    // --- Use the Mock in Your Composable ---
+
     AppTheme {
         NavigationDrawer(
             drawerState = drawerState,
             navigateTo = {},
-            navigationHierarchy = null,
-            onMenuClick = {}) {
+            navigationHierarchy = mockHierarchy,
+            onMenuClick = {}
+        ) {
             Text(text = "Контент. Очень длинный контент. Прям чтобы его было видно. Нужно прям много контента.")
         }
     }
