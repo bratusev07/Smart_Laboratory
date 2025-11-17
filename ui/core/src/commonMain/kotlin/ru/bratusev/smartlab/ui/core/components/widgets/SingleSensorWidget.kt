@@ -34,7 +34,8 @@ fun SingleSensorWidget(
             onSubmit = {
                 onEditEnd()
                 onSubmit(it)
-            })
+            },
+        )
     }
     Column(
         modifier = modifier, verticalArrangement = Arrangement.spacedBy(15.dp)

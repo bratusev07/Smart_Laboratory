@@ -28,6 +28,7 @@ fun WidgetToolBar(
     modifier: Modifier = Modifier,
     title: String = "",
     isEditMode: Boolean,
+    showAddButton: Boolean,
     onDeleteClick: () -> Unit,
     onEditClick: () -> Unit,
     onAddClick: () -> Unit,
@@ -67,14 +68,16 @@ fun WidgetToolBar(
                         tint = MaterialTheme.colorScheme.onBackground
                     )
                 }
-                IconButton(
-                    onClick = onAddClick
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onBackground
-                    )
+                if (showAddButton) {
+                    IconButton(
+                        onClick = onAddClick
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
                 }
             }
         }

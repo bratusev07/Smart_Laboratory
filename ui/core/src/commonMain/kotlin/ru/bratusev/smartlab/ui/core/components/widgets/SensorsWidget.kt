@@ -37,10 +37,13 @@ fun ManySensorsWidget(
             sensors = uiData.sensorsToChooseFrom,
             filterDomain = SensorDomain.SWITCH,
             onClose = onEditEnd,
+            isAddMode = uiData.isAddMode,
             onSubmit = {
                 onEditEnd()
                 onSubmit(it)
-            })
+            },
+            currentSensorsIds = uiData.sensorsToShow.map { it.id },
+        )
     }
     Column(
         modifier = modifier, verticalArrangement = Arrangement.spacedBy(15.dp)

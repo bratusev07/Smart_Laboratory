@@ -6,9 +6,12 @@ sealed class CustomWidgetUi {
     abstract val id: Int
     abstract val title: String?
     abstract val isEditMode: Boolean
+    abstract val isAddMode: Boolean
+    abstract val showAddButton: Boolean
     abstract fun copy(
         id: Int = this.id,
         isEditMode: Boolean = this.isEditMode,
+        isAddMode: Boolean = this.isAddMode
     ): CustomWidgetUi
 
     data class ManySensorsList(
@@ -18,16 +21,21 @@ sealed class CustomWidgetUi {
         override val id: Int,
         override val title: String? = null,
         override val isEditMode: Boolean = false,
+        override val isAddMode: Boolean = false,
+        override val showAddButton: Boolean = true
     ) :
         CustomWidgetUi() {
         override fun copy(
             id: Int,
             isEditMode: Boolean,
+            isAddMode: Boolean
         ): CustomWidgetUi = copy(
             id = id,
             isEditMode = isEditMode,
+            isAddMode = isAddMode,
+            showAddButton = showAddButton,
             sensorsToShow = sensorsToShow,
-            sensorsToChooseFrom = sensorsToChooseFrom
+            sensorsToChooseFrom = sensorsToChooseFrom,
         )
     }
 
@@ -38,16 +46,21 @@ sealed class CustomWidgetUi {
         override val id: Int,
         override val title: String? = null,
         override val isEditMode: Boolean = false,
+        override val isAddMode: Boolean = false,
+        override val showAddButton: Boolean = false
     ) :
         CustomWidgetUi() {
         override fun copy(
             id: Int,
             isEditMode: Boolean,
+            isAddMode: Boolean,
         ): CustomWidgetUi = copy(
             id = id,
             isEditMode = isEditMode,
+            isAddMode = isAddMode,
             sensor = sensor,
-            sensorsToChooseFrom = sensorsToChooseFrom
+            sensorsToChooseFrom = sensorsToChooseFrom,
+            showAddButton = showAddButton
         )
 
         companion object {
