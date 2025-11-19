@@ -6,6 +6,7 @@ import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import ru.bratusev.smartlab.data.core.parseAutomations
 import ru.bratusev.smartlab.data.core.remote_storage.Constants.BASE_URL
 import ru.bratusev.smartlab.data.core.remote_storage.Constants.CONFIG_FILE_PATH
 import ru.bratusev.smartlab.domain.core.repository.AutomationRepository
@@ -24,6 +25,8 @@ class AutomationRepositoryImpl(val client: HttpClient, val socketRepository: Soc
                 contentType(ContentType.Application.Yaml)
                 cookie("ingress_session", sessionId.replace("\"", ""))
             }.bodyAsText()
+
+            val automations = parseAutomations(response)
         }
     }
 }

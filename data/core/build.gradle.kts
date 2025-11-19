@@ -61,7 +61,10 @@ kotlin {
             implementation(libs.androidx.sqlite.bundled)
             
             // DateTime library for cross-platform date/time operations
-            implementation(libs.kotlinx.datetime)
+            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
+
+            // Yaml parser
+            implementation("com.charleskorn.kaml:kaml:0.58.0")
         }
 
         androidMain.dependencies {

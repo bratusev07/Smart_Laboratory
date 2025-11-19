@@ -1,8 +1,11 @@
 package ru.bratusev.smartlab.data.core
 
+import Automation
+import com.charleskorn.kaml.Yaml
 import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlinx.serialization.builtins.ListSerializer
 
 /**
  * Получает текущую дату и время в виде пары (дата, время)
@@ -12,4 +15,12 @@ fun getCurrentDateTime(): Pair<String, String> {
     val time = "${now.hour.toString().padStart(2, '0')}:${now.minute.toString().padStart(2, '0')}:${now.second.toString().padStart(2, '0')}"
     val date = "${now.dayOfMonth.toString().padStart(2, '0')}.${now.monthNumber.toString().padStart(2, '0')}.${now.year}"
     return date to time
+}
+
+
+fun parseAutomations(yamlText: String): List<Automation> {
+    return Yaml.default.decodeFromString(
+        ListSerializer(Automation.serializer()),
+        yamlText
+    )
 }
