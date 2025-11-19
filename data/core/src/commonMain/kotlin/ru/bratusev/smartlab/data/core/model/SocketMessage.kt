@@ -190,4 +190,12 @@ sealed class SocketMessage {
         val method: String = "get",
         val id: Int
     ) : SocketMessage()
+
+    @Serializable
+    data class IngressSession(
+        val type: String = "supervisor/api",
+        val endpoint: String = "/ingress/session",
+        val method: String = "post",
+        val id: Int
+    ) : SocketMessage()
 }

@@ -53,4 +53,12 @@ SocketRepositoryImpl(
             .map { (it as SocketResponseModel.AutomationUrl).url }
             .first()
     }
+
+    override suspend fun fetchIngressSessionId(): String {
+        webSocketClient.sender.fetchIngressSessionId()
+        return webSocketClient.socketResponseFlow
+            .filter { it is SocketResponseModel.IngressSessionId }
+            .map { (it as SocketResponseModel.IngressSessionId).id }
+            .first()
+    }
 }

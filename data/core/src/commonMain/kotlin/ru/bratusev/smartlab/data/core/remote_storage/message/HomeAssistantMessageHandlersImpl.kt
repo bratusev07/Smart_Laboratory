@@ -92,7 +92,7 @@ class HomeAssistantMessageHandlersImpl(
         }
     }
 
-    override fun handleResult(jsonElement: JsonElement, emitAreaEntity: (List<AreaEntity>) -> Boolean, emitAreaDevices: (List<String>) -> Unit, collectAutomationUrl: (String) -> Unit) {
+    override fun handleResult(jsonElement: JsonElement, emitAreaEntity: (List<AreaEntity>) -> Boolean, emitAreaDevices: (List<String>) -> Unit, collectAutomationUrl: (String) -> Unit, collectIngressSession: (String) -> Unit) {
         try {
             val id = jsonElement.jsonObject["id"]?.jsonPrimitive?.intOrNull ?: return
             val success = jsonElement.jsonObject["success"]?.jsonPrimitive?.booleanOrNull == true
@@ -126,6 +126,12 @@ class HomeAssistantMessageHandlersImpl(
                 } else if (result != null && result.toString().contains("ingress_entry")) {
                     try {
                         collectAutomationUrl(result.jsonObject["ingress_entry"].toString())
+                    } catch (e: Exception) {
+                        errorFlow.tryEmit(SocketResponseModel.ErrorMessage(listOf(Error("Failed to decode AreaEntity list: ${e.message ?: e.toString()}"))))
+                    }
+                } else if (result != null && result.toString().contains("session")) {
+                    try {
+                        collectIngressSession(result.jsonObject["session"].toString())
                     } catch (e: Exception) {
                         errorFlow.tryEmit(SocketResponseModel.ErrorMessage(listOf(Error("Failed to decode AreaEntity list: ${e.message ?: e.toString()}"))))
                     }

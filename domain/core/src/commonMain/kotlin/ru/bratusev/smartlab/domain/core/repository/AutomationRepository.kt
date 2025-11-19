@@ -2,7 +2,7 @@ package ru.bratusev.smartlab.domain.core.repository
 
 interface AutomationRepository {
 
-    fun saveAutomation()
+    suspend fun saveAutomation()
 
-    fun fetchAutomaton(url: String)
+    suspend fun fetchAutomaton(url: String)
 }

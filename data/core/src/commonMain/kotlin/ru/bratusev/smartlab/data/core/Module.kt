@@ -89,7 +89,7 @@ val dataModule = module {
 
     single<WidgetsRepository> { WidgetRepositoryImpl(get()) }
 
-    single<AutomationRepository> { AutomationRepositoryImpl(get()) }
+    single<AutomationRepository> { AutomationRepositoryImpl(get(), get()) }
 
     includes(platformDataModule)
 }

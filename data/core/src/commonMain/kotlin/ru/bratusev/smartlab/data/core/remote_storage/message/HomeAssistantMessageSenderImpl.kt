@@ -53,6 +53,13 @@ class HomeAssistantMessageSenderImpl(
         )
     }
 
+    override fun fetchIngressSessionId() {
+        sendMessage(
+            buildMessage = { SocketMessage.IngressSession(id = messageId()) },
+            actionName = "fetch ingress session id"
+        )
+    }
+
     private fun ServiceEntity.toMsg(): SocketMessage.SensorMsg? {
         return SocketMessage.SensorMsg(
             domain = domain.orEmpty(),

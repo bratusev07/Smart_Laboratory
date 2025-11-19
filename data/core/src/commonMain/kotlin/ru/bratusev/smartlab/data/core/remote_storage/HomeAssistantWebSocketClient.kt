@@ -128,6 +128,9 @@ class HomeAssistantWebSocketClient() {
                     },
                     collectAutomationUrl = { url->
                         _socketResponseFlow.tryEmit(SocketResponseModel.AutomationUrl(url))
+                    },
+                    collectIngressSession = { id ->
+                        _socketResponseFlow.tryEmit(SocketResponseModel.IngressSessionId(id))
                     }
                 )
                 "event" -> messageHandlers.handleEvent(
