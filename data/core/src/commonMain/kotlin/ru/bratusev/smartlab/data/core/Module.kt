@@ -15,12 +15,14 @@ import ru.bratusev.smartlab.data.core.local_storage.database.DatabaseFactory
 import ru.bratusev.smartlab.data.core.local_storage.database.LogcatMessageDao
 import ru.bratusev.smartlab.data.core.remote_storage.HomeAssistantWebSocketClient
 import ru.bratusev.smartlab.data.core.repository.AuthRepositoryImpl
+import ru.bratusev.smartlab.data.core.repository.AutomationRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.ButtonTextRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.LoggerRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.SettingsRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.SocketRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.WidgetRepositoryImpl
 import ru.bratusev.smartlab.domain.core.repository.AuthRepository
+import ru.bratusev.smartlab.domain.core.repository.AutomationRepository
 import ru.bratusev.smartlab.domain.core.repository.ButtonTextRepository
 import ru.bratusev.smartlab.domain.core.repository.LoggerRepository
 import ru.bratusev.smartlab.domain.core.repository.SettingsRepository
@@ -86,6 +88,8 @@ val dataModule = module {
     single<LogcatMessageDao> { get<AppDatabase>().logcatMessagesDao() }
 
     single<WidgetsRepository> { WidgetRepositoryImpl(get()) }
+
+    single<AutomationRepository> { AutomationRepositoryImpl(get()) }
 
     includes(platformDataModule)
 }

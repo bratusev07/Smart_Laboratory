@@ -2,6 +2,7 @@ package ru.bratusev.smartlab.data.core.repository
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import ru.bratusev.smartlab.data.core.mapper.mapToDomain
 import ru.bratusev.smartlab.data.core.model.SocketResponseModel
@@ -15,15 +16,15 @@ SocketRepositoryImpl(
     private val webSocketClient: HomeAssistantWebSocketClient
 ) : SocketRepository {
     override fun observeServiceEntities(): Flow<List<ServiceEntity>> =
-        webSocketClient.socketResponseFlow.filter { it is SocketResponseModel.DeviceEntity }.map {
-            (it as SocketResponseModel.DeviceEntity).services.map { it.mapToDomain() }
+        webSocketClient.socketResponseFlow
+            .filter { it is SocketResponseModel.DeviceEntity }
+            .map { (it as SocketResponseModel.DeviceEntity).services.map { it.mapToDomain() }
         }
 
     override fun observeAreaDevices(areaId: String): Flow<List<ServiceEntity>> {
         webSocketClient.sender.fetchAreaDevices(areaId)
-        return webSocketClient.socketResponseFlow.filter { it is SocketResponseModel.AreaDeviceEntity }.map {
-            (it as SocketResponseModel.AreaDeviceEntity).areaDevices.map { it.mapToDomain() }
-        }
+        return webSocketClient.socketResponseFlow.filter { it is SocketResponseModel.AreaDeviceEntity }
+            .map { (it as SocketResponseModel.AreaDeviceEntity).areaDevices.map { it.mapToDomain() } }
     }
 
     override fun observeAreas(): Flow<List<Area>> {
@@ -32,6 +33,7 @@ SocketRepositoryImpl(
             .filter { it is SocketResponseModel.AreasEntity }
             .map { (it as SocketResponseModel.AreasEntity).areas.map { it.mapToDomain() } }
     }
+
     override fun observeSocketErrors(): Flow<List<Error>> = webSocketClient.socketResponseFlow
         .filter { it is SocketResponseModel.ErrorMessage }
         .map { (it as SocketResponseModel.ErrorMessage).errors }
@@ -44,7 +46,11 @@ SocketRepositoryImpl(
         return false
     }
 
-    override fun fetchAutomation() {
+    override suspend fun fetchAutomation(): String {
         webSocketClient.sender.fetchAutomations()
+        return webSocketClient.socketResponseFlow
+            .filter { it is SocketResponseModel.AutomationUrl }
+            .map { (it as SocketResponseModel.AutomationUrl).url }
+            .first()
     }
 }

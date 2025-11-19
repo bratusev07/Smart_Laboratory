@@ -125,6 +125,9 @@ class HomeAssistantWebSocketClient() {
                     emitAreaDevices = { list ->
                         val devices = SocketResponseModel.AreaDeviceEntity(serviceEntityCopy?.services?.filter { list.contains(it.id) } ?: emptyList())
                         _socketResponseFlow.tryEmit(devices)
+                    },
+                    collectAutomationUrl = { url->
+                        _socketResponseFlow.tryEmit(SocketResponseModel.AutomationUrl(url))
                     }
                 )
                 "event" -> messageHandlers.handleEvent(

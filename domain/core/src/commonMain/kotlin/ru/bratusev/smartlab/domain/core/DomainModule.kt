@@ -24,7 +24,7 @@ val domainModule = module {
     factory<GetLoginUseCase> { GetLoginUseCase(get()) }
     factory<GetLoggerUseCase> { GetLoggerUseCase(get()) }
     factory<UpdateSensorUseCase> { UpdateSensorUseCase(get()) }
-    factory<GetServiceEntitiesUseCase> { GetServiceEntitiesUseCase(get()) }
+    factory<GetServiceEntitiesUseCase> { GetServiceEntitiesUseCase(get(), get()) }
     factory<GetAreasUseCase> { GetAreasUseCase(get()) }
     factory<GetAreaDevicesUseCase> { GetAreaDevicesUseCase(get()) }
     factory<ObserveSocketErrorsUseCase> { ObserveSocketErrorsUseCase(get()) }

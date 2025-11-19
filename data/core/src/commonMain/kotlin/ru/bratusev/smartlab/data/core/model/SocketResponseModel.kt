@@ -9,4 +9,6 @@ sealed class SocketResponseModel {
     data class ErrorMessage(val errors: List<Error>): SocketResponseModel()
 
     data class AreasEntity(val areas: List<AreaEntity>): SocketResponseModel()
+
+    data class AutomationUrl(val url: String): SocketResponseModel()
 }

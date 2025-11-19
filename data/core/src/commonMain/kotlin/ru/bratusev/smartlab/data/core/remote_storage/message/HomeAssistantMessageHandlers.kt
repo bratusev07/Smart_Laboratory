@@ -14,7 +14,8 @@ interface HomeAssistantMessageHandlers {
     fun handleResult(
         jsonElement: JsonElement,
         emitAreaEntity: (List<AreaEntity>) -> Boolean,
-        emitAreaDevices: (List<String>) -> Unit
+        emitAreaDevices: (List<String>) -> Unit,
+        collectAutomationUrl:(String) -> Unit
     )
 
     fun handleEvent(

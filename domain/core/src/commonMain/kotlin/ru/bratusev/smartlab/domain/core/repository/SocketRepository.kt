@@ -15,5 +15,5 @@ interface SocketRepository {
 
     fun updateSensor(sensorId: String): Boolean
 
-    fun fetchAutomation()
+    suspend fun fetchAutomation(): String
 }
