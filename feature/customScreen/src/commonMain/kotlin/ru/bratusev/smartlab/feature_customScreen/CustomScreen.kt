@@ -19,7 +19,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -37,6 +36,7 @@ import ru.bratusev.smartlab.feature_customScreen.models.Event.DeleteWidget
 import ru.bratusev.smartlab.feature_customScreen.models.Event.OnSensorStateChanged
 import ru.bratusev.smartlab.ui.core.components.CustomWidget
 import ru.bratusev.smartlab.ui.core.components.LoadingIndicator
+import ru.bratusev.smartlab.ui.core.components.utils.RegisterTopBar
 import ru.bratusev.smartlab.ui.core.models.CustomWidgetEvent
 import ru.bratusev.smartlab.ui.core.models.CustomWidgetUi
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
@@ -65,33 +65,27 @@ fun CustomScreen(
         }
     }
 
-    DisposableEffect(Unit) {
-        setTopBarComposable {
-            Box {
-                IconButton(onClick = { vm.handleEvent(Event.ToggleDropDownMenu) }) {
-                    Icon(
-                        imageVector = Icons.Default.MoreVert,
-                        contentDescription = "Menu"
-                    )
-                }
-
-                MenuDropDown(
-                    isExpanded = state.value.isDropDownMenuExpanded,
-                    onClose = { vm.handleEvent(Event.ToggleDropDownMenu) },
-                    onAddScreen = {
-                        goToAddWidgetScreen()
-                        vm.handleEvent(Event.ToggleDropDownMenu)
-                    },
-                    onEditMode = {
-                        vm.handleEvent(Event.ToggleEditMode)
-                        vm.handleEvent(Event.ToggleDropDownMenu)
-                    },
+    RegisterTopBar(setTopBarComposable) {
+        Box {
+            IconButton(onClick = { vm.handleEvent(Event.ToggleDropDownMenu) }) {
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = "Menu"
                 )
             }
-        }
 
-        onDispose {
-            setTopBarComposable { }
+            MenuDropDown(
+                isExpanded = state.value.isDropDownMenuExpanded,
+                onClose = { vm.handleEvent(Event.ToggleDropDownMenu) },
+                onAddScreen = {
+                    goToAddWidgetScreen()
+                    vm.handleEvent(Event.ToggleDropDownMenu)
+                },
+                onEditMode = {
+                    vm.handleEvent(Event.ToggleEditMode)
+                    vm.handleEvent(Event.ToggleDropDownMenu)
+                },
+            )
         }
     }
 
