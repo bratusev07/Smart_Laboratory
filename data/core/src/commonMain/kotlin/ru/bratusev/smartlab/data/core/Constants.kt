@@ -1,5 +1,5 @@
 package ru.bratusev.smartlab.data.core
 
 object Constants {
-    const val BASE_URL = "http://10.131.170.76:8123"
+    const val BASE_URL = "http://10.131.170.77:8123"
 } 

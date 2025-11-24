@@ -67,7 +67,10 @@ fun AddWidgetScreen(
         AppTopBar(
             uiData = AppTopBarUi(
                 title = stringResource(Res.string.add_widget)
-            ), onTitleClick = {}, onMenuClick = {})
+            ),
+            content = {},
+            onTitleClick = {}
+        )
     }) { paddingValues ->
         LazyColumn(modifier = Modifier.padding(paddingValues)) {
             item {
