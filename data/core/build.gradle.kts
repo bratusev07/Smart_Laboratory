@@ -63,12 +63,12 @@ kotlin {
             // DateTime library for cross-platform date/time operations
             implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
 
-            // Yaml parser
-            implementation("com.charleskorn.kaml:kaml:0.58.0")
         }
 
         androidMain.dependencies {
             implementation(libs.ktor.client.android)
+            // Yaml parser
+            implementation("com.charleskorn.kaml:kaml:0.58.0")
         }
 
         iosMain.dependencies {

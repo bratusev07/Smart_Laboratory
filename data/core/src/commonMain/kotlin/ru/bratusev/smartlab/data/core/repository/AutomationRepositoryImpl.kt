@@ -42,9 +42,7 @@ class AutomationRepositoryImpl(
             client.get(fileUrl) {
                 contentType(ContentType.Application.Yaml)
                 cookie("ingress_session", sessionId)
-            }.bodyAsText().let {
-                saveAutomation(it)
-            }
+            }.bodyAsText().let {}
         }
     }
 
