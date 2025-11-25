@@ -73,6 +73,8 @@ kotlin {
 
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
+            // Yaml parser
+            implementation("com.charleskorn.kaml:kaml:0.58.0")
         }
 
         dependencies {
