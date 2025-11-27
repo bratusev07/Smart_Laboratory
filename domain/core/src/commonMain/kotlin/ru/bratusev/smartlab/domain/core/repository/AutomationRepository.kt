@@ -1,8 +1,10 @@
 package ru.bratusev.smartlab.domain.core.repository
 
+import ru.bratusev.smartlab.domain.core.model.automation.Automation
+
 interface AutomationRepository {
 
     suspend fun saveAutomation(automationData: String)
 
-    suspend fun fetchAutomaton(url: String)
+    suspend fun fetchAutomaton(url: String): List<Automation>
 }

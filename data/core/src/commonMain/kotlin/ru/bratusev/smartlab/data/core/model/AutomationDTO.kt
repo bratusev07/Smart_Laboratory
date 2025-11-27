@@ -2,18 +2,18 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Automation(
+data class AutomationDTO(
     val id: String,
     val alias: String,
     val description: String = "",
-    val triggers: List<Trigger>,
-    val conditions: List<Condition> = emptyList(),
-    val actions: List<ActionWrapper>,
+    val triggers: List<TriggerDTO>,
+    val conditions: List<ConditionDTO> = emptyList(),
+    val actions: List<ActionWrapperDTO>,
     val mode: String
 )
 
 @Serializable
-data class Trigger(
+data class TriggerDTO(
     val trigger: String,
     @SerialName("entity_id") val entityId: List<String>? = null,
     val above: Double? = null,
@@ -25,7 +25,7 @@ data class Trigger(
 )
 
 @Serializable
-data class Condition(
+data class ConditionDTO(
     val condition: String,
     @SerialName("entity_id") val entityId: String? = null,
     val state: String? = null,
@@ -37,25 +37,25 @@ data class Condition(
 )
 
 @Serializable
-data class ActionWrapper(
+data class ActionWrapperDTO(
     val action: String? = null,
     val data: Map<String, String?>? = null,
     val metadata: Map<String, String?>? = null,
-    val target: Target? = null,
+    val target: TargetDTO? = null,
     val response_variable: String? = null,
-    val choose: List<ChooseBranch>? = null,
-    @SerialName("if") val ifBlock: List<Condition>? = null,
-    val then: List<ActionWrapper>? = null,
-    @SerialName("else") val elseBlock: List<ActionWrapper>? = null,
+    val choose: List<ChooseBranchDTO>? = null,
+    @SerialName("if") val ifBlock: List<ConditionDTO>? = null,
+    val then: List<ActionWrapperDTO>? = null,
+    @SerialName("else") val elseBlock: List<ActionWrapperDTO>? = null,
 )
 
 @Serializable
-data class ChooseBranch(
-    val conditions: List<Condition>,
-    val sequence: List<ActionWrapper>
+data class ChooseBranchDTO(
+    val conditions: List<ConditionDTO>,
+    val sequence: List<ActionWrapperDTO>
 )
 
 @Serializable
-data class Target(
+data class TargetDTO(
     @SerialName("entity_id") val entityId: String? = null
 )

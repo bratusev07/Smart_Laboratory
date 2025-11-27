@@ -99,6 +99,7 @@ class AuthRepositoryImpl(
             contentType(ContentType.Application.FormUrlEncoded)
             setBody(requestBody)
         }.bodyAsText().let {
+            // TODO Check code validity
             val json = Json.parseToJsonElement(it).jsonObject
             val accessToken = json["access_token"]?.jsonPrimitive?.content ?: ""
             val refreshToken = json["refresh_token"]?.jsonPrimitive?.content ?: ""

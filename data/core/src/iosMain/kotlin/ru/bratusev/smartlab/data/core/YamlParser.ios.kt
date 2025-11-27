@@ -1,12 +1,10 @@
 package ru.bratusev.smartlab.data.core
 
-import Automation
-import io.ktor.http.ContentType.Application.Yaml
-import kotlinx.serialization.builtins.ListSerializer
+import AutomationDTO
 
 actual object YamlParser {
 
-    val serializer = Automation.serializer()
+    val serializer = AutomationDTO.serializer()
     /*private val automationSerializerRef = AtomicReference<KSerializer<Automation>?>(null)
 
     private val automationSerializer: KSerializer<Automation>
@@ -19,14 +17,14 @@ actual object YamlParser {
             return serializer
         }*/
 
-    actual fun parseAutomations(yamlText: String): List<Automation> {
+    actual fun parseAutomations(yamlText: String): List<AutomationDTO> {
         return emptyList()/*Yaml.default.decodeFromString(
             ListSerializer(serializer),
             yamlText
         )*/
     }
 
-    actual fun parseAutomationsToYaml(automations: List<Automation>): String {
+    actual fun parseAutomationsToYaml(automationDTOS: List<AutomationDTO>): String {
         return ""/*Yaml.default.encodeToString(
             ListSerializer(serializer),
             automations

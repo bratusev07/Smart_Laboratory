@@ -1,5 +1,6 @@
 package ru.bratusev.smartlab.data.core.repository
 
+import AutomationDTO
 import io.ktor.client.HttpClient
 import io.ktor.client.request.cookie
 import io.ktor.client.request.get
@@ -10,8 +11,11 @@ import io.ktor.http.ContentType
 import io.ktor.http.Parameters
 import io.ktor.http.contentType
 import io.ktor.http.formUrlEncode
+import ru.bratusev.smartlab.data.core.YamlParser
+import ru.bratusev.smartlab.data.core.mapper.mapToDomain
 import ru.bratusev.smartlab.data.core.remote_storage.Constants.BASE_URL
 import ru.bratusev.smartlab.data.core.remote_storage.Constants.CONFIG_FILE_PATH
+import ru.bratusev.smartlab.domain.core.model.automation.Automation
 import ru.bratusev.smartlab.domain.core.repository.AutomationRepository
 import ru.bratusev.smartlab.domain.core.repository.SocketRepository
 
@@ -34,7 +38,7 @@ class AutomationRepositoryImpl(
         }.bodyAsText()
     }
 
-    override suspend fun fetchAutomaton(url: String) {
+    override suspend fun fetchAutomaton(url: String): List<Automation> {
         shortFileUrl = url.replace("\"", "")
         val fileUrl = "$BASE_URL$shortFileUrl/api/file?filename=$CONFIG_FILE_PATH"
         socketRepository.fetchIngressSessionId().let { id ->
@@ -42,7 +46,13 @@ class AutomationRepositoryImpl(
             client.get(fileUrl) {
                 contentType(ContentType.Application.Yaml)
                 cookie("ingress_session", sessionId)
-            }.bodyAsText().let {}
+            }.bodyAsText().let { yaml ->
+                return try {
+                    YamlParser.parseAutomations(yaml).map { it.mapToDomain() }
+                } catch (_ : Exception) {
+                    emptyList()
+                }
+            }
         }
     }
 

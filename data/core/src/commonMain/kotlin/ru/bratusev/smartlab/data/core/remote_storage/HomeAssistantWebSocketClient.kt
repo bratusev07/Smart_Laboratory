@@ -33,7 +33,9 @@ class HomeAssistantWebSocketClient() {
     private var accessToken: String? = null
     private val client = HttpClient(CIO) {
         install(HttpTimeout) {
-            requestTimeoutMillis = 10000
+            requestTimeoutMillis = 10_000
+            socketTimeoutMillis = 30_000
+            requestTimeoutMillis = 10_000
         }
         install(WebSockets)
     }

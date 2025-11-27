@@ -1,10 +1,10 @@
 package ru.bratusev.smartlab.data.core
 
-import Automation
+import AutomationDTO
 
 expect object YamlParser {
 
-    fun parseAutomations(yamlText: String): List<Automation>
+    fun parseAutomations(yamlText: String): List<AutomationDTO>
 
-    fun parseAutomationsToYaml(automations: List<Automation>): String
+    fun parseAutomationsToYaml(automationDTOS: List<AutomationDTO>): String
 }

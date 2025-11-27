@@ -11,7 +11,7 @@ class GetServiceEntitiesUseCase(
 ) {
     suspend fun invoke(): Flow<List<ServiceEntity>> {
         socketRepository.fetchAutomation().let {
-            automationRepository.fetchAutomaton(it)
+            val automations = automationRepository.fetchAutomaton(it)
         }
         return socketRepository.observeServiceEntities()
     }
