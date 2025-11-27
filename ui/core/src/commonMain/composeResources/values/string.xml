@@ -50,6 +50,7 @@
     <string name="drawer_settings">Настройки</string>
     <string name="drawer_notifications">Уведомления</string>
     <string name="drawer_profile">Аккаунт</string>
+    <string name="drawer_automation">Автоматизация</string>
     <string name="drawer_quit">Выйти</string>
 
     <!-- SENSOR DOMAIN -->

@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -5,11 +6,11 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.kotlinx.serialization)
 }
 
 kotlin {
     androidTarget {
+        @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
         }
@@ -21,7 +22,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "Navigation"
+            baseName = "FeatureAutomation"
             isStatic = true
         }
     }
@@ -34,32 +35,22 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.materialIconsExtended)
             implementation(compose.ui)
-            implementation(libs.ui.backhandler)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-            implementation(libs.ktor.serialization.kotlinx.json)
 
             implementation(libs.koin.core)
             implementation(libs.bundles.koin.compose)
 
+            implementation(projects.domain.core)
+            implementation(projects.data.core)
             implementation(projects.feature.navigationApi)
-            implementation(projects.feature.home)
-            implementation(projects.feature.settings)
-            implementation(projects.feature.login)
-            implementation(projects.feature.logcat)
-            implementation(projects.feature.customScreen)
-            implementation(projects.feature.addWidgetScreen)
-            implementation(projects.feature.allAreas)
-            implementation(projects.feature.automation)
-            implementation(projects.feature.area)
             implementation(projects.ui.core)
-
         }
     }
 }
 
 android {
-    namespace = "ru.bratusev.smartlab.feature.navigation"
+    namespace = "ru.bratusev.smartlab.feature.automation"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {

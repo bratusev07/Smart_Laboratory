@@ -3,6 +3,7 @@ package ru.bratusev.smartlab.domain.core
 import org.koin.dsl.module
 import ru.bratusev.smartlab.domain.core.usecase.GetAreaDevicesUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetAreasUseCase
+import ru.bratusev.smartlab.domain.core.usecase.GetAutomationUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetButtonTextUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetCustomWidgetsUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetLogcatMessagesUseCase
@@ -24,8 +25,9 @@ val domainModule = module {
     factory<GetLoginUseCase> { GetLoginUseCase(get()) }
     factory<GetLoggerUseCase> { GetLoggerUseCase(get()) }
     factory<UpdateSensorUseCase> { UpdateSensorUseCase(get()) }
-    factory<GetServiceEntitiesUseCase> { GetServiceEntitiesUseCase(get(), get()) }
+    factory<GetServiceEntitiesUseCase> { GetServiceEntitiesUseCase(get()) }
     factory<GetAreasUseCase> { GetAreasUseCase(get()) }
+    factory<GetAutomationUseCase> { GetAutomationUseCase(get(), get()) }
     factory<GetAreaDevicesUseCase> { GetAreaDevicesUseCase(get()) }
     factory<ObserveSocketErrorsUseCase> { ObserveSocketErrorsUseCase(get()) }
     factory<GetLogcatMessagesUseCase> { GetLogcatMessagesUseCase(get()) }

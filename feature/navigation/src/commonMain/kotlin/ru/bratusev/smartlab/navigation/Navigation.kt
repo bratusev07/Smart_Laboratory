@@ -30,6 +30,7 @@ import ru.bratusev.smartlab.feature_area.AreaScreen
 import ru.bratusev.smartlab.feature_area.AreaScreenViewModel
 import ru.bratusev.smartlab.feature_areas.AllAreasScreen
 import ru.bratusev.smartlab.feature_areas.AllAreasScreenViewModel
+import ru.bratusev.smartlab.feature_automation.AutomationScreen
 import ru.bratusev.smartlab.feature_customScreen.CustomScreen
 import ru.bratusev.smartlab.feature_home.HomeScreen
 import ru.bratusev.smartlab.feature_logcat.LogcatScreen
@@ -94,8 +95,7 @@ private fun AppNavHost(
     ) {
         composable<Screen.Login> {
             BackHandler(true) { /* Отключаем кнопку назад и т.п */ }
-            LoginScreen(
-                navigateToHome = { navigationApi.navigateToHome() })
+            LoginScreen(navigationApi = navigationApi)
         }
 
         composable<Screen.Home> {
@@ -148,6 +148,9 @@ private fun AppNavHost(
             SettingsScreen(navigationApi = navigationApi)
         }
 
+        composable<Screen.Automation> {
+            AutomationScreen(navigationApi = navigationApi)
+        }
 
         composable<Screen.Notifications> {
             Text(Screen.Notifications.toString())

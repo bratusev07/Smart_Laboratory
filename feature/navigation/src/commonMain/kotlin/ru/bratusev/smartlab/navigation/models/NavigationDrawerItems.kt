@@ -13,11 +13,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import org.jetbrains.compose.resources.StringResource
 import ru.bratusev.smartlab.navigation.api.Screen
 import smartlaboratory.ui.core.generated.resources.Res
+import smartlaboratory.ui.core.generated.resources.drawer_automation
 import smartlaboratory.ui.core.generated.resources.drawer_custom_screen
 import smartlaboratory.ui.core.generated.resources.drawer_dashboard
 import smartlaboratory.ui.core.generated.resources.drawer_logs
 import smartlaboratory.ui.core.generated.resources.drawer_notifications
-import smartlaboratory.ui.core.generated.resources.drawer_profile
 import smartlaboratory.ui.core.generated.resources.drawer_quit
 import smartlaboratory.ui.core.generated.resources.drawer_settings
 import smartlaboratory.ui.core.generated.resources.drawer_zones
@@ -30,6 +30,7 @@ enum class NavigationDrawerItems(val screen: Screen, val labelRes: StringResourc
     Areas(Screen.Areas.Root, Res.string.drawer_zones, Icons.Outlined.ViewModule),
     Settings(Screen.Settings, Res.string.drawer_settings, Icons.Default.Settings),
     Notifications(Screen.Notifications, Res.string.drawer_notifications, Icons.Default.Notifications),
-    Profile(Screen.UserProfile, Res.string.drawer_profile, Icons.Default.AccountCircle),
+    Profile(Screen.UserProfile, Res.string.drawer_automation, Icons.Default.AccountCircle),
+    Automation(Screen.Automation, Res.string.drawer_automation, Icons.Default.AccountCircle),
     Login(Screen.Login, Res.string.drawer_quit, Icons.AutoMirrored.Filled.Login)
 }

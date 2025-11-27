@@ -38,6 +38,9 @@ sealed class Screen {
     data object Settings : Screen()
 
     @Serializable
+    data object Automation : Screen()
+
+    @Serializable
     data object Notifications : Screen()
 
     @Serializable
