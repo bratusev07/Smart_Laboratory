@@ -88,6 +88,7 @@ class HomeAssistantWebSocketClient() {
                     }
                 }
             } catch (e: Exception) {
+                // TODO Пофиксить краш сокета на Android
                 println("WebSocket error: $e")
                 _socketResponseFlow.tryEmit(SocketResponseModel.ErrorMessage(listOf(Error("WebSocket error: ${e.message ?: e.toString()}"))))
             } finally {

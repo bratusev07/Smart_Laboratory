@@ -1,5 +1,6 @@
 package ru.bratusev.smartlab.feature_automation.models
 
+import ru.bratusev.smartlab.ui.core.models.AutomationItemUi
 import ru.bratusev.smartlab.ui.core.models.AutomationUi
 
 data class AutomationState(
@@ -9,4 +10,7 @@ data class AutomationState(
 
 sealed class Event {
 
+    data class OnDeleteAutomationClicked(val id: String): Event()
+
+    data class OnUpdateAutomationClicked(val automation: AutomationItemUi): Event()
 }

@@ -53,10 +53,25 @@ class AutomationViewModel(
         }
     }
 
+    private fun deleteAutomation(id: String) {
+        val automations = uiState.value.automation.automationList.filter { it.id != id }
+        updateState(uiState.value.copy(automation = AutomationUi(automationList = automations)))
+    }
+
+    private fun updateAutomation(automation: AutomationItemUi) {
+        val automations: List<AutomationItemUi> = uiState.value.automation.automationList.map {
+            if(it.id == automation.id) {
+                it.copy(id = automation.id, alias = automation.alias, description = automation.description)
+            } else it
+        }
+
+        updateState(uiState.value.copy(automation = AutomationUi(automationList = automations)))
+    }
+
     internal fun handleEvent(event: Event) {
         when (event) {
-
-            else -> {}
+            is Event.OnDeleteAutomationClicked -> deleteAutomation(event.id)
+            is Event.OnUpdateAutomationClicked -> updateAutomation(event.automation)
         }
     }
 }
