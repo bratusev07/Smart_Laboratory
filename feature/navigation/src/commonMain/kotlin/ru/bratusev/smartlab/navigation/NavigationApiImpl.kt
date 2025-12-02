@@ -15,7 +15,7 @@ class NavigationApiImpl(
     override fun navigateToHome() {
         navController.navigate(Screen.Home) {
             // очищаем стэк, чтобы нельзя было вернуться к авторизации просто нажав назад
-            popUpTo(Screen.Login) {
+            popUpTo<Screen.Login> {
                 inclusive = true
             }
         }
@@ -42,7 +42,11 @@ class NavigationApiImpl(
         friendlyName: String?,
         pictureUrl: String?
     ) {
-        navController.navigate(Screen.Areas.Detailed(areaId, friendlyName, pictureUrl))
+        navController.navigate(Screen.Areas.Detailed(areaId, friendlyName, pictureUrl)){
+            popUpTo<Screen.Areas.Detailed> {
+                inclusive = true
+            }
+        }
     }
 
     override fun navigateToAddWidgetCustomScreen() {

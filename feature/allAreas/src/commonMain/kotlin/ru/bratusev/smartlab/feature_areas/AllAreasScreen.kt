@@ -16,10 +16,8 @@ fun AllAreasScreen(
     areas: List<AreaCardUi>,
     navigateToArea: (areaId: String, friendlyName: String?, pictureUrl: String?) -> Unit
 ) {
+    LoadingIndicator(show = areas.isEmpty())
     LazyColumn(verticalArrangement = Arrangement.spacedBy(20.dp)) {
-        stickyHeader {
-            LoadingIndicator(show = areas.isEmpty())
-        }
         items(areas, key = { it.areaId }) {
             AreaCard(uiData = it, onClick = navigateToArea)
         }
