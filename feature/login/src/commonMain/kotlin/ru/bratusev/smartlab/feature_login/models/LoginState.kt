@@ -8,6 +8,7 @@ data class LoginState(
     val login: String = "denis",
     val password: String = "V+5G5]Aw2uK4HsW",
     val loginStage: LoginStage = LoginStage.NOTHING_0,
+    val isUsingVpn: Boolean = false
 ) {
     val buttonEnabled: Boolean
         get() = when (loginStage) {

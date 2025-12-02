@@ -11,6 +11,7 @@ import ru.bratusev.smartlab.domain.core.usecase.GetLoginUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetServiceEntitiesUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetSettingsUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetTokenUseCase
+import ru.bratusev.smartlab.domain.core.usecase.GetVpnStatusUseCase
 import ru.bratusev.smartlab.domain.core.usecase.ObserveSocketErrorsUseCase
 import ru.bratusev.smartlab.domain.core.usecase.SetCustomWidgetsUseCase
 import ru.bratusev.smartlab.domain.core.usecase.UpdateSensorUseCase
@@ -32,4 +33,5 @@ val domainModule = module {
     factory<SetCustomWidgetsUseCase> { SetCustomWidgetsUseCase(get()) }
     factory<GetSettingsUseCase> { GetSettingsUseCase(get()) }
     factory<UpdateSettingsUseCase> { UpdateSettingsUseCase(get()) }
+    factory<GetVpnStatusUseCase> { GetVpnStatusUseCase(get()) }
 }

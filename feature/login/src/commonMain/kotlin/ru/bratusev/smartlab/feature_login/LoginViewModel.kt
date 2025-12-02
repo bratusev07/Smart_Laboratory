@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import ru.bratusev.smartlab.domain.core.usecase.GetLoggerUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetLoginUseCase
+import ru.bratusev.smartlab.domain.core.usecase.GetVpnStatusUseCase
 import ru.bratusev.smartlab.feature_login.models.Device
 import ru.bratusev.smartlab.feature_login.models.Event
 import ru.bratusev.smartlab.feature_login.models.LoginStage
@@ -19,11 +20,17 @@ import ru.bratusev.smartlab.domain.core.model.Device as DomainDevice
 class LoginViewModel(
     private val loginUseCase: GetLoginUseCase,
     private val logger: GetLoggerUseCase,
+    private val vpnStatusUseCase: GetVpnStatusUseCase,
     val device: Device,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginState())
     val uiState: StateFlow<LoginState> = _uiState
+
+    init {
+        val isUsingVpn = vpnStatusUseCase()
+        updateState(_uiState.value.copy(isUsingVpn = isUsingVpn))
+    }
 
     private fun onLoginChanged(newLogin: String) {
         updateState(_uiState.value.copy(login = newLogin))
@@ -68,7 +75,10 @@ class LoginViewModel(
 
     private fun updateState(updatedState: LoginState) {
         viewModelScope.launch {
-            logger.d("viewModel", "Updating state: loginStage=${updatedState.loginStage}, animatedLoadUi=${updatedState.animatedLoadUi}")
+            logger.d(
+                "viewModel",
+                "Updating state: loginStage=${updatedState.loginStage}, animatedLoadUi=${updatedState.animatedLoadUi}"
+            )
             _uiState.emit(updatedState)
         }
     }
