@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
@@ -54,7 +55,7 @@ fun NavigationDrawer(
     isHidden: Boolean = false,
     navigateTo: (Screen) -> Unit,
     navigationHierarchy: Sequence<NavDestination>?,
-    onMenuClick: () -> Unit,
+    topContent: @Composable (RowScope.() -> Unit) = {},
     content: @Composable (() -> Unit),
 ) {
     ModalNavigationDrawer(
@@ -145,7 +146,8 @@ fun NavigationDrawer(
                             drawerScope.launch {
                                 drawerState.open()
                             }
-                        }, onMenuClick = onMenuClick
+                        },
+                        content = topContent
                     )
                 }) { paddingValues ->
                 Box(modifier = Modifier.padding(paddingValues)) {
@@ -208,9 +210,6 @@ private fun NavigationDrawerPreview() {
             drawerState = drawerState,
             navigateTo = {},
             navigationHierarchy = mockHierarchy,
-            onMenuClick = {}
-        ) {
-            Text(text = "Контент. Очень длинный контент. Прям чтобы его было видно. Нужно прям много контента.")
-        }
+            content = { Text(text = "Контент. Очень длинный контент. Прям чтобы его было видно. Нужно прям много контента.") })
     }
 }

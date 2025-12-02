@@ -24,12 +24,12 @@ fun AreaScreen(
     areaId: String,
     friendlyName: String?,
     pictureUrl: String?,
-    areaScreenViewModel: AreaScreenViewModel = koinViewModel(),
+    vm: AreaScreenViewModel = koinViewModel(),
 ) {
-    val state = areaScreenViewModel.uiState.collectAsState()
+    val state = vm.uiState.collectAsState()
 
     LaunchedEffect(areaId) {
-        areaScreenViewModel.handleEvent(Event.FetchData(areaId))
+        vm.handleEvent(Event.FetchData(areaId))
     }
     Column(
         modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 24.dp),

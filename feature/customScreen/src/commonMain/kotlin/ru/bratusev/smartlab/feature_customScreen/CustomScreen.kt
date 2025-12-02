@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,12 +12,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -34,6 +36,7 @@ import ru.bratusev.smartlab.feature_customScreen.models.Event.DeleteWidget
 import ru.bratusev.smartlab.feature_customScreen.models.Event.OnSensorStateChanged
 import ru.bratusev.smartlab.ui.core.components.CustomWidget
 import ru.bratusev.smartlab.ui.core.components.LoadingIndicator
+import ru.bratusev.smartlab.ui.core.components.utils.RegisterTopBar
 import ru.bratusev.smartlab.ui.core.models.CustomWidgetEvent
 import ru.bratusev.smartlab.ui.core.models.CustomWidgetUi
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
@@ -47,11 +50,10 @@ import smartlaboratory.ui.core.generated.resources.updating
 @Composable
 fun CustomScreen(
     vm: CustomScreenViewModel = koinViewModel(),
-    setMenuAction: (action: () -> Unit) -> Unit,
+    setTopBarComposable: (@Composable (RowScope.() -> Unit)) -> Unit,
     goToAddWidgetScreen: () -> Unit,
 ) {
     val state = vm.uiState.collectAsState()
-
 
     LaunchedEffect(Unit) {
         vm.handleEvent(Event.LoadData)
@@ -63,15 +65,30 @@ fun CustomScreen(
         }
     }
 
-    DisposableEffect(Unit) {
-        setMenuAction {
-            vm.handleEvent(Event.ToggleDropDownMenu)
-        }
+    RegisterTopBar(setTopBarComposable) {
+        Box {
+            IconButton(onClick = { vm.handleEvent(Event.ToggleDropDownMenu) }) {
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = "Menu"
+                )
+            }
 
-        onDispose {
-            setMenuAction { }
+            MenuDropDown(
+                isExpanded = state.value.isDropDownMenuExpanded,
+                onClose = { vm.handleEvent(Event.ToggleDropDownMenu) },
+                onAddScreen = {
+                    goToAddWidgetScreen()
+                    vm.handleEvent(Event.ToggleDropDownMenu)
+                },
+                onEditMode = {
+                    vm.handleEvent(Event.ToggleEditMode)
+                    vm.handleEvent(Event.ToggleDropDownMenu)
+                },
+            )
         }
     }
+
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -93,23 +110,6 @@ fun CustomScreen(
                 if (state.value.isUpdating) stringResource(Res.string.updating) else stringResource(
                     Res.string.saving
                 )
-            )
-        }
-
-
-        // TODO: надо как-нибудь бы переделать эту штуку, да чтобы не надо было делать на каждом экране разное
-        Box(modifier = Modifier.align(Alignment.TopEnd)) {
-            MenuDropDown(
-                isExpanded = state.value.isDropDownMenuExpanded,
-                onClose = { vm.handleEvent(Event.ToggleDropDownMenu) },
-                onAddScreen = {
-                    goToAddWidgetScreen()
-                    vm.handleEvent(Event.ToggleDropDownMenu)
-                },
-                onEditMode = {
-                    vm.handleEvent(Event.ToggleEditMode)
-                    vm.handleEvent(Event.ToggleDropDownMenu)
-                },
             )
         }
     }
@@ -143,7 +143,6 @@ private fun MenuDropDown(
         })
 }
 
-// Криво, но работает
 @Preview(
     showBackground = true, heightDp = 900
 )
