@@ -43,7 +43,7 @@ fun LoginScreen(
     navigateToHome: () -> Unit,
 ) {
     val state = vm.uiState.collectAsState()
-    var shouldOpenVpnWarning by remember { mutableStateOf(state.value.isUsingVpn) }
+    var shouldOpenNetworkWarning by remember { mutableStateOf(!state.value.networkStatus.isIpInSameSubnet()) }
 
     LaunchedEffect(state.value.loginStage) {
         if (state.value.loginStage == LoginStage.COMPLETED_4) {
@@ -96,15 +96,15 @@ fun LoginScreen(
                 )
             }
         }
-        if (shouldOpenVpnWarning) {
+        if (shouldOpenNetworkWarning) {
             AlertDialog(
-                onDismissRequest = { shouldOpenVpnWarning = false },
-                title = { Text("Vpn warning") },
-                text = { Text("Vpn warning") },
+                onDismissRequest = { shouldOpenNetworkWarning = false },
+                title = { Text("Network warning") },
+                text = { Text("Network warning") },
                 dismissButton = {
                     TextButton(
-                        onClick = { shouldOpenVpnWarning = false },
-                        content = {Text("Принято")}
+                        onClick = { shouldOpenNetworkWarning = false },
+                        content = { Text("Принято") }
                     )
                 },
                 confirmButton = {}

@@ -5,8 +5,8 @@ import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
 import ru.bratusev.smartlab.data.core.dataStore.DataStoreFactory
 import ru.bratusev.smartlab.data.core.database.DatabaseFactory
-import ru.bratusev.smartlab.data.core.repository.VpnRepositoryImpl
-import ru.bratusev.smartlab.domain.core.repository.VpnRepository
+import ru.bratusev.smartlab.data.core.repository.NetworkRepositoryImpl
+import ru.bratusev.smartlab.domain.core.repository.NetworkRepository
 
 val androidDataModule = module {
     single <Context> {
@@ -23,7 +23,7 @@ val androidDataModule = module {
     }
 
     single<DatabaseFactory> { DatabaseFactory(get()) }
-    single<VpnRepository> { VpnRepositoryImpl(get()) }
+    single<NetworkRepository> { NetworkRepositoryImpl(get()) }
 }
 
 actual val platformDataModule = androidDataModule

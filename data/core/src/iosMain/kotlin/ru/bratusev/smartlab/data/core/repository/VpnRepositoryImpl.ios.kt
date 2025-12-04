@@ -1,60 +1,101 @@
 package ru.bratusev.smartlab.data.core.repository
 
+import kotlinx.cinterop.CPointer
 import kotlinx.cinterop.CPointerVar
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.pointed
 import kotlinx.cinterop.ptr
+import kotlinx.cinterop.refTo
+import kotlinx.cinterop.reinterpret
 import kotlinx.cinterop.toKString
 import kotlinx.cinterop.value
+import platform.darwin.freeifaddrs
 import platform.darwin.getifaddrs
 import platform.darwin.ifaddrs
-import ru.bratusev.smartlab.domain.core.repository.VpnRepository
+import platform.darwin.inet_ntop
+import platform.posix.AF_INET
+import platform.posix.INET_ADDRSTRLEN
+import platform.posix.sockaddr
+import platform.posix.sockaddr_in
+import ru.bratusev.smartlab.data.core.Constants
+import ru.bratusev.smartlab.domain.core.model.NetworkStatus
+import ru.bratusev.smartlab.domain.core.repository.NetworkRepository
 
-actual class VpnRepositoryImpl : VpnRepository {
+actual class NetworkRepositoryImpl : NetworkRepository {
     @OptIn(ExperimentalForeignApi::class)
-    actual override fun isVpnActive(): Boolean {
+    actual override fun getNetworkStatus(): NetworkStatus {
+        var foundIp: String? = null
         var isVpn = false
 
         memScoped {
-            // Allocate a pointer for the linked list of interfaces
-            val ifap = alloc<CPointerVar<ifaddrs>>()
+            // Explicit type definition to avoid compiler ambiguity
+            val ifap: CPointerVar<ifaddrs> = alloc()
 
-            // getifaddrs returns 0 on success
             if (getifaddrs(ifap.ptr) == 0) {
                 var current = ifap.value
 
-                // Iterate through the linked list
                 while (current != null) {
                     val interfaceData = current.pointed
                     val name = interfaceData.ifa_name?.toKString() ?: ""
+                    val sa = interfaceData.ifa_addr
 
-                    // "utun" is the most common prefix for VPN tunnels on iOS
-                    // "ppp" (Point-to-Point) and "ipsec" are also possibilities
-                    if (isTunnelInterface(name)) {
-                        isVpn = true
-                        break
+                    // 1. Detect VPN based on interface name
+                    if (!isVpn) {
+                        if (name.contains("utun") ||
+                            name.contains("ppp") ||
+                            name.contains("ipsec") ||
+                            name.contains("tap") ||
+                            name.contains("tun")
+                        ) {
+                            isVpn = true
+                        }
                     }
 
+                    // 2. Extract IP Address (IPv4)
+                    if (sa != null && sa.pointed.sa_family.toInt() == AF_INET) {
+                        // Ignore loopback (lo0)
+                        if (name != "lo0") {
+                            val ipStr = getIpString(sa)
+
+                            // Logic:
+                            // - If we haven't found an IP yet, take this one.
+                            // - If we found one, but this one is 'en0' (WiFi), overwrite it (WiFi is usually preferred for display).
+                            if (foundIp == null || name == "en0") {
+                                foundIp = ipStr
+                            }
+                        }
+                    }
                     current = interfaceData.ifa_next
                 }
-
-                // Free the memory allocated by the OS
-                platform.darwin.freeifaddrs(ifap.value)
+                freeifaddrs(ifap.value)
             }
         }
 
-        return isVpn
+        return NetworkStatus(
+            ip = foundIp ?: "0.0.0.0",
+            baseUrl = Constants.BASE_URL,
+            isVpnActive = isVpn
+        )
     }
 
-    private fun isTunnelInterface(name: String): Boolean {
-        // Most modern VPNs on iOS use "utun" (e.g., utun0, utun1)
-        // WireGuard, OpenVPN, and IPsec usually create these.
-        return name.contains("utun") ||
-                name.contains("ppp") ||
-                name.contains("ipsec") ||
-                name.contains("tap") ||
-                name.contains("tun")
+    @OptIn(ExperimentalForeignApi::class)
+    private fun getIpString(sa: CPointer<sockaddr>): String {
+        // INET_ADDRSTRLEN is usually 16.
+        // We generally use a slightly larger buffer or the constant to be safe.
+        val buffer = ByteArray(INET_ADDRSTRLEN)
+
+        val ipv4Addr = sa.reinterpret<sockaddr_in>()
+
+        return memScoped {
+            val result = inet_ntop(
+                AF_INET,
+                ipv4Addr.pointed.sin_addr.ptr,
+                buffer.refTo(0),
+                buffer.size.toUInt()
+            )
+            result?.toKString() ?: ""
+        }
     }
 }

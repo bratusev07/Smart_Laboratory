@@ -1,6 +1,8 @@
 package ru.bratusev.smartlab.feature_login.mappers
 
+import ru.bratusev.smartlab.domain.core.model.NetworkStatus
 import ru.bratusev.smartlab.feature_login.models.Device
+import ru.bratusev.smartlab.feature_login.models.NetworkStatusUi
 import ru.bratusev.smartlab.domain.core.model.Device as DomainDevice
 
 internal fun Device.toDomain() = DomainDevice(
@@ -13,4 +15,10 @@ internal fun Device.toDomain() = DomainDevice(
     osName = osName,
     osVersion = osVersion,
     deviceId = deviceId
+)
+
+internal fun NetworkStatus.toUi() = NetworkStatusUi(
+    ip = this.ip,
+    baseUrl = this.baseUrl,
+    isVpnActive = this.isVpnActive
 )

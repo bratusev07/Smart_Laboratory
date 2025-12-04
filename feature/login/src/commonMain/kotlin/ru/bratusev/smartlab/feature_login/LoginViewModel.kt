@@ -10,7 +10,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import ru.bratusev.smartlab.domain.core.usecase.GetLoggerUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetLoginUseCase
-import ru.bratusev.smartlab.domain.core.usecase.GetVpnStatusUseCase
+import ru.bratusev.smartlab.domain.core.usecase.GetNetworkStatusUseCase
+import ru.bratusev.smartlab.feature_login.mappers.toUi
 import ru.bratusev.smartlab.feature_login.models.Device
 import ru.bratusev.smartlab.feature_login.models.Event
 import ru.bratusev.smartlab.feature_login.models.LoginStage
@@ -20,7 +21,7 @@ import ru.bratusev.smartlab.domain.core.model.Device as DomainDevice
 class LoginViewModel(
     private val loginUseCase: GetLoginUseCase,
     private val logger: GetLoggerUseCase,
-    private val vpnStatusUseCase: GetVpnStatusUseCase,
+    getNetworkStatusUseCases: GetNetworkStatusUseCase,
     val device: Device,
 ) : ViewModel() {
 
@@ -28,8 +29,8 @@ class LoginViewModel(
     val uiState: StateFlow<LoginState> = _uiState
 
     init {
-        val isUsingVpn = vpnStatusUseCase()
-        updateState(_uiState.value.copy(isUsingVpn = isUsingVpn))
+        val networkStatus = getNetworkStatusUseCases().toUi()
+        updateState(_uiState.value.copy(networkStatus = networkStatus))
     }
 
     private fun onLoginChanged(newLogin: String) {
