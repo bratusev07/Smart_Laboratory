@@ -31,9 +31,7 @@ fun LogcatHeader(
     onTypeToggled: (String) -> Unit
 ) {
     Surface(
-        tonalElevation = 3.dp,
-        shadowElevation = 2.dp,
-        color = MaterialTheme.colorScheme.surface
+        color = Color.Transparent
     ) {
         Row(
             modifier = Modifier

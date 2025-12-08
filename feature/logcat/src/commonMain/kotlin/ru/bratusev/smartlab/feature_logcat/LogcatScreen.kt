@@ -65,14 +65,15 @@ fun LogcatScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
         ) {
-            // 1. The List
             if (state.messages.isNotEmpty()) {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     state = scrollState,
-                    contentPadding = PaddingValues(top = 8.dp, bottom = 16.dp)
+                    contentPadding = PaddingValues(
+                        top = paddingValues.calculateTopPadding(),
+                        bottom = paddingValues.calculateBottomPadding() + 8.dp
+                    )
                 ) {
                     items(
                         items = state.messages,
