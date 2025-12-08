@@ -35,6 +35,7 @@ import ru.bratusev.smartlab.feature_login.models.LoginStage
 import ru.bratusev.smartlab.ui.core.components.AnimatedLoadComponent
 import smartlaboratory.ui.core.generated.resources.Res
 import smartlaboratory.ui.core.generated.resources.auth_title
+import smartlaboratory.ui.core.generated.resources.confirm
 import smartlaboratory.ui.core.generated.resources.invalid_device_ip
 import smartlaboratory.ui.core.generated.resources.network_error
 
@@ -106,7 +107,7 @@ fun LoginScreen(
                 dismissButton = {
                     TextButton(
                         onClick = { shouldOpenNetworkWarning = false },
-                        content = { Text("Принято") }
+                        content = { Text(stringResource(Res.string.confirm)) }
                     )
                 },
                 confirmButton = {}
