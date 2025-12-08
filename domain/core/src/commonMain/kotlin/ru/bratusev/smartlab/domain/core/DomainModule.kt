@@ -8,6 +8,7 @@ import ru.bratusev.smartlab.domain.core.usecase.GetCustomWidgetsUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetLogcatMessagesUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetLoggerUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetLoginUseCase
+import ru.bratusev.smartlab.domain.core.usecase.GetNetworkStatusUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetServiceEntitiesUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetSettingsUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetTokenUseCase
@@ -32,4 +33,5 @@ val domainModule = module {
     factory<SetCustomWidgetsUseCase> { SetCustomWidgetsUseCase(get()) }
     factory<GetSettingsUseCase> { GetSettingsUseCase(get()) }
     factory<UpdateSettingsUseCase> { UpdateSettingsUseCase(get()) }
+    factory<GetNetworkStatusUseCase> { GetNetworkStatusUseCase(get()) }
 }

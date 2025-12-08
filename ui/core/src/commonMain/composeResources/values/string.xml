@@ -15,7 +15,8 @@
     <string name="current_stage">Текущий этап</string>
     <string name="login">Логин</string>
     <string name="password">Пароль</string>
-
+    <string name="network_error">Ошибка сети</string>
+    <string name="invalid_device_ip">IP устройства не соответствует IP Home assistant.</string>
     <string name="error">Ошибка</string>
 
     <!-- LOADING -->
