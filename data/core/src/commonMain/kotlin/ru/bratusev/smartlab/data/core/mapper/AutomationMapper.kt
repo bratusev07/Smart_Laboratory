@@ -65,3 +65,56 @@ internal fun ChooseBranchDTO.mapToDomain() = ChooseBranch(
     conditions = conditions.map { it.mapToDomain() },
     sequence = sequence.map { it.mapToDomain() }
 )
+
+internal fun Automation.mapToData() = AutomationDTO(
+    id = id,
+    alias = alias,
+    description = description,
+    triggers = triggers.map { it.mapToData() },
+    conditions = conditions.map { it.mapToData() },
+    actions = actions.map { it.mapToData() },
+    mode = mode
+)
+
+internal fun Trigger.mapToData() = TriggerDTO(
+    trigger = trigger,
+    entityId = entityId,
+    above = above,
+    below = below,
+    at = at,
+    allowed_methods = allowedMethods,
+    local_only = localOnly,
+    webhook_id = webhookId
+)
+
+internal fun Condition.mapToData() = ConditionDTO(
+    condition = condition,
+    entityId = entityId,
+    state = state,
+    above = above,
+    below = below,
+    after = after,
+    before = before,
+    valueTemplate = valueTemplate
+)
+
+internal fun ActionWrapper.mapToData(): ActionWrapperDTO = ActionWrapperDTO(
+    action = action,
+    data = data,
+    metadata = metadata,
+    target = target?.mapToData(),
+    response_variable = responseVariable,
+    choose = choose?.map { it.mapToData() },
+    ifBlock = ifBlock?.map { it.mapToData() },
+    then = then?.map { it.mapToData() },
+    elseBlock = elseBlock?.map { it.mapToData() },
+)
+
+internal fun Target.mapToData() = TargetDTO(
+    entityId = entityId
+)
+
+internal fun ChooseBranch.mapToData() = ChooseBranchDTO(
+    conditions = conditions.map { it.mapToData() },
+    sequence = sequence.map { it.mapToData() }
+)

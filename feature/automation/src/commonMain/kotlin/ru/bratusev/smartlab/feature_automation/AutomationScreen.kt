@@ -3,6 +3,7 @@ package ru.bratusev.smartlab.feature_automation
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -10,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import org.koin.compose.viewmodel.koinViewModel
 import ru.bratusev.smartlab.feature_automation.models.Event
@@ -55,6 +57,11 @@ fun AutomationScreen(
                 state.value.automation.automationList.first { it.id == clickedId }
             isSheetOpen = true
         }
+
+        FloatingActionButton(
+            modifier = Modifier.align(Alignment.BottomEnd),
+            onClick = {vm.handleEvent(Event.OnSaveAutomation)}
+        ) {}
     }
 }
 

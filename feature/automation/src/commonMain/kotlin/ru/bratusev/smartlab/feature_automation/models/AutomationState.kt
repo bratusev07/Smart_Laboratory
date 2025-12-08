@@ -13,4 +13,6 @@ sealed class Event {
     data class OnDeleteAutomationClicked(val id: String): Event()
 
     data class OnUpdateAutomationClicked(val automation: AutomationItemUi): Event()
+
+    data object OnSaveAutomation: Event()
 }

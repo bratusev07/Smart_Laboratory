@@ -15,6 +15,7 @@ import ru.bratusev.smartlab.domain.core.usecase.GetSettingsUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetTokenUseCase
 import ru.bratusev.smartlab.domain.core.usecase.ObserveSocketErrorsUseCase
 import ru.bratusev.smartlab.domain.core.usecase.SetCustomWidgetsUseCase
+import ru.bratusev.smartlab.domain.core.usecase.UpdateAutomationUseCase
 import ru.bratusev.smartlab.domain.core.usecase.UpdateSensorUseCase
 import ru.bratusev.smartlab.domain.core.usecase.UpdateSettingsUseCase
 
@@ -24,6 +25,7 @@ val domainModule = module {
     factory<GetTokenUseCase> { GetTokenUseCase(get()) }
     factory<GetLoginUseCase> { GetLoginUseCase(get()) }
     factory<GetLoggerUseCase> { GetLoggerUseCase(get()) }
+    factory<UpdateAutomationUseCase> { UpdateAutomationUseCase(get()) }
     factory<UpdateSensorUseCase> { UpdateSensorUseCase(get()) }
     factory<GetServiceEntitiesUseCase> { GetServiceEntitiesUseCase(get()) }
     factory<GetAreasUseCase> { GetAreasUseCase(get()) }
