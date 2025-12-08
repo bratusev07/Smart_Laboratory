@@ -19,6 +19,23 @@
     <string name="invalid_device_ip">The device IP does not match the Home Assistant IP.</string>
     <string name="error">Error</string>
 
+    <!-- LOGCAT -->
+    <string name="nothing_found">Nothing found</string>
+
+    <!-- DATES -->
+    <string name="january_short">Jan</string>
+    <string name="february_short">Feb</string>
+    <string name="march_short">Mar</string>
+    <string name="april_short">Apr</string>
+    <string name="may_short">May</string>
+    <string name="june_short">Jun</string>
+    <string name="july_short">Jul</string>
+    <string name="august_short">Aug</string>
+    <string name="september_short">Sep</string>
+    <string name="october_short">Oct</string>
+    <string name="november_short">Nov</string>
+    <string name="december_short">Dec</string>
+
     <!-- LOADING -->
     <string name="loading">Loading...</string>
     <string name="loading_settings">Loading settings...</string>
