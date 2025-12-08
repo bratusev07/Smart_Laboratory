@@ -19,6 +19,24 @@
     <string name="invalid_device_ip">IP устройства не соответствует IP Home assistant.</string>
     <string name="error">Ошибка</string>
 
+    <!-- LOGCAT -->
+    <string name="nothing_found">Ничего не найдено</string>
+
+    <!-- DATES -->
+    <string name="january_short">Янв</string>
+    <string name="february_short">Фев</string>
+    <string name="march_short">Мар</string>
+    <string name="april_short">Апр</string>
+    <string name="may_short">Май</string>
+    <string name="june_short">Июн</string>
+    <string name="july_short">Июл</string>
+    <string name="august_short">Авг</string>
+    <string name="september_short">Сен</string>
+    <string name="october_short">Окт</string>
+    <string name="november_short">Ноя</string>
+    <string name="december_short">Дек</string>
+
+
     <!-- LOADING -->
     <string name="loading">Загрузка...</string>
     <string name="loading_settings">Загрузка настроек...</string>

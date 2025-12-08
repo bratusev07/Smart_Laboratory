@@ -52,16 +52,16 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
 
             // DataStore library
-            implementation("androidx.datastore:datastore:1.1.7")
+            implementation(libs.androidx.datastore)
             // The Preferences DataStore library
-            implementation("androidx.datastore:datastore-preferences:1.1.7")
+            implementation(libs.datastore.preferences)
 
             // Room Database
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.sqlite.bundled)
             
             // DateTime library for cross-platform date/time operations
-            implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.5.0")
+            implementation(libs.kotlinx.datetime)
         }
 
         androidMain.dependencies {

@@ -37,6 +37,8 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
 
+            implementation(libs.kotlinx.datetime)
+
             implementation(libs.koin.core)
             implementation(libs.bundles.koin.compose)
 
