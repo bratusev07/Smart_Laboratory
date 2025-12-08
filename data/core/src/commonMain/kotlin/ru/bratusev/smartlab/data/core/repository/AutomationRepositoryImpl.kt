@@ -31,12 +31,14 @@ class AutomationRepositoryImpl(
             append("text", automationString)
         }.formUrlEncode()
 
-        val saveFileUrl = "$BASE_URL$shortFileUrl/api/save"
-        return client.post(saveFileUrl) {
-            cookie("ingress_session", sessionId)
-            contentType(ContentType.Application.FormUrlEncoded)
-            setBody(requestBody)
-        }.bodyAsText()
+        // TODO Uncomment save request
+        //val saveFileUrl = "$BASE_URL$shortFileUrl/api/save"
+        //return client.post(saveFileUrl) {
+        //    cookie("ingress_session", sessionId)
+        //    contentType(ContentType.Application.FormUrlEncoded)
+        //    setBody(requestBody)
+        //}.bodyAsText()
+        return "success"
     }
 
     override suspend fun fetchAutomaton(url: String): List<Automation> {

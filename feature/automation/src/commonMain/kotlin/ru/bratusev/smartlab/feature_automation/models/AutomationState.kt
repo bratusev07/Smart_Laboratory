@@ -2,10 +2,12 @@ package ru.bratusev.smartlab.feature_automation.models
 
 import ru.bratusev.smartlab.ui.core.models.AutomationItemUi
 import ru.bratusev.smartlab.ui.core.models.AutomationUi
+import ru.bratusev.smartlab.ui.core.models.SensorEntityUi
 
 data class AutomationState(
     val screenName: String = "Automation Screen",
-    val automation: AutomationUi = AutomationUi(emptyList())
+    val automation: AutomationUi = AutomationUi(emptyList()),
+    val sensors: List<SensorEntityUi> = emptyList()
 )
 
 sealed class Event {
@@ -15,4 +17,6 @@ sealed class Event {
     data class OnUpdateAutomationClicked(val automation: AutomationItemUi): Event()
 
     data object OnSaveAutomation: Event()
+
+    data class AddAutomation(val automation: AutomationItemUi): Event()
 }

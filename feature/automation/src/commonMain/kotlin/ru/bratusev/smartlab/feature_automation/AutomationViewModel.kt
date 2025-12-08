@@ -8,26 +8,33 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ru.bratusev.smartlab.data.core.Logger
+import ru.bratusev.smartlab.domain.core.model.automation.ActionWrapper
 import ru.bratusev.smartlab.domain.core.model.automation.Automation
+import ru.bratusev.smartlab.domain.core.model.automation.Target
+import ru.bratusev.smartlab.domain.core.model.automation.Trigger
 import ru.bratusev.smartlab.domain.core.usecase.GetAutomationUseCase
+import ru.bratusev.smartlab.domain.core.usecase.GetLoggerUseCase
+import ru.bratusev.smartlab.domain.core.usecase.GetServiceEntitiesUseCase
 import ru.bratusev.smartlab.domain.core.usecase.UpdateAutomationUseCase
+import ru.bratusev.smartlab.feature_automation.mappers.mapToUi
 import ru.bratusev.smartlab.feature_automation.models.AutomationState
 import ru.bratusev.smartlab.feature_automation.models.Event
 import ru.bratusev.smartlab.ui.core.models.AutomationItemUi
 import ru.bratusev.smartlab.ui.core.models.AutomationUi
 
 class AutomationViewModel(
-    private val logger: Logger,
+    private val loggerUseCase: GetLoggerUseCase,
     getAutomationUseCase: GetAutomationUseCase,
-    private val updateAutomationUseCase: UpdateAutomationUseCase
+    private val updateAutomationUseCase: UpdateAutomationUseCase,
+    serviceEntitiesUseCase: GetServiceEntitiesUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AutomationState())
     val uiState: StateFlow<AutomationState> = _uiState
 
-    private var originAutomations = emptyList<Automation>()
+    internal var originAutomations = emptyList<Automation>()
 
     init {
         getAutomationUseCase().onEach { result ->
@@ -44,7 +51,7 @@ class AutomationViewModel(
                                         automation.description
                                     )
                                 }
-                            )
+                            ),
                         )
                     )
                 },
@@ -52,6 +59,10 @@ class AutomationViewModel(
                     e.message.toString()
                 }
             )
+        }.launchIn(viewModelScope)
+
+        serviceEntitiesUseCase.invoke().onEach { entities ->
+            updateState(_uiState.value.copy(sensors = entities.map { it.mapToUi() }))
         }.launchIn(viewModelScope)
     }
 
@@ -63,7 +74,7 @@ class AutomationViewModel(
 
     private fun deleteAutomation(id: String) {
         val automations = uiState.value.automation.automationList.filter { it.id != id }
-        updateState(uiState.value.copy(automation = AutomationUi(automationList = automations)))
+        updateState(uiState.value.copy(automation = AutomationUi(automationList = automations),))
     }
 
     private fun updateAutomation(automation: AutomationItemUi) {
@@ -77,7 +88,29 @@ class AutomationViewModel(
             } else it
         }
 
-        updateState(uiState.value.copy(automation = AutomationUi(automationList = automations)))
+        updateState(uiState.value.copy(automation = AutomationUi(automationList = automations),))
+    }
+
+    private fun addAutomation(automation: AutomationItemUi) {
+        originAutomations = originAutomations.plus(
+            Automation(
+                id = automation.id,
+                alias = automation.alias,
+                triggers = automation.triggers.map { trigger ->
+                    Trigger(trigger = trigger.trigger, entityId = trigger.entityId)
+                },
+                actions = automation.actions.map {
+                    val action = automation.actions.first()
+                    ActionWrapper(
+                        action = action.action,
+                        target = Target(action.target.entityId)
+                    )
+                },
+                mode = automation.mode
+            )
+        )
+        val updatedAutomations = uiState.value.automation.automationList.plus(automation)
+        updateState(uiState.value.copy(automation = AutomationUi(updatedAutomations)))
     }
 
     private fun saveAutomations() {
@@ -106,6 +139,7 @@ class AutomationViewModel(
             is Event.OnDeleteAutomationClicked -> deleteAutomation(event.id)
             is Event.OnUpdateAutomationClicked -> updateAutomation(event.automation)
             is Event.OnSaveAutomation -> saveAutomations()
+            is Event.AddAutomation -> addAutomation(event.automation)
         }
     }
 }

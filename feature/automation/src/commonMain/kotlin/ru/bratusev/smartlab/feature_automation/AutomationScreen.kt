@@ -27,9 +27,12 @@ import ru.bratusev.smartlab.feature_automation.models.Event
 import ru.bratusev.smartlab.navigation.api.NavigationApi
 import ru.bratusev.smartlab.ui.core.AutomationBottomSheet
 import ru.bratusev.smartlab.ui.core.components.AutomationListComponent
+import ru.bratusev.smartlab.ui.core.components.AutomationSetupBottomSheet
 import ru.bratusev.smartlab.ui.core.models.AutomationItemUi
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalUuidApi::class)
 @Composable
 fun AutomationScreen(
     vm: AutomationViewModel = koinViewModel(),
@@ -37,6 +40,19 @@ fun AutomationScreen(
 ) {
     val state = vm.uiState.collectAsState()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    var showAddAutomationSheet by remember { mutableStateOf(false) }
+
+    if (showAddAutomationSheet && state.value.sensors.isNotEmpty()) {
+        AutomationSetupBottomSheet(
+            entities = state.value.sensors,
+            onDismiss = { showAddAutomationSheet = false },
+            onCreateAutomation = { automation ->
+                val id = Uuid.random().toString()
+                vm.handleEvent(Event.AddAutomation(automation.copy(id = id)))
+            }
+        )
+    }
 
     var selectedItem by remember { mutableStateOf<AutomationItemUi?>(null) }
     var isSheetOpen by remember { mutableStateOf(false) }
@@ -77,7 +93,7 @@ fun AutomationScreen(
             Spacer(modifier = Modifier.width(10.dp))
 
             FloatingActionButton(
-                onClick = {}
+                onClick = { showAddAutomationSheet = true }
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add")
             }
