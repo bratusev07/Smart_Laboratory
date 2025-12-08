@@ -35,6 +35,8 @@ import ru.bratusev.smartlab.feature_login.models.LoginStage
 import ru.bratusev.smartlab.ui.core.components.AnimatedLoadComponent
 import smartlaboratory.ui.core.generated.resources.Res
 import smartlaboratory.ui.core.generated.resources.auth_title
+import smartlaboratory.ui.core.generated.resources.invalid_device_ip
+import smartlaboratory.ui.core.generated.resources.network_error
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -99,8 +101,8 @@ fun LoginScreen(
         if (shouldOpenNetworkWarning) {
             AlertDialog(
                 onDismissRequest = { shouldOpenNetworkWarning = false },
-                title = { Text("Network warning") },
-                text = { Text("Network warning") },
+                title = { Text(stringResource(Res.string.network_error)) },
+                text = { Text(stringResource(Res.string.invalid_device_ip)) },
                 dismissButton = {
                     TextButton(
                         onClick = { shouldOpenNetworkWarning = false },
