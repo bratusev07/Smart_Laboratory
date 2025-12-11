@@ -92,7 +92,8 @@ class AutomationRepositoryImpl(
             }.bodyAsText().let { yaml ->
                 return try {
                     YamlParser.parseAutomations(yaml).map { it.mapToDomain() }
-                } catch (_ : Exception) {
+                } catch (e : Exception) {
+                    e
                     emptyList()
                 }
             }
