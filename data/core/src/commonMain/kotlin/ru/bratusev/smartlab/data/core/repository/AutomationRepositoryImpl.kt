@@ -1,16 +1,22 @@
 package ru.bratusev.smartlab.data.core.repository
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import io.ktor.client.HttpClient
 import io.ktor.client.request.cookie
 import io.ktor.client.request.get
+import io.ktor.client.request.headers
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.Parameters
 import io.ktor.http.contentType
 import io.ktor.http.formUrlEncode
 import ru.bratusev.smartlab.data.core.YamlParser
+import ru.bratusev.smartlab.data.core.local_storage.dataStore.AuthTokensStore
 import ru.bratusev.smartlab.data.core.mapper.mapToData
 import ru.bratusev.smartlab.data.core.mapper.mapToDomain
 import ru.bratusev.smartlab.data.core.remote_storage.Constants.BASE_URL
@@ -21,24 +27,58 @@ import ru.bratusev.smartlab.domain.core.repository.SocketRepository
 
 class AutomationRepositoryImpl(
     val client: HttpClient,
-    val socketRepository: SocketRepository
+    val socketRepository: SocketRepository,
+    private val dataStore: DataStore<Preferences>
 ) : AutomationRepository {
 
     override suspend fun saveAutomation(automationData: List<Automation>): String {
-        val automationString = YamlParser.parseAutomationsToYaml(automationData.map { it.mapToData() })
+        val automationString =
+            YamlParser.parseAutomationsToYaml(automationData.map { it.mapToData() })
         val requestBody = Parameters.build {
             append("filename", CONFIG_FILE_PATH)
             append("text", automationString)
         }.formUrlEncode()
 
-        // TODO Uncomment save request
-        //val saveFileUrl = "$BASE_URL$shortFileUrl/api/save"
-        //return client.post(saveFileUrl) {
-        //    cookie("ingress_session", sessionId)
-        //    contentType(ContentType.Application.FormUrlEncoded)
-        //    setBody(requestBody)
-        //}.bodyAsText()
-        return "success"
+        val saveFileUrl = "$BASE_URL$shortFileUrl/api/save"
+        val result = client.post(saveFileUrl) {
+            cookie("ingress_session", sessionId)
+            contentType(ContentType.Application.FormUrlEncoded)
+            setBody(requestBody)
+        }.bodyAsText()
+
+        if (!result.contains("success")) {
+            if(result.contains("4")) return "error"
+            val requestBodyOrigin = Parameters.build {
+                append("filename", CONFIG_FILE_PATH)
+                append("text", automationOriginString)
+            }.formUrlEncode()
+
+            client.post(saveFileUrl) {
+                cookie("ingress_session", sessionId)
+                contentType(ContentType.Application.FormUrlEncoded)
+                setBody(requestBodyOrigin)
+            }.bodyAsText()
+            return "error"
+        } else {
+            reloadAutomationConfig()
+            return "success"
+        }
+    }
+
+    suspend fun reloadAutomationConfig() {
+        try {
+            val token = AuthTokensStore.loadTokens(dataStore)?.accessToken
+            val response: HttpResponse = client.post("$BASE_URL/api/services/automation/reload") {
+                headers {
+                    append(HttpHeaders.Authorization, "Bearer $token")
+                    append(HttpHeaders.ContentType, "application/json")
+                }
+                setBody("{}")
+            }
+            response.bodyAsText()
+        } catch (e: Exception) {
+            e
+        }
     }
 
     override suspend fun fetchAutomaton(url: String): List<Automation> {
@@ -62,5 +102,6 @@ class AutomationRepositoryImpl(
     companion object {
         var sessionId: String = ""
         var shortFileUrl: String = ""
+        var automationOriginString: String = ""
     }
 }
