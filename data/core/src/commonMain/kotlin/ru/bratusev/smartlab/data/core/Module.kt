@@ -6,6 +6,7 @@ import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -36,12 +37,13 @@ val dataModule = module {
     }
 
     single<CoroutineScope> {
-        CoroutineScope(SupervisorJob() + Dispatchers.Main)
+        CoroutineScope(SupervisorJob() + Dispatchers.IO)
     }
 
     single<SocketRepository> {
         SocketRepositoryImpl(
-            webSocketClient = get()
+            webSocketClient = get(),
+            scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
         )
     }
 
