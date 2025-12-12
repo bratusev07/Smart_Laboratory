@@ -52,17 +52,26 @@ class AutomationViewModel(
                                     )
                                 }
                             ),
+                            isAutomationLoading = false
                         )
                     )
                 },
                 onFailure = { e ->
-                    e.message.toString()
+                    updateState(
+                        _uiState.value.copy(
+                            isAutomationLoading = false,
+                            errorMessage = e.message.toString()
+                        )
+                    )
                 }
             )
         }.launchIn(viewModelScope)
 
         serviceEntitiesUseCase.invoke().onEach { entities ->
-            updateState(_uiState.value.copy(sensors = entities.map { it.mapToUi() }))
+            updateState(_uiState.value.copy(
+                sensors = entities.map { it.mapToUi() },
+                isServiceLoading = false
+            ))
         }.launchIn(viewModelScope)
     }
 

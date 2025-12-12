@@ -7,7 +7,11 @@ import ru.bratusev.smartlab.ui.core.models.SensorEntityUi
 data class AutomationState(
     val screenName: String = "Automation Screen",
     val automation: AutomationUi = AutomationUi(emptyList()),
-    val sensors: List<SensorEntityUi> = emptyList()
+    val sensors: List<SensorEntityUi> = emptyList(),
+    val isAutomationLoading: Boolean = true,
+    val isServiceLoading: Boolean = true,
+    val errorMessage: String? = null,
+    val isLoading: Boolean = isAutomationLoading && isServiceLoading
 )
 
 sealed class Event {

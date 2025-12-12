@@ -28,6 +28,7 @@ import ru.bratusev.smartlab.navigation.api.NavigationApi
 import ru.bratusev.smartlab.ui.core.AutomationBottomSheet
 import ru.bratusev.smartlab.ui.core.components.AutomationListComponent
 import ru.bratusev.smartlab.ui.core.components.AutomationSetupBottomSheet
+import ru.bratusev.smartlab.ui.core.components.LoadingIndicator
 import ru.bratusev.smartlab.ui.core.models.AutomationItemUi
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -42,6 +43,8 @@ fun AutomationScreen(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     var showAddAutomationSheet by remember { mutableStateOf(false) }
+
+    LoadingIndicator(state.value.isAutomationLoading)
 
     if (showAddAutomationSheet && state.value.sensors.isNotEmpty()) {
         AutomationSetupBottomSheet(
