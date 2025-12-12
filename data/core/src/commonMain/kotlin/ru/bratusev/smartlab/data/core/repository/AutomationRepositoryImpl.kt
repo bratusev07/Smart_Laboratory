@@ -34,9 +34,10 @@ class AutomationRepositoryImpl(
     override suspend fun saveAutomation(automationData: List<Automation>): String {
         val automationString =
             YamlParser.parseAutomationsToYaml(automationData.map { it.mapToData() })
+        val newAutomationString = automationString.replace("- choose:", "  choose:").replace("  if:", "- if:")
         val requestBody = Parameters.build {
             append("filename", CONFIG_FILE_PATH)
-            append("text", automationString)
+            append("text", newAutomationString)
         }.formUrlEncode()
 
         val saveFileUrl = "$BASE_URL$shortFileUrl/api/save"
@@ -91,9 +92,8 @@ class AutomationRepositoryImpl(
                 cookie("ingress_session", sessionId)
             }.bodyAsText().let { yaml ->
                 return try {
-                    YamlParser.parseAutomations(yaml).map { it.mapToDomain() }
-                } catch (e : Exception) {
-                    e
+                    YamlParser.parseAutomations(yaml.replace("  choose:", "- choose:")).map { it.mapToDomain() }
+                } catch (_: Exception) {
                     emptyList()
                 }
             }
