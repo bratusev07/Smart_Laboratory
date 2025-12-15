@@ -5,8 +5,10 @@ import ru.bratusev.smartlab.domain.core.model.socket.ServiceEntity
 import ru.bratusev.smartlab.domain.core.repository.SocketRepository
 
 class GetServiceEntitiesUseCase(
-    private val socketRepository: SocketRepository
+    private val socketRepository: SocketRepository,
 ) {
-    operator fun invoke(): Flow<List<ServiceEntity>> = socketRepository.observeServiceEntities()
+    fun invoke(): Flow<List<ServiceEntity>> {
+        return socketRepository.observeServiceEntities()
+    }
 }
 

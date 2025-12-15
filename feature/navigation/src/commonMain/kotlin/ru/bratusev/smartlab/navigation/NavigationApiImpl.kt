@@ -37,6 +37,10 @@ class NavigationApiImpl(
         navController.navigate(Screen.Areas)
     }
 
+    override fun navigateToAutomationScreen() {
+        navController.navigate(Screen.Automation)
+    }
+
     override fun navigateToDetailedArea(
         areaId: String,
         friendlyName: String?,

@@ -182,4 +182,20 @@ sealed class SocketMessage {
         @SerialName("service_data") val serviceData: ServiceData,
         val id: Int,
     ) : SocketMessage()
+
+    @Serializable
+    data class ConfigurationInfo(
+        val type: String = "supervisor/api",
+        val endpoint: String = "/addons/core_configurator/info",
+        val method: String = "get",
+        val id: Int
+    ) : SocketMessage()
+
+    @Serializable
+    data class IngressSession(
+        val type: String = "supervisor/api",
+        val endpoint: String = "/ingress/session",
+        val method: String = "post",
+        val id: Int
+    ) : SocketMessage()
 }

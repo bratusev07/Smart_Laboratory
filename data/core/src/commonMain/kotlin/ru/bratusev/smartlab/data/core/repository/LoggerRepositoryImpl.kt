@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import ru.bratusev.smartlab.data.core.Logger
-import ru.bratusev.smartlab.data.core.database.LogcatMessageDao
 import ru.bratusev.smartlab.data.core.getCurrentDateTime
+import ru.bratusev.smartlab.data.core.local_storage.database.LogcatMessageDao
 import ru.bratusev.smartlab.data.core.model.LogcatMessageEntity
 import ru.bratusev.smartlab.domain.core.model.LogcatMessage
 import ru.bratusev.smartlab.domain.core.repository.LoggerRepository

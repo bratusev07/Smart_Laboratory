@@ -50,6 +50,7 @@ kotlin {
             implementation(projects.feature.customScreen)
             implementation(projects.feature.addWidgetScreen)
             implementation(projects.feature.allAreas)
+            implementation(projects.feature.automation)
             implementation(projects.feature.area)
             implementation(projects.ui.core)
 

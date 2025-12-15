@@ -52,9 +52,11 @@ class CustomScreenViewModel(
         getServiceEntitiesJob?.cancel()
         getWidgetsJob?.cancel()
 
-        getServiceEntitiesJob = getServiceEntitiesUseCase.invoke().onEach {
-            onServiceEntitiesUpdated(it)
-        }.launchIn(viewModelScope)
+        getServiceEntitiesJob = viewModelScope.launch {
+            getServiceEntitiesUseCase.invoke().collect {
+                onServiceEntitiesUpdated(it)
+            }
+        }
 
         getWidgetsJob = getWidgetsUseCase().onEach { result ->
             result.onSuccess {

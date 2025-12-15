@@ -2,10 +2,8 @@ package ru.bratusev.smartlab.data.core.repository
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import io.ktor.client.HttpClient
-import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.request
@@ -17,16 +15,23 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.Parameters
 import io.ktor.http.contentType
 import io.ktor.http.formUrlEncode
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.serialization.Serializable
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
-import ru.bratusev.smartlab.data.core.Constants.BASE_URL
-import ru.bratusev.smartlab.data.core.HomeAssistantWebSocketClient
-import ru.bratusev.smartlab.data.core.auth.AuthTokensStore
+import ru.bratusev.smartlab.data.core.local_storage.dataStore.AuthTokensStore
+import ru.bratusev.smartlab.data.core.local_storage.dataStore.AuthTokensStore.KEY_ACCESS
+import ru.bratusev.smartlab.data.core.model.AppData
+import ru.bratusev.smartlab.data.core.model.ConfigRequestBody
+import ru.bratusev.smartlab.data.core.model.LoginFlowRequestBody
+import ru.bratusev.smartlab.data.core.model.LoginFlowRequestBodyWithId
+import ru.bratusev.smartlab.data.core.model.RegistrationRequest
+import ru.bratusev.smartlab.data.core.remote_storage.Constants.BASE_URL
+import ru.bratusev.smartlab.data.core.remote_storage.HomeAssistantWebSocketClient
 import ru.bratusev.smartlab.domain.core.model.Device
 import ru.bratusev.smartlab.domain.core.repository.AuthRepository
 
@@ -36,84 +41,79 @@ class AuthRepositoryImpl(
     private val dataStore: DataStore<Preferences>
 ) : AuthRepository {
 
-    override suspend fun login(login: String, password: String): String {
-        return auth(login, password)
-    }
+    private val loginFlowBody = LoginFlowRequestBody(
+        client_id = "https://home-assistant.io/android",
+        handler = listOf("homeassistant", null),
+        redirect_uri = "homeassistant://auth-callback"
+    )
 
-    private suspend fun providers() {
-        val response = client.get("$BASE_URL/auth/providers")
-        println(response.bodyAsText())
-    }
-
-    private suspend fun auth(login: String, password: String): String {
-        val requestBody = LoginFlowRequestBody(
-            client_id = "https://home-assistant.io/android",
-            handler = listOf("homeassistant", null),
-            redirect_uri = "homeassistant://auth-callback"
-        )
-
-        val response = client.post("$BASE_URL/auth/login_flow") {
-            contentType(ContentType.Application.Json)
-            setBody(requestBody)
-        }
-
-        return authFlow(
-            flowId = Json.parseToJsonElement(response.bodyAsText())
-                .jsonObject["flow_id"]
-                .toString()
-                .replace("\"", ""),
-            login = login,
-            password = password,
-        )
-    }
-
-    private suspend fun authFlow(flowId: String, login: String, password: String): String {
-        val requestBody = LoginFlowRequestBodyWithId(
+    private fun loginFlowRequestBodyWithId(login: String, password: String): LoginFlowRequestBodyWithId {
+        return LoginFlowRequestBodyWithId(
             client_id = "https://home-assistant.io/android",
             username = login,
             password = password
         )
-
-        val response = client.post("$BASE_URL/auth/login_flow/$flowId") {
-            contentType(ContentType.Application.Json)
-            setBody(requestBody)
-        }
-
-        return token(
-            code = Json.parseToJsonElement(response.bodyAsText())
-                .jsonObject["result"]
-                .toString()
-                .replace("\"", ""),
-        )
     }
 
-    private suspend fun token(code: String): String {
+    override suspend fun login(login: String, password: String) {
+        auth(login, password)
+    }
+
+    private suspend fun auth(login: String, password: String) {
+        client.post("$BASE_URL/auth/login_flow") {
+            contentType(ContentType.Application.Json)
+            setBody(loginFlowBody)
+        }.bodyAsText().let {
+            authFlow(
+                flowId = Json.parseToJsonElement(it)
+                    .jsonObject["flow_id"]
+                    .toString()
+                    .replace("\"", ""),
+                loginFlowRequestBodyWithId(login, password)
+            )
+        }
+    }
+
+    private suspend fun authFlow(flowId: String, loginFlowBodyWithId: LoginFlowRequestBodyWithId) {
+        client.post("$BASE_URL/auth/login_flow/$flowId") {
+            contentType(ContentType.Application.Json)
+            setBody(loginFlowBodyWithId)
+        }.bodyAsText().let {
+            token(
+                code = Json.parseToJsonElement(it)
+                    .jsonObject["result"]
+                    .toString()
+                    .replace("\"", ""),
+            )
+        }
+    }
+
+    private suspend fun token(code: String) {
         val requestBody = Parameters.build {
             append("grant_type", "authorization_code")
             append("code", code)
             append("client_id", "https://home-assistant.io/android")
         }.formUrlEncode()
 
-        val response = client.post("$BASE_URL/auth/token") {
+        client.post("$BASE_URL/auth/token") {
             contentType(ContentType.Application.FormUrlEncoded)
             setBody(requestBody)
+        }.bodyAsText().let {
+            // TODO Check code validity
+            val json = Json.parseToJsonElement(it).jsonObject
+            val accessToken = json["access_token"]?.jsonPrimitive?.content ?: ""
+            val refreshToken = json["refresh_token"]?.jsonPrimitive?.content ?: ""
+            val expiresInSeconds = json["expires_in"]?.jsonPrimitive?.intOrNull
+
+            AuthTokensStore.saveTokens(
+                dataStore = dataStore,
+                accessToken = accessToken,
+                refreshToken = refreshToken,
+                expiresInSeconds = expiresInSeconds
+            )
+
+            socketClient.setToken(accessToken).connect()
         }
-
-        val json = Json.parseToJsonElement(response.bodyAsText()).jsonObject
-        val accessToken = json["access_token"]?.jsonPrimitive?.content ?: ""
-        val refreshToken = json["refresh_token"]?.jsonPrimitive?.content ?: ""
-        val expiresInSeconds = json["expires_in"]?.jsonPrimitive?.intOrNull
-
-        // Persist both tokens and expiry for automatic auth handling
-        AuthTokensStore.saveTokens(
-            dataStore = dataStore,
-            accessToken = accessToken,
-            refreshToken = refreshToken,
-            expiresInSeconds = expiresInSeconds
-        )
-
-        socketClient.setToken(accessToken).connect()
-        return accessToken
     }
 
     // To Auth interface
@@ -159,83 +159,20 @@ class AuthRepositoryImpl(
             device_id = device.deviceId
         )
 
-        val response = client.post("$BASE_URL/api/mobile_app/registrations") {
+        client.post("$BASE_URL/api/mobile_app/registrations") {
             header(HttpHeaders.Authorization, "Bearer $token")
             contentType(ContentType.Application.Json)
             setBody(requestBody)
         }
-
-        val webhookId = Json.parseToJsonElement(response.bodyAsText())
-            .jsonObject["webhook_id"]
-            .toString()
-            .replace("\"", "")
-    }
-
-    override suspend fun saveToken(token: String) {
-        dataStore.edit { preferences ->
-            preferences[TOKEN_KEY] = token
-        }
-        // Also persist for the Ktor Auth plugin
-        AuthTokensStore.saveTokens(
-            dataStore = dataStore,
-            accessToken = token,
-            refreshToken = null,
-            expiresInSeconds = null
-        )
     }
 
     override suspend fun getToken(): String? {
         return dataStore.data.map { preferences ->
-            preferences[TOKEN_KEY]
+            preferences[KEY_ACCESS]
         }.first()
     }
 
-    private companion object {
-        val TOKEN_KEY = stringPreferencesKey("auth_token")
+    override suspend fun subscribeToken(): Flow<String> = dataStore.data.mapNotNull { preferences ->
+            preferences[KEY_ACCESS]
     }
 }
-
-@Serializable
-data class LoginFlowRequestBody(
-    val client_id: String,
-    val handler: List<String?>,
-    val redirect_uri: String
-)
-
-@Serializable
-data class LoginFlowRequestBodyWithId(
-    val username: String,
-    val password: String,
-    val client_id: String
-)
-
-@Serializable
-data class ConfigRequestBody(
-    val client_id: String,
-    val handler: List<String?>,
-    val redirect_uri: String,
-    val type: String
-)
-
-
-@Serializable
-data class RegistrationRequest(
-    val app_id: String,
-    val app_name: String,
-    val app_version: String,
-    val device_name: String,
-    val manufacturer: String,
-    val model: String,
-    val os_name: String,
-    val os_version: String,
-    val supports_encryption: Boolean,
-    val app_data: AppData,
-    val device_id: String
-)
-
-@Serializable
-data class AppData(
-    val push_websocket_channel: Boolean,
-    val push_url: String,
-    val push_token: String
-)

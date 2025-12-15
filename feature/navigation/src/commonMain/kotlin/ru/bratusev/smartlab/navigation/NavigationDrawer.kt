@@ -120,6 +120,12 @@ fun NavigationDrawer(
                             navigateTo = navigateTo)
                         HorizontalDivider()
                         NavigationDrawerItemComponent(
+                            NavigationDrawerItems.Automation,
+                            selected = navigationHierarchy?.any { it.hasRoute(NavigationDrawerItems.Automation.screen::class) }
+                                ?: false,
+                            navigateTo = navigateTo)
+                        HorizontalDivider()
+                        NavigationDrawerItemComponent(
                             NavigationDrawerItems.Notifications,
                             selected = navigationHierarchy?.any { it.hasRoute(NavigationDrawerItems.Notifications.screen::class) }
                                 ?: false,

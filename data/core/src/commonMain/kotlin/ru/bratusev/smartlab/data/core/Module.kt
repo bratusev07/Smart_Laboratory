@@ -6,20 +6,24 @@ import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import org.koin.core.module.Module
 import org.koin.dsl.module
-import ru.bratusev.smartlab.data.core.dataStore.DataStoreFactory
-import ru.bratusev.smartlab.data.core.database.AppDatabase
-import ru.bratusev.smartlab.data.core.database.DatabaseFactory
-import ru.bratusev.smartlab.data.core.database.LogcatMessageDao
+import ru.bratusev.smartlab.data.core.local_storage.dataStore.DataStoreFactory
+import ru.bratusev.smartlab.data.core.local_storage.database.AppDatabase
+import ru.bratusev.smartlab.data.core.local_storage.database.DatabaseFactory
+import ru.bratusev.smartlab.data.core.local_storage.database.LogcatMessageDao
+import ru.bratusev.smartlab.data.core.remote_storage.HomeAssistantWebSocketClient
 import ru.bratusev.smartlab.data.core.repository.AuthRepositoryImpl
+import ru.bratusev.smartlab.data.core.repository.AutomationRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.ButtonTextRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.LoggerRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.SettingsRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.SocketRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.WidgetRepositoryImpl
 import ru.bratusev.smartlab.domain.core.repository.AuthRepository
+import ru.bratusev.smartlab.domain.core.repository.AutomationRepository
 import ru.bratusev.smartlab.domain.core.repository.ButtonTextRepository
 import ru.bratusev.smartlab.domain.core.repository.LoggerRepository
 import ru.bratusev.smartlab.domain.core.repository.SettingsRepository
@@ -33,12 +37,13 @@ val dataModule = module {
     }
 
     single<CoroutineScope> {
-        CoroutineScope(SupervisorJob() + Dispatchers.Main)
+        CoroutineScope(SupervisorJob() + Dispatchers.IO)
     }
 
     single<SocketRepository> {
         SocketRepositoryImpl(
-            webSocketClient = get()
+            webSocketClient = get(),
+            scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
         )
     }
 
@@ -85,6 +90,8 @@ val dataModule = module {
     single<LogcatMessageDao> { get<AppDatabase>().logcatMessagesDao() }
 
     single<WidgetsRepository> { WidgetRepositoryImpl(get()) }
+
+    single<AutomationRepository> { AutomationRepositoryImpl(get(), get(), get()) }
 
     includes(platformDataModule)
 }

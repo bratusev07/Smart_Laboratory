@@ -6,7 +6,7 @@ import android.net.ConnectivityManager
 import android.net.LinkProperties
 import android.net.NetworkCapabilities
 import androidx.annotation.RequiresPermission
-import ru.bratusev.smartlab.data.core.Constants
+import ru.bratusev.smartlab.data.core.remote_storage.Constants
 import ru.bratusev.smartlab.domain.core.model.NetworkStatus
 import ru.bratusev.smartlab.domain.core.repository.NetworkRepository
 import java.net.Inet4Address

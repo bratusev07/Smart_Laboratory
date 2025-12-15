@@ -26,9 +26,11 @@ class HomeViewModel(
     val uiState: StateFlow<HomeState> = _uiState
 
     init {
-        getServiceEntitiesUseCase.invoke().onEach {
-            onServiceEntitiesUpdated(it)
-        }.launchIn(viewModelScope)
+        viewModelScope.launch {
+            getServiceEntitiesUseCase.invoke().collect {
+                onServiceEntitiesUpdated(it)
+            }
+        }
 
         observeSocketErrorsUseCase.invoke().onEach { errors ->
             if (errors.isNotEmpty()) {

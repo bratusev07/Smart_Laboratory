@@ -4,6 +4,7 @@ import org.koin.dsl.module
 import ru.bratusev.smartlab.feature_addWidgetScreen.addWidgetScreenModule
 import ru.bratusev.smartlab.feature_area.areaScreenModule
 import ru.bratusev.smartlab.feature_areas.allAreasScreenModule
+import ru.bratusev.smartlab.feature_automation.automationModule
 import ru.bratusev.smartlab.feature_customScreen.customScreenModule
 import ru.bratusev.smartlab.feature_home.homeModule
 import ru.bratusev.smartlab.feature_logcat.logcatModule
@@ -14,6 +15,7 @@ val navigationModule = module {
     includes(
         homeModule,
         settingsModule,
+        automationModule,
         loginModule,
         logcatModule,
         allAreasScreenModule,
