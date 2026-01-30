@@ -68,13 +68,13 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.ktor.client.android)
             // Yaml parser
-            implementation("com.charleskorn.kaml:kaml:0.58.0")
+            implementation(libs.kaml)
         }
 
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
             // Yaml parser
-            implementation("com.charleskorn.kaml:kaml:0.58.0")
+            implementation(libs.kaml)
         }
 
         dependencies {
