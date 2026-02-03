@@ -34,7 +34,7 @@ import ru.bratusev.smartlab.feature_login.models.Event
 import ru.bratusev.smartlab.feature_login.models.LoginStage
 import ru.bratusev.smartlab.navigation.api.NavigationApi
 import ru.bratusev.smartlab.ui.core.components.AnimatedLoadComponent
-import ru.bratusev.smartlab.ui.core.components.ServerSelection
+import ru.bratusev.smartlab.ui.core.components.ServerSelectionDropDown
 import ru.bratusev.smartlab.ui.core.models.ServerSelectionUi
 import smartlaboratory.ui.core.generated.resources.Res
 import smartlaboratory.ui.core.generated.resources.auth_title
@@ -57,6 +57,9 @@ fun LoginScreen(
         }
     }
 
+    var expanded by remember { mutableStateOf(false) }
+    var selected by remember { mutableStateOf("") }
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier.fillMaxSize().padding(vertical = 24.dp),
@@ -72,15 +75,33 @@ fun LoginScreen(
             )
 
             Spacer(modifier = Modifier.height(12.dp))
-            ServerSelection(
+            ServerSelectionDropDown(
                 modifier = Modifier.padding(horizontal = 24.dp),
                 uiData = ServerSelectionUi(
-                    serverList =
-                        mapOf("255.255.255.255" to "Preview", "254.254.254.254" to "Preview2"),
-                    currentServerUrl = "254.254.254.254"
+                    serverList = mapOf(
+                        "255.255.255.255" to "Preview55",
+                        "254.254.254.254" to "Preview54",
+                        "253.253.253.253" to "Preview53",
+                        "252.252.252.252" to "Preview52",
+                        "251.251.251.251" to "Preview51",
+                        "250.250.250.250" to "Preview50",
+                        "249.249.249.249" to "Preview49",
+                        "248.248.248.248" to "Preview48",
+                        "247.247.247.247" to "Preview47",
+                        "246.246.246.246" to "Preview46",
+                        "245.245.245.245" to "Preview45"
+                    ), currentServerUrl = selected, expanded = expanded
                 ),
-                onSelect = {}
-            )
+                onSelect = {url ->
+                    selected = url
+                    expanded = false
+                },
+                onExpand = {
+                    expanded = true
+                },
+                onClose = {
+                    expanded = false
+                })
             Spacer(modifier = Modifier.height(12.dp))
 
             InputFieldBlock(
@@ -120,11 +141,9 @@ fun LoginScreen(
                 dismissButton = {
                     TextButton(
                         onClick = { shouldOpenNetworkWarning = false },
-                        content = { Text(stringResource(Res.string.confirm)) }
-                    )
+                        content = { Text(stringResource(Res.string.confirm)) })
                 },
-                confirmButton = {}
-            )
+                confirmButton = {})
         }
     }
 }
