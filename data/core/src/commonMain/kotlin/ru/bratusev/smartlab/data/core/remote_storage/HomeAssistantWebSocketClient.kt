@@ -26,9 +26,12 @@ import ru.bratusev.smartlab.data.core.remote_storage.message.HomeAssistantMessag
 import ru.bratusev.smartlab.data.core.remote_storage.message.HomeAssistantMessageHandlersImpl
 import ru.bratusev.smartlab.data.core.remote_storage.message.HomeAssistantMessageSender
 import ru.bratusev.smartlab.data.core.remote_storage.message.HomeAssistantMessageSenderImpl
+import ru.bratusev.smartlab.domain.core.repository.ServerSelectionRepository
 
 
-class HomeAssistantWebSocketClient() {
+class HomeAssistantWebSocketClient(
+    private val serverSelectionRepository: ServerSelectionRepository
+) {
 
     private var accessToken: String? = null
     private val client = HttpClient(CIO) {
@@ -55,9 +58,7 @@ class HomeAssistantWebSocketClient() {
 
     private val messageHandlers: HomeAssistantMessageHandlers by lazy {
         HomeAssistantMessageHandlersImpl(
-            json = json,
-            session = session,
-            errorFlow = _socketResponseFlow
+            json = json, session = session, errorFlow = _socketResponseFlow
         )
     }
     private val messageSender: HomeAssistantMessageSender by lazy {
@@ -79,7 +80,11 @@ class HomeAssistantWebSocketClient() {
     internal suspend fun connect() = withContext(Dispatchers.IO) {
         job = CoroutineScope(Dispatchers.IO).launch {
             try {
-                client.webSocket(Constants.BASE_URL.replace("http", "ws") + "/api/websocket") {
+                client.webSocket(
+                    (serverSelectionRepository.getCurrentBaseUrl() ?: "").replace(
+                        "http", "ws"
+                    ) + "/api/websocket"
+                ) {
                     session = this
                     for (frame in incoming) {
                         if (frame is Frame.Text) {
@@ -111,37 +116,51 @@ class HomeAssistantWebSocketClient() {
 
             when (type) {
                 "auth_required" -> messageHandlers.handleAuthRequired(
-                    jsonElement = jsonElement,
-                    accessToken = accessToken
+                    jsonElement = jsonElement, accessToken = accessToken
                 )
 
                 "auth_ok" -> messageHandlers.handleAuthOk(
                     jsonElement = jsonElement,
                     getMessageId = { messageId },
-                    setMessageId = { newId -> messageId = newId }
-                )
+                    setMessageId = { newId -> messageId = newId })
 
                 "auth_invalid" -> messageHandlers.handleAuthInvalid(jsonElement = jsonElement)
                 "result" -> messageHandlers.handleResult(
                     jsonElement = jsonElement,
-                    emitAreaEntity = { list -> _socketResponseFlow.tryEmit(SocketResponseModel.AreasEntity(list))},
+                    emitAreaEntity = { list ->
+                        _socketResponseFlow.tryEmit(
+                            SocketResponseModel.AreasEntity(
+                                list
+                            )
+                        )
+                    },
                     emitAreaDevices = { list ->
-                        val devices = SocketResponseModel.AreaDeviceEntity(serviceEntityCopy?.services?.filter { list.contains(it.id) } ?: emptyList())
+                        val devices =
+                            SocketResponseModel.AreaDeviceEntity(serviceEntityCopy?.services?.filter {
+                                list.contains(it.id)
+                            } ?: emptyList())
                         _socketResponseFlow.tryEmit(devices)
                     },
-                    collectAutomationUrl = { url->
+                    collectAutomationUrl = { url ->
                         _socketResponseFlow.tryEmit(SocketResponseModel.AutomationUrl(url))
                     },
                     collectIngressSession = { id ->
                         _socketResponseFlow.tryEmit(SocketResponseModel.IngressSessionId(id))
-                    }
-                )
+                    })
+
                 "event" -> messageHandlers.handleEvent(
                     jsonElement = jsonElement,
                     getServiceEntitiesCopy = { serviceEntityCopy?.services ?: emptyList() },
-                    setServiceEntitiesCopy = { list -> serviceEntityCopy = SocketResponseModel.DeviceEntity(list) },
-                    emitServiceEntities = { list -> _socketResponseFlow.tryEmit(SocketResponseModel.DeviceEntity(list)) }
-                )
+                    setServiceEntitiesCopy = { list ->
+                        serviceEntityCopy = SocketResponseModel.DeviceEntity(list)
+                    },
+                    emitServiceEntities = { list ->
+                        _socketResponseFlow.tryEmit(
+                            SocketResponseModel.DeviceEntity(
+                                list
+                            )
+                        )
+                    })
 
                 "pong" -> messageHandlers.handlePong(jsonElement = jsonElement)
                 else -> {

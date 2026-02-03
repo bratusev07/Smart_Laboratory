@@ -24,21 +24,22 @@ import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import ru.bratusev.smartlab.data.core.local_storage.dataStore.AuthTokensStore
-import ru.bratusev.smartlab.data.core.local_storage.dataStore.AuthTokensStore.KEY_ACCESS
 import ru.bratusev.smartlab.data.core.model.AppData
 import ru.bratusev.smartlab.data.core.model.ConfigRequestBody
 import ru.bratusev.smartlab.data.core.model.LoginFlowRequestBody
 import ru.bratusev.smartlab.data.core.model.LoginFlowRequestBodyWithId
 import ru.bratusev.smartlab.data.core.model.RegistrationRequest
-import ru.bratusev.smartlab.data.core.remote_storage.Constants.BASE_URL
 import ru.bratusev.smartlab.data.core.remote_storage.HomeAssistantWebSocketClient
 import ru.bratusev.smartlab.domain.core.model.Device
 import ru.bratusev.smartlab.domain.core.repository.AuthRepository
+import ru.bratusev.smartlab.domain.core.repository.ServerSelectionRepository
 
 class AuthRepositoryImpl(
     private val client: HttpClient,
     private val socketClient: HomeAssistantWebSocketClient,
-    private val dataStore: DataStore<Preferences>
+    private val dataStore: DataStore<Preferences>,
+    private val serverSelectionRepository: ServerSelectionRepository,
+    private val authTokensStore: AuthTokensStore
 ) : AuthRepository {
 
     private val loginFlowBody = LoginFlowRequestBody(
@@ -47,7 +48,10 @@ class AuthRepositoryImpl(
         redirect_uri = "homeassistant://auth-callback"
     )
 
-    private fun loginFlowRequestBodyWithId(login: String, password: String): LoginFlowRequestBodyWithId {
+    private fun loginFlowRequestBodyWithId(
+        login: String,
+        password: String
+    ): LoginFlowRequestBodyWithId {
         return LoginFlowRequestBodyWithId(
             client_id = "https://home-assistant.io/android",
             username = login,
@@ -60,7 +64,7 @@ class AuthRepositoryImpl(
     }
 
     private suspend fun auth(login: String, password: String) {
-        client.post("$BASE_URL/auth/login_flow") {
+        client.post("${serverSelectionRepository}/auth/login_flow") {
             contentType(ContentType.Application.Json)
             setBody(loginFlowBody)
         }.bodyAsText().let {
@@ -75,7 +79,7 @@ class AuthRepositoryImpl(
     }
 
     private suspend fun authFlow(flowId: String, loginFlowBodyWithId: LoginFlowRequestBodyWithId) {
-        client.post("$BASE_URL/auth/login_flow/$flowId") {
+        client.post("${serverSelectionRepository}/auth/login_flow/$flowId") {
             contentType(ContentType.Application.Json)
             setBody(loginFlowBodyWithId)
         }.bodyAsText().let {
@@ -95,7 +99,7 @@ class AuthRepositoryImpl(
             append("client_id", "https://home-assistant.io/android")
         }.formUrlEncode()
 
-        client.post("$BASE_URL/auth/token") {
+        client.post("${serverSelectionRepository}/auth/token") {
             contentType(ContentType.Application.FormUrlEncoded)
             setBody(requestBody)
         }.bodyAsText().let {
@@ -105,7 +109,7 @@ class AuthRepositoryImpl(
             val refreshToken = json["refresh_token"]?.jsonPrimitive?.content ?: ""
             val expiresInSeconds = json["expires_in"]?.jsonPrimitive?.intOrNull
 
-            AuthTokensStore.saveTokens(
+            authTokensStore.saveTokens(
                 dataStore = dataStore,
                 accessToken = accessToken,
                 refreshToken = refreshToken,
@@ -127,12 +131,13 @@ class AuthRepositoryImpl(
         )
 
         try {
-            val response = client.request("$BASE_URL/api/config") {
-                method = HttpMethod("GET")
-                header(HttpHeaders.Authorization, "Bearer $token")
-                contentType(ContentType.Application.Json)
-                setBody(requestBody)
-            }
+            val response =
+                client.request("${serverSelectionRepository.getCurrentBaseUrl()}/api/config") {
+                    method = HttpMethod("GET")
+                    header(HttpHeaders.Authorization, "Bearer $token")
+                    contentType(ContentType.Application.Json)
+                    setBody(requestBody)
+                }
             println(response.bodyAsText())
         } catch (e: Exception) {
             e
@@ -159,7 +164,7 @@ class AuthRepositoryImpl(
             device_id = device.deviceId
         )
 
-        client.post("$BASE_URL/api/mobile_app/registrations") {
+        client.post("${serverSelectionRepository.getCurrentBaseUrl()}/api/mobile_app/registrations") {
             header(HttpHeaders.Authorization, "Bearer $token")
             contentType(ContentType.Application.Json)
             setBody(requestBody)
@@ -168,11 +173,11 @@ class AuthRepositoryImpl(
 
     override suspend fun getToken(): String? {
         return dataStore.data.map { preferences ->
-            preferences[KEY_ACCESS]
+            preferences[authTokensStore.KEY_ACCESS]
         }.first()
     }
 
     override suspend fun subscribeToken(): Flow<String> = dataStore.data.mapNotNull { preferences ->
-            preferences[KEY_ACCESS]
+        preferences[authTokensStore.KEY_ACCESS]
     }
 }

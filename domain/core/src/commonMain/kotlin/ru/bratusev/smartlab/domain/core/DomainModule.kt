@@ -10,7 +10,7 @@ import ru.bratusev.smartlab.domain.core.usecase.GetLogcatMessagesUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetLoggerUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetLoginUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetNetworkStatusUseCase
-import ru.bratusev.smartlab.domain.core.usecase.GetServerSelectionUseCase
+import ru.bratusev.smartlab.domain.core.usecase.GetServerSelectionFlowUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetServiceEntitiesUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetSettingsUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetTokenUseCase
@@ -40,6 +40,6 @@ val domainModule = module {
     factory<GetSettingsUseCase> { GetSettingsUseCase(get()) }
     factory<UpdateSettingsUseCase> { UpdateSettingsUseCase(get()) }
     factory<GetNetworkStatusUseCase> { GetNetworkStatusUseCase(get()) }
-    factory<GetServerSelectionUseCase> { GetServerSelectionUseCase(get()) }
+    factory<GetServerSelectionFlowUseCase> { GetServerSelectionFlowUseCase(get()) }
     factory<SetServerSelectionUseCase> { SetServerSelectionUseCase(get()) }
 }

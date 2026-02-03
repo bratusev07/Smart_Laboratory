@@ -9,16 +9,17 @@ import androidx.annotation.RequiresPermission
 import ru.bratusev.smartlab.data.core.remote_storage.Constants
 import ru.bratusev.smartlab.domain.core.model.NetworkStatus
 import ru.bratusev.smartlab.domain.core.repository.NetworkRepository
+import ru.bratusev.smartlab.domain.core.repository.ServerSelectionRepository
 import java.net.Inet4Address
 import java.net.NetworkInterface
 import java.util.Collections
 
-actual class NetworkRepositoryImpl(private val context: Context) : NetworkRepository {
+actual class NetworkRepositoryImpl(private val context: Context, private val serverSelectionRepository: ServerSelectionRepository) : NetworkRepository {
     @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
     actual override fun getNetworkStatus(): NetworkStatus {
         return NetworkStatus(
             ip = getIpAddress() ?: "0.0.0.0",
-            baseUrl = Constants.BASE_URL,
+            baseUrl = serverSelectionRepository.getCurrentBaseUrl() ?: "",
             isVpnActive = isVpnActive()
         )
     }

@@ -10,10 +10,12 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import org.koin.core.module.Module
 import org.koin.dsl.module
+import ru.bratusev.smartlab.data.core.local_storage.dataStore.AuthTokensStore
 import ru.bratusev.smartlab.data.core.local_storage.dataStore.DataStoreFactory
 import ru.bratusev.smartlab.data.core.local_storage.database.AppDatabase
 import ru.bratusev.smartlab.data.core.local_storage.database.DatabaseFactory
 import ru.bratusev.smartlab.data.core.local_storage.database.LogcatMessageDao
+import ru.bratusev.smartlab.data.core.mapper.AreaEntityMapper
 import ru.bratusev.smartlab.data.core.remote_storage.HomeAssistantWebSocketClient
 import ru.bratusev.smartlab.data.core.repository.AuthRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.AutomationRepositoryImpl
@@ -45,7 +47,8 @@ val dataModule = module {
     single<SocketRepository> {
         SocketRepositoryImpl(
             webSocketClient = get(),
-            scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+            scope = CoroutineScope(SupervisorJob() + Dispatchers.IO),
+            get()
         )
     }
 
@@ -53,7 +56,9 @@ val dataModule = module {
         AuthRepositoryImpl(
             client = get(),
             socketClient = get(),
-            dataStore = get()
+            dataStore = get(),
+            serverSelectionRepository = get(),
+            authTokensStore = get()
         )
     }
 
@@ -74,11 +79,19 @@ val dataModule = module {
     }
 
     single<KtorClientFactory> {
-        KtorClientFactory()
+        KtorClientFactory(get(), get())
+    }
+
+    single<AuthTokensStore> {
+        AuthTokensStore(get())
     }
 
     single<HttpClient> {
         get<KtorClientFactory>().createClient()
+    }
+
+    single<AreaEntityMapper> {
+        AreaEntityMapper(get())
     }
 
     single<DataStore<Preferences>> {
@@ -86,7 +99,7 @@ val dataModule = module {
     }
 
     single<HomeAssistantWebSocketClient> {
-        HomeAssistantWebSocketClient()
+        HomeAssistantWebSocketClient(get())
     }
 
     single {
@@ -97,7 +110,7 @@ val dataModule = module {
 
     single<WidgetsRepository> { WidgetRepositoryImpl(get()) }
 
-    single<AutomationRepository> { AutomationRepositoryImpl(get(), get(), get()) }
+    single<AutomationRepository> { AutomationRepositoryImpl(get(), get(), get(), get(), get()) }
 
     includes(platformDataModule)
 }

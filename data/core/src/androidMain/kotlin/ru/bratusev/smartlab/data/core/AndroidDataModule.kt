@@ -9,7 +9,7 @@ import ru.bratusev.smartlab.data.core.repository.NetworkRepositoryImpl
 import ru.bratusev.smartlab.domain.core.repository.NetworkRepository
 
 val androidDataModule = module {
-    single <Context> {
+    single<Context> {
         androidApplication()
     }
 
@@ -23,7 +23,7 @@ val androidDataModule = module {
     }
 
     single<DatabaseFactory> { DatabaseFactory(get()) }
-    single<NetworkRepository> { NetworkRepositoryImpl(get()) }
+    single<NetworkRepository> { NetworkRepositoryImpl(get(), get()) }
 }
 
 actual val platformDataModule = androidDataModule

@@ -21,8 +21,11 @@ import kotlinx.serialization.json.intOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import ru.bratusev.smartlab.data.core.remote_storage.Constants
+import ru.bratusev.smartlab.domain.core.repository.ServerSelectionRepository
 
-object AuthTokensStore {
+class AuthTokensStore(
+    private val serverSelectionRepository: ServerSelectionRepository
+) {
 
     internal val KEY_ACCESS = stringPreferencesKey("auth_token")
     private val KEY_REFRESH = stringPreferencesKey("auth_refresh_token")
@@ -57,7 +60,10 @@ object AuthTokensStore {
         return BearerTokens(accessToken = access, refreshToken = refresh ?: "")
     }
 
-    suspend fun refreshTokens(client: HttpClient, dataStore: DataStore<Preferences>): BearerTokens? {
+    suspend fun refreshTokens(
+        client: HttpClient,
+        dataStore: DataStore<Preferences>
+    ): BearerTokens? {
         val prefs = dataStore.data.first()
         val refresh = prefs[KEY_REFRESH] ?: return null
 
@@ -67,7 +73,7 @@ object AuthTokensStore {
             append("client_id", "https://home-assistant.io/android")
         }.formUrlEncode()
 
-        val response = client.post("${Constants.BASE_URL}/auth/token") {
+        val response = client.post("${serverSelectionRepository.getCurrentBaseUrl()}/auth/token") {
             contentType(ContentType.Application.FormUrlEncoded)
             setBody(body)
         }

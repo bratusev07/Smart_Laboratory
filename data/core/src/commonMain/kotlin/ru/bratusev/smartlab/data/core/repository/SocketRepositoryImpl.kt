@@ -9,16 +9,19 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
+import ru.bratusev.smartlab.data.core.mapper.AreaEntityMapper
 import ru.bratusev.smartlab.data.core.mapper.mapToDomain
 import ru.bratusev.smartlab.data.core.model.SocketResponseModel
 import ru.bratusev.smartlab.data.core.remote_storage.HomeAssistantWebSocketClient
 import ru.bratusev.smartlab.domain.core.model.socket.Area
 import ru.bratusev.smartlab.domain.core.model.socket.ServiceEntity
 import ru.bratusev.smartlab.domain.core.repository.SocketRepository
+import kotlin.getValue
 
 class SocketRepositoryImpl(
     private val webSocketClient: HomeAssistantWebSocketClient,
-    private val scope: CoroutineScope
+    private val scope: CoroutineScope,
+    private val areaEntityMapper: AreaEntityMapper
 ) : SocketRepository {
 
     private val servicesFlow by lazy {
@@ -48,7 +51,7 @@ class SocketRepositoryImpl(
     private val areasFlow by lazy {
         webSocketClient.socketResponseFlow
             .filterIsInstance<SocketResponseModel.AreasEntity>()
-            .map { it.areas.map { a -> a.mapToDomain() } }
+            .map { it.areas.map { a -> areaEntityMapper.mapToDomain(a) } }
             .shareIn(scope, SharingStarted.WhileSubscribed(5000), replay = 1)
             .also {
                 scope.launch {
