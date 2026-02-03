@@ -19,6 +19,7 @@ import ru.bratusev.smartlab.data.core.repository.AuthRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.AutomationRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.ButtonTextRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.LoggerRepositoryImpl
+import ru.bratusev.smartlab.data.core.repository.ServerSelectionRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.SettingsRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.SocketRepositoryImpl
 import ru.bratusev.smartlab.data.core.repository.WidgetRepositoryImpl
@@ -26,6 +27,7 @@ import ru.bratusev.smartlab.domain.core.repository.AuthRepository
 import ru.bratusev.smartlab.domain.core.repository.AutomationRepository
 import ru.bratusev.smartlab.domain.core.repository.ButtonTextRepository
 import ru.bratusev.smartlab.domain.core.repository.LoggerRepository
+import ru.bratusev.smartlab.domain.core.repository.ServerSelectionRepository
 import ru.bratusev.smartlab.domain.core.repository.SettingsRepository
 import ru.bratusev.smartlab.domain.core.repository.SocketRepository
 import ru.bratusev.smartlab.domain.core.repository.WidgetsRepository
@@ -65,6 +67,10 @@ val dataModule = module {
         LoggerRepositoryImpl(
             logger = get(), logcatMessageDao = get(), coroutineScope = get()
         )
+    }
+
+    single<ServerSelectionRepository> {
+        ServerSelectionRepositoryImpl(get())
     }
 
     single<KtorClientFactory> {

@@ -34,6 +34,8 @@ import ru.bratusev.smartlab.feature_login.models.Event
 import ru.bratusev.smartlab.feature_login.models.LoginStage
 import ru.bratusev.smartlab.navigation.api.NavigationApi
 import ru.bratusev.smartlab.ui.core.components.AnimatedLoadComponent
+import ru.bratusev.smartlab.ui.core.components.ServerSelection
+import ru.bratusev.smartlab.ui.core.models.ServerSelectionUi
 import smartlaboratory.ui.core.generated.resources.Res
 import smartlaboratory.ui.core.generated.resources.auth_title
 import smartlaboratory.ui.core.generated.resources.confirm
@@ -69,6 +71,16 @@ fun LoginScreen(
                 textAlign = TextAlign.Center
             )
 
+            Spacer(modifier = Modifier.height(12.dp))
+            ServerSelection(
+                modifier = Modifier.padding(horizontal = 24.dp),
+                uiData = ServerSelectionUi(
+                    serverList =
+                        mapOf("255.255.255.255" to "Preview", "254.254.254.254" to "Preview2"),
+                    currentServerUrl = "254.254.254.254"
+                ),
+                onSelect = {}
+            )
             Spacer(modifier = Modifier.height(12.dp))
 
             InputFieldBlock(
