@@ -57,9 +57,6 @@ fun LoginScreen(
         }
     }
 
-    var expanded by remember { mutableStateOf(false) }
-    var selected by remember { mutableStateOf("") }
-
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier.fillMaxSize().padding(vertical = 24.dp),
@@ -75,25 +72,16 @@ fun LoginScreen(
             )
 
             Spacer(modifier = Modifier.height(12.dp))
+            var expanded by remember { mutableStateOf(false) }
             ServerSelectionDropDown(
                 modifier = Modifier.padding(horizontal = 24.dp),
                 uiData = ServerSelectionUi(
-                    serverList = mapOf(
-                        "255.255.255.255" to "Preview55",
-                        "254.254.254.254" to "Preview54",
-                        "253.253.253.253" to "Preview53",
-                        "252.252.252.252" to "Preview52",
-                        "251.251.251.251" to "Preview51",
-                        "250.250.250.250" to "Preview50",
-                        "249.249.249.249" to "Preview49",
-                        "248.248.248.248" to "Preview48",
-                        "247.247.247.247" to "Preview47",
-                        "246.246.246.246" to "Preview46",
-                        "245.245.245.245" to "Preview45"
-                    ), currentServerUrl = selected, expanded = expanded
+                    serverList = state.value.servers,
+                    currentServerUrl = state.value.currentServerUrl,
+                    expanded = expanded
                 ),
-                onSelect = {url ->
-                    selected = url
+                onSelect = { url ->
+                    vm.handleEvent(Event.OnCurrentServerChanged(url))
                     expanded = false
                 },
                 onExpand = {
@@ -101,6 +89,9 @@ fun LoginScreen(
                 },
                 onClose = {
                     expanded = false
+                },
+                onDelete = { url ->
+                    vm.handleEvent(Event.OnServerDeleted(url))
                 })
             Spacer(modifier = Modifier.height(12.dp))
 

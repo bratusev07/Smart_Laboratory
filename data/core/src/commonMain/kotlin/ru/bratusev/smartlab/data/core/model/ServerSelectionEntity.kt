@@ -5,7 +5,8 @@ import ru.bratusev.smartlab.domain.core.model.ServerSelection
 
 @Serializable
 data class ServerSelectionEntity(
-    val servers: Map<String, String>, val currentServerUrl: String
+    val servers: Map<String, String>,
+    val currentServerUrl: String?
 ) {
     fun toDomain(): ServerSelection = ServerSelection(servers, currentServerUrl)
 

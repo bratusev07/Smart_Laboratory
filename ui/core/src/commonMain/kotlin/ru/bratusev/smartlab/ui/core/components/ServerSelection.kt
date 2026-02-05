@@ -37,8 +37,11 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.min
+import androidx.compose.ui.unit.times
 import androidx.compose.ui.zIndex
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ru.bratusev.smartlab.ui.core.models.ServerSelectionUi
@@ -53,12 +56,16 @@ fun ServerSelectionDropDown(
     uiData: ServerSelectionUi,
     onSelect: (url: String) -> Unit,
     onExpand: () -> Unit = {},
-    onClose: () -> Unit = {}
+    onClose: () -> Unit = {},
+    onDelete: (url: String) -> Unit
 ) {
     val maxScreenHeight = rememberWindowHeight()
     val height by animateDpAsState(
         targetValue = if (uiData.expanded) {
-            maxScreenHeight / 6
+            min(
+                maxScreenHeight / 6,
+                itemHeight * (uiData.serverList.size + 1) + 2 * contentPadding + uiData.serverList.size * 8.dp
+            )
         } else {
             itemHeight + contentPadding * 2
         }
@@ -67,12 +74,10 @@ fun ServerSelectionDropDown(
     Box(modifier = Modifier.requiredHeight(itemHeight + contentPadding * 2).zIndex(1f)) {
         if (uiData.expanded) {
             Box(
-                modifier = Modifier.requiredHeight(maxScreenHeight)
-                    .fillMaxWidth()
+                modifier = Modifier.requiredHeight(maxScreenHeight).fillMaxWidth()
                     .clickable(interactionSource = interactionSource, indication = null) {
                         onClose()
-                    }
-            )
+                    })
         }
         LazyColumn(
             modifier = modifier.requiredHeight(height).background(
@@ -91,7 +96,7 @@ fun ServerSelectionDropDown(
                             onClick = {
                                 onSelect(url)
                             },
-                            onDelete = {},
+                            onDelete = { onDelete(url) },
                             isDeletable = true,
                             showSelectionArrows = true
                         )
@@ -101,7 +106,10 @@ fun ServerSelectionDropDown(
                 }
                 item {
                     ServerItem(
-                        url = "Добавить", name = "+", selected = false, onClick = {},
+                        url = "Добавить",
+                        name = "+",
+                        selected = false,
+                        onClick = {},
                         onDelete = {},
                         isDeletable = false,
                         showSelectionArrows = false
@@ -110,8 +118,10 @@ fun ServerSelectionDropDown(
             } else {
                 item {
                     ServerItem(
-                        url = uiData.currentServerUrl,
-                        name = uiData.serverList.getOrElse(uiData.currentServerUrl) { "Ошибка" },
+                        url = uiData.currentServerUrl ?: "",
+                        name = uiData.serverList.getOrElse(
+                            uiData.currentServerUrl ?: ""
+                        ) { "Ошибка" },
                         selected = true,
                         onClick = onExpand,
                         onDelete = {},
@@ -137,13 +147,11 @@ private fun ServerItem(
 ) {
     val dismissState = rememberSwipeToDismissBoxState(
         confirmValueChange = {
-            if (it == SwipeToDismissBoxValue.EndToStart
-            ) {
+            if (it == SwipeToDismissBoxValue.EndToStart) {
                 onDelete()
             }
             false
-        }
-    )
+        })
 
     val swipeProgress = dismissState.progress
 
@@ -152,19 +160,16 @@ private fun ServerItem(
             MaterialTheme.colorScheme.error.copy(alpha = 0.2f + 0.3f * swipeProgress)
         } else {
             Transparent
-        },
-        animationSpec = spring()
+        }, animationSpec = spring()
     )
 
     val iconColor by animateColorAsState(
         targetValue = if (swipeProgress > 0f) MaterialTheme.colorScheme.error
-        else MaterialTheme.colorScheme.onSurface.copy(alpha = 0f),
-        animationSpec = spring()
+        else MaterialTheme.colorScheme.onSurface.copy(alpha = 0f), animationSpec = spring()
     )
 
     val iconScale by animateFloatAsState(
-        targetValue = if (swipeProgress > 0f) 1.2f else 1f,
-        animationSpec = spring()
+        targetValue = if (swipeProgress > 0f) 1.2f else 1f, animationSpec = spring()
     )
 
     SwipeToDismissBox(
@@ -173,33 +178,24 @@ private fun ServerItem(
         enableDismissFromStartToEnd = false,
         backgroundContent = {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
+                modifier = Modifier.fillMaxSize()
                     .background(backgroundColor, shape = MaterialTheme.shapes.medium)
-                    .padding(end = 16.dp),
-                contentAlignment = Alignment.CenterEnd
+                    .padding(end = 16.dp), contentAlignment = Alignment.CenterEnd
             ) {
                 Icon(
                     imageVector = Icons.Default.Delete,
                     contentDescription = "Delete",
                     tint = iconColor,
-                    modifier = Modifier
-                        .size(20.dp)
-                        .scale(iconScale)
+                    modifier = Modifier.size(20.dp).scale(iconScale)
                 )
             }
         },
         content = {
             Row(
-                modifier = modifier
-                    .height(itemHeight)
-                    .fillMaxWidth()
-                    .background(
-                        if (selected) MaterialTheme.colorScheme.secondaryContainer
-                        else MaterialTheme.colorScheme.secondary,
-                        shape = MaterialTheme.shapes.medium
-                    )
-                    .clickable { onClick() },
+                modifier = modifier.height(itemHeight).fillMaxWidth().background(
+                    if (selected) MaterialTheme.colorScheme.secondaryContainer
+                    else MaterialTheme.colorScheme.secondary, shape = MaterialTheme.shapes.medium
+                ).clickable { onClick() },
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -207,11 +203,12 @@ private fun ServerItem(
 
                 Text(
                     modifier = Modifier.weight(1f).padding(start = 8.dp),
-                    text = url,
+                    text = url.replaceBefore("://", "").replace("://", ""),
                     color = if (selected) MaterialTheme.colorScheme.onSecondaryContainer
                     else MaterialTheme.colorScheme.onSecondary,
                     style = MaterialTheme.typography.labelSmall,
-                    fontWeight = if (selected) FontWeight.ExtraBold else null
+                    fontWeight = if (selected) FontWeight.ExtraBold else null,
+                    textAlign = TextAlign.Center
                 )
                 Text(
                     modifier = Modifier.weight(1f).padding(end = 8.dp),
@@ -219,12 +216,12 @@ private fun ServerItem(
                     color = if (selected) MaterialTheme.colorScheme.onSecondaryContainer
                     else MaterialTheme.colorScheme.onSecondary,
                     style = MaterialTheme.typography.labelSmall,
-                    fontWeight = if (selected) FontWeight.ExtraBold else null
+                    fontWeight = if (selected) FontWeight.ExtraBold else null,
+                    textAlign = TextAlign.Center
                 )
                 if (selected && showSelectionArrows) Text("<")
             }
-        }
-    )
+        })
 }
 
 @Composable
@@ -245,7 +242,7 @@ private fun PreviewServerSelectionExpanded() {
                 serverList = mapOf("255.255.255.255" to "Preview", "254.254.254.254" to "Preview2"),
                 currentServerUrl = "254.254.254.254",
                 expanded = true
-            ), onSelect = {})
+            ), onSelect = {}, onDelete = {})
     }
 }
 
@@ -260,7 +257,7 @@ private fun PreviewServerSelectionNotExpanded() {
                 serverList = mapOf("255.255.255.255" to "Preview", "254.254.254.254" to "Preview2"),
                 currentServerUrl = "254.254.254.254",
                 expanded = false
-            ), onSelect = {})
+            ), onSelect = {}, onDelete = {})
     }
 }
 
@@ -271,7 +268,10 @@ private fun PreviewServerSelectionNotExpanded() {
 private fun PreviewServerItem() {
     AppTheme {
         ServerItem(
-            url = "255.255.255.255", name = "Preview", selected = false, onClick = {},
+            url = "255.255.255.255",
+            name = "Preview",
+            selected = false,
+            onClick = {},
             onDelete = {},
             isDeletable = true,
             showSelectionArrows = true

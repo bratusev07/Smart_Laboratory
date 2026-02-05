@@ -2,7 +2,6 @@ package ru.bratusev.smartlab.data.core.repository
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.stringPreferencesKey
 import io.ktor.client.HttpClient
 import io.ktor.client.request.header
 import io.ktor.client.request.post
@@ -140,7 +139,7 @@ class AuthRepositoryImpl(
                 }
             println(response.bodyAsText())
         } catch (e: Exception) {
-            e
+            e.printStackTrace()
         }
     }
 

@@ -94,7 +94,7 @@ class HomeAssistantWebSocketClient(
                 }
             } catch (e: Exception) {
                 // TODO Пофиксить краш сокета на Android
-                println("WebSocket error: $e")
+                e.printStackTrace()
                 _socketResponseFlow.tryEmit(SocketResponseModel.ErrorMessage(listOf(Error("WebSocket error: ${e.message ?: e.toString()}"))))
             } finally {
                 disconnect()
@@ -169,7 +169,6 @@ class HomeAssistantWebSocketClient(
                 }
             }
         } catch (e: Exception) {
-            println("Parse error: $e")
             _socketResponseFlow.tryEmit(SocketResponseModel.ErrorMessage(listOf(Error("Parse error: ${e.message ?: e.toString()}"))))
         }
     }

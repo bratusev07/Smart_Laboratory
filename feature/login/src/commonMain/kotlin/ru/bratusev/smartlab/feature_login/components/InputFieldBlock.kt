@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import ru.bratusev.smartlab.feature_login.models.InternalLoginState
 import ru.bratusev.smartlab.feature_login.models.LoginState
 import ru.bratusev.smartlab.ui.core.components.CustomButton
 import ru.bratusev.smartlab.ui.core.components.OutlinedTextFieldComponent
@@ -80,7 +81,9 @@ fun InputFieldBlock(
 private fun InputFieldBlockPreview() {
     AppTheme {
         InputFieldBlock(
-            screenState = LoginState(),
+            screenState = LoginState(
+                internalLoginState = InternalLoginState()
+            ),
             onLoginChanged = {},
             onPasswordChanged = { },
             onLoginClicked = {}

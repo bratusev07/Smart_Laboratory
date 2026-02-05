@@ -21,6 +21,7 @@ data class NetworkStatusUi(
 
                 return ipv4Pattern.find(url)?.value
             } catch (e: Exception) {
+                e.printStackTrace()
                 return null
             }
         }
@@ -34,6 +35,7 @@ data class NetworkStatusUi(
 
                 return parts1[0] == parts2[0] && parts1[1] == parts2[1] && parts1[2] == parts2[2]
             } catch (e: Exception) {
+                e.printStackTrace()
                 return false
             }
         }

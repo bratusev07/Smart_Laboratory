@@ -1,6 +1,5 @@
 package ru.bratusev.smartlab.data.core.repository
 
-import androidx.compose.ui.input.key.Key.Companion.P
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import io.ktor.client.HttpClient
@@ -83,7 +82,7 @@ class AutomationRepositoryImpl(
                 }
             response.bodyAsText()
         } catch (e: Exception) {
-            e
+            e.printStackTrace()
         }
     }
 
