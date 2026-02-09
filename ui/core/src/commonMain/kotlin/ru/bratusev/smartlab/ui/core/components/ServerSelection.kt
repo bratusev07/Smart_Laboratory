@@ -9,6 +9,7 @@ import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -49,13 +50,16 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.times
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import ru.bratusev.smartlab.ui.core.models.ServerSelectionUi
+import ru.bratusev.smartlab.ui.core.theme.AppTheme
 
 private val ITEM_HEIGHT = 56.dp
 private val ITEMS_SPACED_BY = 8.dp
@@ -87,8 +91,7 @@ fun ServerSelectionDropDown(
     }
 
     val windowHeight = rememberWindowHeight()
-    val contentHeight =
-        (orderedItems.size + 1) * ITEM_HEIGHT + orderedItems.size * ITEMS_SPACED_BY
+    val contentHeight = (orderedItems.size + 1) * ITEM_HEIGHT + orderedItems.size * ITEMS_SPACED_BY
     val expandedHeight = min(contentHeight, windowHeight * 0.5f)
 
     val heightAnim by animateDpAsState(
@@ -98,11 +101,8 @@ fun ServerSelectionDropDown(
     )
 
     Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(ITEM_HEIGHT)
-            .onGloballyPositioned { dropdownWidth = with(density) { it.size.width.toDp() } }
-    ) {
+        modifier = modifier.fillMaxWidth().height(ITEM_HEIGHT)
+            .onGloballyPositioned { dropdownWidth = with(density) { it.size.width.toDp() } }) {
         // Anchor
         ServerItemContent(
             url = uiData.currentServerUrl ?: "",
@@ -122,9 +122,7 @@ fun ServerSelectionDropDown(
                 properties = PopupProperties(focusable = true, clippingEnabled = false)
             ) {
                 Surface(
-                    modifier = Modifier
-                        .width(dropdownWidth)
-                        .height(heightAnim),
+                    modifier = Modifier.width(dropdownWidth).height(heightAnim),
                     shape = MaterialTheme.shapes.medium,
                     shadowElevation = 8.dp,
                     color = MaterialTheme.colorScheme.secondaryContainer, // <--- CHANGED: Container color from First Code
@@ -133,26 +131,24 @@ fun ServerSelectionDropDown(
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.spacedBy(ITEMS_SPACED_BY),
-                        contentPadding = PaddingValues(top = 0.dp, bottom = 8.dp)
+                        contentPadding = PaddingValues(
+                            top = if (uiData.currentServerUrl == null) 8.dp else 0.dp,
+                            bottom = 8.dp,
+                        )
                     ) {
                         items(
-                            items = orderedItems,
-                            key = { it }
-                        ) { url ->
+                            items = orderedItems, key = { it }) { url ->
                             val isSelected = url == uiData.currentServerUrl
 
                             Box(modifier = Modifier.animateItem()) {
                                 SwipeableServerItemWrapper(
-                                    isDeletable = true,
-                                    onDelete = { onDelete(url) }
-                                ) {
+                                    isDeletable = true, onDelete = { onDelete(url) }) {
                                     ServerItemContent(
                                         url = url,
                                         name = uiData.serverList[url] ?: "Unknown",
                                         selected = isSelected,
                                         isExpanded = isSelected && uiData.expanded,
-                                        onClick = { if (isSelected) onClose() else onSelect(url) }
-                                    )
+                                        onClick = { if (isSelected) onClose() else onSelect(url) })
                                 }
                             }
                         }
@@ -184,15 +180,14 @@ private fun ServerItemContent(
 
     val contentColor = if (selected) MaterialTheme.colorScheme.onSecondaryContainer
     else MaterialTheme.colorScheme.onSecondary
+    val interactionSource = remember { MutableInteractionSource() }
 
     Row(
-        modifier = modifier
-            .height(ITEM_HEIGHT)
-            .fillMaxWidth()
-            .clip(MaterialTheme.shapes.medium)
-            .background(backgroundColor) // Apply color here
-            .clickable(onClick = onClick)
-            .padding(horizontal = 16.dp),
+        modifier = modifier.height(ITEM_HEIGHT).fillMaxWidth()
+            .then(if (!selected) Modifier.padding(horizontal = 8.dp) else Modifier)
+            .clip(MaterialTheme.shapes.medium).background(backgroundColor)
+            .padding(horizontal = 16.dp)
+            .clickable(interactionSource = interactionSource, indication = null, onClick = onClick),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.Center) {
@@ -206,7 +201,7 @@ private fun ServerItemContent(
             )
             if (url.isNotEmpty()) {
                 Text(
-                    text = url.replace("https://", "").replace("http://", ""),
+                    text = url.replaceBefore("://", "").replace("://", ""),
                     style = MaterialTheme.typography.bodySmall,
                     color = contentColor.copy(alpha = 0.7f), // Apply color here
                     maxLines = 1,
@@ -230,9 +225,7 @@ private fun ServerItemContent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SwipeableServerItemWrapper(
-    isDeletable: Boolean,
-    onDelete: () -> Unit,
-    content: @Composable () -> Unit
+    isDeletable: Boolean, onDelete: () -> Unit, content: @Composable () -> Unit
 ) {
     if (!isDeletable) {
         content(); return
@@ -244,8 +237,7 @@ private fun SwipeableServerItemWrapper(
                 onDelete()
                 true
             } else false
-        }
-    )
+        })
 
     // Swipe Logic (Colors preserved from previous working iteration as requested "Except animation colors")
     SwipeToDismissBox(
@@ -254,21 +246,17 @@ private fun SwipeableServerItemWrapper(
         enableDismissFromStartToEnd = false,
         backgroundContent = {
             val color by animateColorAsState(
-                targetValue = if (dismissState.targetValue == SwipeToDismissBoxValue.EndToStart)
-                    MaterialTheme.colorScheme.error
-                else Transparent,
-                label = "color"
+                targetValue = if (dismissState.targetValue == SwipeToDismissBoxValue.EndToStart) MaterialTheme.colorScheme.error
+                else Transparent, label = "color"
             )
             Box(
                 modifier = Modifier.fillMaxSize().clip(MaterialTheme.shapes.medium)
-                    .background(color).padding(end = 24.dp),
-                contentAlignment = Alignment.CenterEnd
+                    .background(color).padding(end = 24.dp), contentAlignment = Alignment.CenterEnd
             ) {
                 Icon(Icons.Default.Delete, "Delete", tint = MaterialTheme.colorScheme.onError)
             }
         },
-        content = { content() }
-    )
+        content = { content() })
 }
 
 @Composable
@@ -290,11 +278,61 @@ private fun AddServerItem() {
 }
 
 @Composable
-private fun rememberWindowHeight(): androidx.compose.ui.unit.Dp {
+private fun rememberWindowHeight(): Dp {
     val windowInfo = LocalWindowInfo.current
     val density = LocalDensity.current
     return remember(
-        windowInfo,
-        density
+        windowInfo, density
     ) { with(density) { windowInfo.containerSize.height.toDp() } }
+}
+
+@Composable
+@Preview(
+    showBackground = true
+)
+private fun PreviewServerSelectionExpanded() {
+    AppTheme {
+        ServerSelectionDropDown(
+            uiData = ServerSelectionUi(
+                serverList = mapOf("255.255.255.255" to "Preview", "254.254.254.254" to "Preview2"),
+                currentServerUrl = "254.254.254.254",
+                expanded = true
+            ), onSelect = {}, onDelete = {})
+    }
+}
+
+@Composable
+@Preview(
+    showBackground = true
+)
+private fun PreviewServerSelectionNotExpanded() {
+    AppTheme {
+        ServerSelectionDropDown(
+            uiData = ServerSelectionUi(
+                serverList = mapOf(
+                    "255.255.255.255" to "Preview",
+                    "254.254.254.254" to "Preview2",
+                    "254.254.254.253" to "Preview3",
+                    "254.254.254.254" to "Preview4",
+                    "254.254.254.255" to "Preview5",
+                    "254.254.254.256" to "Preview6",
+                ), currentServerUrl = "254.254.254.254", expanded = false
+            ), onSelect = {}, onDelete = {})
+    }
+}
+
+@Composable
+@Preview(
+    showBackground = true
+)
+private fun PreviewServerItem() {
+    AppTheme {
+        ServerItemContent(
+            url = "255.255.255.255",
+            name = "Preview",
+            selected = false,
+            onClick = {},
+            isExpanded = false,
+        )
+    }
 }

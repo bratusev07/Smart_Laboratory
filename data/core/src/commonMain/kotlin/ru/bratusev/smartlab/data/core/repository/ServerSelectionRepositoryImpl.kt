@@ -26,7 +26,13 @@ class ServerSelectionRepositoryImpl(
             "Preview2" to "Preview2",
             "Preview3" to "Preview3",
             "Preview4" to "Preview4",
-            "Preview5" to "Preview5"
+            "Preview5" to "Preview5",
+            "Preview6" to "Preview6",
+            "Preview7" to "Preview7",
+            "Preview8" to "Preview8",
+            "Preview9" to "Preview9",
+            "Preview10" to "Preview10",
+            "Preview11" to "Preview11",
         ), currentServerUrl = null
     )
 
