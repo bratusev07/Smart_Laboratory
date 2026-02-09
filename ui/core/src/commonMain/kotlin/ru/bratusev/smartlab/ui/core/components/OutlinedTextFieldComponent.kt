@@ -2,6 +2,7 @@ package ru.bratusev.smartlab.ui.core.components
 
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -23,6 +24,7 @@ fun OutlinedTextFieldComponent(modifier: Modifier, outlinedTextFieldUi: Outlined
         singleLine = outlinedTextFieldUi.singleLine,
         visualTransformation = visualTransformation,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+        shape = outlinedTextFieldUi.shape ?: OutlinedTextFieldDefaults.shape,
         modifier = modifier
     )
 }

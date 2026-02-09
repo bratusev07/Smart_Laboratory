@@ -37,6 +37,7 @@ fun InputFieldBlock(
         OutlinedTextFieldComponent(
             modifier = textFieldModifier,
             outlinedTextFieldUi = OutlinedTextFieldUi(
+                shape = MaterialTheme.shapes.medium,
                 value = screenState.login,
                 placeholder = stringResource(Res.string.login)
             ) {
@@ -49,6 +50,7 @@ fun InputFieldBlock(
         OutlinedTextFieldComponent(
             modifier = textFieldModifier,
             outlinedTextFieldUi = OutlinedTextFieldUi(
+                shape = MaterialTheme.shapes.medium,
                 value = screenState.password,
                 placeholder = stringResource(
                     Res.string.password
