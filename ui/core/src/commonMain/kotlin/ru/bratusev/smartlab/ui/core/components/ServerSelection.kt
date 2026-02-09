@@ -103,7 +103,6 @@ fun ServerSelectionDropDown(
     Box(
         modifier = modifier.fillMaxWidth().height(ITEM_HEIGHT)
             .onGloballyPositioned { dropdownWidth = with(density) { it.size.width.toDp() } }) {
-        // Anchor
         ServerItemContent(
             url = uiData.currentServerUrl ?: "",
             name = uiData.serverList[uiData.currentServerUrl] ?: "Select Server",
@@ -113,7 +112,6 @@ fun ServerSelectionDropDown(
             modifier = Modifier.matchParentSize()
         )
 
-        // Popup
         if (transitionState.currentState || transitionState.targetState) {
             Popup(
                 alignment = Alignment.TopStart,
@@ -125,7 +123,7 @@ fun ServerSelectionDropDown(
                     modifier = Modifier.width(dropdownWidth).height(heightAnim),
                     shape = MaterialTheme.shapes.medium,
                     shadowElevation = 8.dp,
-                    color = MaterialTheme.colorScheme.secondaryContainer, // <--- CHANGED: Container color from First Code
+                    color = MaterialTheme.colorScheme.secondaryContainer,
                     tonalElevation = 8.dp
                 ) {
                     LazyColumn(
@@ -174,7 +172,6 @@ private fun ServerItemContent(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // <--- CHANGED: Logic strictly from First Code --->
     val backgroundColor = if (selected) MaterialTheme.colorScheme.secondaryContainer
     else MaterialTheme.colorScheme.secondary
 
@@ -195,7 +192,7 @@ private fun ServerItemContent(
                 text = name,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = contentColor, // Apply color here
+                color = contentColor,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -203,7 +200,7 @@ private fun ServerItemContent(
                 Text(
                     text = url.replaceBefore("://", "").replace("://", ""),
                     style = MaterialTheme.typography.bodySmall,
-                    color = contentColor.copy(alpha = 0.7f), // Apply color here
+                    color = contentColor.copy(alpha = 0.7f),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -216,7 +213,7 @@ private fun ServerItemContent(
                 Icons.Default.KeyboardArrowDown,
                 "Expand",
                 Modifier.rotate(rotation),
-                tint = contentColor // Apply color here
+                tint = contentColor
             )
         }
     }
@@ -239,7 +236,6 @@ private fun SwipeableServerItemWrapper(
             } else false
         })
 
-    // Swipe Logic (Colors preserved from previous working iteration as requested "Except animation colors")
     SwipeToDismissBox(
         state = dismissState,
         enableDismissFromEndToStart = true,
@@ -294,10 +290,10 @@ private fun PreviewServerSelectionExpanded() {
     AppTheme {
         ServerSelectionDropDown(
             uiData = ServerSelectionUi(
-                serverList = mapOf("255.255.255.255" to "Preview", "254.254.254.254" to "Preview2"),
-                currentServerUrl = "254.254.254.254",
-                expanded = true
-            ), onSelect = {}, onDelete = {})
+            serverList = mapOf("255.255.255.255" to "Preview", "254.254.254.254" to "Preview2"),
+            currentServerUrl = "254.254.254.254",
+            expanded = true
+        ), onSelect = {}, onDelete = {})
     }
 }
 
@@ -309,15 +305,15 @@ private fun PreviewServerSelectionNotExpanded() {
     AppTheme {
         ServerSelectionDropDown(
             uiData = ServerSelectionUi(
-                serverList = mapOf(
-                    "255.255.255.255" to "Preview",
-                    "254.254.254.254" to "Preview2",
-                    "254.254.254.253" to "Preview3",
-                    "254.254.254.254" to "Preview4",
-                    "254.254.254.255" to "Preview5",
-                    "254.254.254.256" to "Preview6",
-                ), currentServerUrl = "254.254.254.254", expanded = false
-            ), onSelect = {}, onDelete = {})
+            serverList = mapOf(
+                "255.255.255.255" to "Preview",
+                "254.254.254.254" to "Preview2",
+                "254.254.254.253" to "Preview3",
+                "254.254.254.254" to "Preview4",
+                "254.254.254.255" to "Preview5",
+                "254.254.254.256" to "Preview6",
+            ), currentServerUrl = "254.254.254.254", expanded = false
+        ), onSelect = {}, onDelete = {})
     }
 }
 

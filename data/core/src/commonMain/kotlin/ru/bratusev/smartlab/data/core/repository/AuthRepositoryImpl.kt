@@ -63,7 +63,7 @@ class AuthRepositoryImpl(
     }
 
     private suspend fun auth(login: String, password: String) {
-        client.post("${serverSelectionRepository}/auth/login_flow") {
+        client.post("${serverSelectionRepository.getCurrentBaseUrl()}/auth/login_flow") {
             contentType(ContentType.Application.Json)
             setBody(loginFlowBody)
         }.bodyAsText().let {
@@ -78,7 +78,7 @@ class AuthRepositoryImpl(
     }
 
     private suspend fun authFlow(flowId: String, loginFlowBodyWithId: LoginFlowRequestBodyWithId) {
-        client.post("${serverSelectionRepository}/auth/login_flow/$flowId") {
+        client.post("${serverSelectionRepository.getCurrentBaseUrl()}/auth/login_flow/$flowId") {
             contentType(ContentType.Application.Json)
             setBody(loginFlowBodyWithId)
         }.bodyAsText().let {
@@ -98,7 +98,7 @@ class AuthRepositoryImpl(
             append("client_id", "https://home-assistant.io/android")
         }.formUrlEncode()
 
-        client.post("${serverSelectionRepository}/auth/token") {
+        client.post("${serverSelectionRepository.getCurrentBaseUrl()}/auth/token") {
             contentType(ContentType.Application.FormUrlEncoded)
             setBody(requestBody)
         }.bodyAsText().let {

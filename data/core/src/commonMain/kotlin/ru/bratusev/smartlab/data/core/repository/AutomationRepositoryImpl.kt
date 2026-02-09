@@ -43,7 +43,7 @@ class AutomationRepositoryImpl(
             append("text", newAutomationString)
         }.formUrlEncode()
 
-        val saveFileUrl = "${serverSelectionRepository}$shortFileUrl/api/save"
+        val saveFileUrl = "${serverSelectionRepository.getCurrentBaseUrl()}$shortFileUrl/api/save"
         val result = client.post(saveFileUrl) {
             cookie("ingress_session", sessionId)
             contentType(ContentType.Application.FormUrlEncoded)

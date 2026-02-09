@@ -6,7 +6,6 @@ import android.net.ConnectivityManager
 import android.net.LinkProperties
 import android.net.NetworkCapabilities
 import androidx.annotation.RequiresPermission
-import ru.bratusev.smartlab.data.core.remote_storage.Constants
 import ru.bratusev.smartlab.domain.core.model.NetworkStatus
 import ru.bratusev.smartlab.domain.core.repository.NetworkRepository
 import ru.bratusev.smartlab.domain.core.repository.ServerSelectionRepository
@@ -39,9 +38,7 @@ actual class NetworkRepositoryImpl(private val context: Context, private val ser
 
     @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
     private fun isVpnActive(): Boolean {
-        // 1. Check Transport (Standard)
         if (checkTransportVpn()) return true
-        // 2. Check Interface Names (Fallback/Samsung/Split-tunnel)
         if (checkNetworkInterfaces()) return true
         return false
     }
@@ -50,18 +47,15 @@ actual class NetworkRepositoryImpl(private val context: Context, private val ser
     private fun checkTransportVpn(): Boolean {
         val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-        // Check active network
         val activeCaps = cm.getNetworkCapabilities(cm.activeNetwork)
         if (activeCaps?.hasTransport(NetworkCapabilities.TRANSPORT_VPN) == true) return true
 
-        // Check all networks (background/split-tunnel)
         try {
             cm.allNetworks.forEach { network ->
                 val caps = cm.getNetworkCapabilities(network)
                 if (caps?.hasTransport(NetworkCapabilities.TRANSPORT_VPN) == true) return true
             }
         } catch (e: Exception) {
-            // allNetworks can fail on some Android versions/states
         }
         return false
     }

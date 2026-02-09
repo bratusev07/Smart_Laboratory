@@ -192,24 +192,16 @@ private fun NavigationDrawerItemComponent(
 private fun NavigationDrawerPreview() {
     val drawerState = rememberDrawerState(DrawerValue.Open)
 
-    // --- Create the Mock Hierarchy ---
-
     val navigator = ComposeNavigator()
 
-    // 1. CHOOSE THE SCREEN TO MOCK.
-    val currentScreen: Screen = Screen.Home // Change this to test other screens
+    val currentScreen: Screen = Screen.Home
 
-    // 2. Create a mock destination.
     val mockDestination = ComposeNavigator.Destination(navigator) {}.apply {
-        // 3. SET THE ROUTE TO THE CLASS'S FULLY QUALIFIED NAME.
-        //    This is the string representation that hasRoute(KClass) expects.
         route = currentScreen::class.qualifiedName
     }
 
-    // 4. Create the hierarchy sequence.
     val mockHierarchy = sequenceOf(mockDestination)
 
-    // --- Use the Mock in Your Composable ---
 
     AppTheme {
         NavigationDrawer(
