@@ -27,6 +27,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -34,6 +36,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -55,6 +58,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.times
+import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -72,7 +76,8 @@ fun ServerSelectionDropDown(
     onSelect: (url: String) -> Unit,
     onExpand: () -> Unit = {},
     onClose: () -> Unit = {},
-    onDelete: (url: String) -> Unit
+    onDelete: (url: String) -> Unit,
+    onAddServer: (url: String, name: String) -> Unit,
 ) {
     val density = LocalDensity.current
     var dropdownWidth by remember { mutableStateOf(0.dp) }
@@ -91,7 +96,7 @@ fun ServerSelectionDropDown(
     }
 
     val windowHeight = rememberWindowHeight()
-    val contentHeight = (orderedItems.size + 1) * ITEM_HEIGHT + orderedItems.size * ITEMS_SPACED_BY
+    val contentHeight = (orderedItems.size + 1) * ITEM_HEIGHT + (orderedItems.size+1) * ITEMS_SPACED_BY
     val expandedHeight = min(contentHeight, windowHeight * 0.5f)
 
     val heightAnim by animateDpAsState(
@@ -153,7 +158,9 @@ fun ServerSelectionDropDown(
 
                         item {
                             Box(modifier = Modifier.animateItem()) {
-                                AddServerItem()
+                                AddServerItem(
+                                    onAddServer = onAddServer
+                                )
                             }
                         }
                     }
@@ -256,10 +263,12 @@ private fun SwipeableServerItemWrapper(
 }
 
 @Composable
-private fun AddServerItem() {
+private fun AddServerItem(onAddServer: (url: String, name: String) -> Unit) {
+    var isAddServerDialogOpen by remember { mutableStateOf(false) }
+
     Row(
         modifier = Modifier.height(ITEM_HEIGHT).fillMaxWidth().clip(MaterialTheme.shapes.medium)
-            .clickable { }.padding(horizontal = 16.dp),
+            .clickable { isAddServerDialogOpen = true }.padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
@@ -270,6 +279,76 @@ private fun AddServerItem() {
             color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.SemiBold
         )
+    }
+    AddServerDialog(
+        isOpen = isAddServerDialogOpen,
+        onClose = { isAddServerDialogOpen = false },
+        onConfirm = { url, name ->
+            isAddServerDialogOpen = false
+            onAddServer(url, name)
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun AddServerDialog(
+    modifier: Modifier = Modifier,
+    isOpen: Boolean,
+    onClose: () -> Unit,
+    onConfirm: (url: String, name: String) -> Unit
+) {
+    var url by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
+
+    var showUrlError by remember { mutableStateOf(false) }
+    var showNameError by remember { mutableStateOf(false) }
+    if (isOpen) {
+        Dialog(
+            onDismissRequest = onClose,
+        ) {
+            Card(modifier = modifier, shape = MaterialTheme.shapes.large) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    TextField(
+                        value = url,
+                        label = { Text("Server url") },
+                        supportingText = {
+                            if (showUrlError) {
+                                Text("Can't be empty", color = MaterialTheme.colorScheme.error)
+                            }
+                        },
+                        isError = showUrlError,
+                        onValueChange = { url = it },
+                        singleLine = true
+                    )
+                    TextField(
+                        value = name,
+                        label = { Text("Server name") },
+                        supportingText = {
+                            if (showNameError) {
+                                Text("Can't be empty", color = MaterialTheme.colorScheme.error)
+                            }
+                        },
+                        isError = showNameError,
+                        onValueChange = { name = it },
+                        singleLine = true
+                    )
+                    Button(
+                        onClick = {
+                            showUrlError = url.isEmpty()
+                            showNameError = name.isEmpty()
+                            if (!showNameError && !showUrlError) {
+                                onConfirm(url, name)
+                            }
+                        }
+                    ) {
+                        Text("Save server")
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -290,10 +369,12 @@ private fun PreviewServerSelectionExpanded() {
     AppTheme {
         ServerSelectionDropDown(
             uiData = ServerSelectionUi(
-            serverList = mapOf("255.255.255.255" to "Preview", "254.254.254.254" to "Preview2"),
-            currentServerUrl = "254.254.254.254",
-            expanded = true
-        ), onSelect = {}, onDelete = {})
+                serverList = mapOf("255.255.255.255" to "Preview", "254.254.254.254" to "Preview2"),
+                currentServerUrl = "254.254.254.254",
+                expanded = true
+            ), onSelect = {}, onDelete = {},
+            onAddServer = { _, _ -> }
+        )
     }
 }
 
@@ -305,15 +386,17 @@ private fun PreviewServerSelectionNotExpanded() {
     AppTheme {
         ServerSelectionDropDown(
             uiData = ServerSelectionUi(
-            serverList = mapOf(
-                "255.255.255.255" to "Preview",
-                "254.254.254.254" to "Preview2",
-                "254.254.254.253" to "Preview3",
-                "254.254.254.254" to "Preview4",
-                "254.254.254.255" to "Preview5",
-                "254.254.254.256" to "Preview6",
-            ), currentServerUrl = "254.254.254.254", expanded = false
-        ), onSelect = {}, onDelete = {})
+                serverList = mapOf(
+                    "255.255.255.255" to "Preview",
+                    "254.254.254.254" to "Preview2",
+                    "254.254.254.253" to "Preview3",
+                    "254.254.254.254" to "Preview4",
+                    "254.254.254.255" to "Preview5",
+                    "254.254.254.256" to "Preview6",
+                ), currentServerUrl = "254.254.254.254", expanded = false
+            ), onSelect = {}, onDelete = {},
+            onAddServer = { _, _ -> }
+        )
     }
 }
 

@@ -20,20 +20,7 @@ class ServerSelectionRepositoryImpl(
     private val json = Json { ignoreUnknownKeys = true; isLenient = true }
 
     private val defaultServerSelection = ServerSelection(
-        servers = mapOf(
-            "http://10.131.170.131:8123" to "SKB",
-            "Preview1" to "Preview1",
-            "Preview2" to "Preview2",
-            "Preview3" to "Preview3",
-            "Preview4" to "Preview4",
-            "Preview5" to "Preview5",
-            "Preview6" to "Preview6",
-            "Preview7" to "Preview7",
-            "Preview8" to "Preview8",
-            "Preview9" to "Preview9",
-            "Preview10" to "Preview10",
-            "Preview11" to "Preview11",
-        ), currentServerUrl = null
+        servers = emptyMap(), currentServerUrl = null
     )
 
     private var isCachedBaseUrlUpToDate: Boolean = false

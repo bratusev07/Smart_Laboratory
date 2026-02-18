@@ -21,13 +21,18 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
@@ -40,6 +45,16 @@ fun LoadingIndicator(
     text: String = stringResource(Res.string.loading),
     modifier: Modifier = Modifier,
 ) {
+    var shouldShow by mutableStateOf(false)
+
+    LaunchedEffect(show, text) {
+        if (show) {
+            shouldShow = true
+            delay(10000)
+            shouldShow = false
+        }
+    }
+
     AnimatedVisibility(
         modifier = modifier.zIndex(2f),
         visible = show, enter = fadeIn(animationSpec = tween(100)) + scaleIn(

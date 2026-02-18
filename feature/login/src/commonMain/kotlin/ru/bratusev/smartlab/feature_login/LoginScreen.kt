@@ -91,7 +91,11 @@ fun LoginScreen(
                 },
                 onDelete = { url ->
                     vm.handleEvent(Event.OnServerDeleted(url))
-                })
+                },
+                onAddServer = { url, name ->
+                    vm.handleEvent(Event.OnServerAdded(url, name))
+                }
+            )
             Spacer(modifier = Modifier.height(12.dp))
 
             InputFieldBlock(
