@@ -21,7 +21,7 @@ class ServerSelectionRepositoryImpl(
 
     private val defaultServerSelection = ServerSelection(
         servers = mapOf(
-            "http://10.131.170.77:8123" to "SKB",
+            "http://10.131.170.131:8123" to "SKB",
             "Preview1" to "Preview1",
             "Preview2" to "Preview2",
             "Preview3" to "Preview3",
