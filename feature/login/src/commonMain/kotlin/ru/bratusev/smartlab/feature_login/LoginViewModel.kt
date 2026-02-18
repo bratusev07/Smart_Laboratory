@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
@@ -75,6 +76,25 @@ class LoginViewModel(
     init {
         val networkStatus = getNetworkStatusUseCases().toUi()
         updateState { it.copy(networkStatus = networkStatus) }
+
+        getServerSelectionFlowUseCase()
+            .distinctUntilChanged { old, new ->
+                old.currentServerUrl == new.currentServerUrl && old.currentServerName == new.currentServerName
+            }
+            .onEach { selection ->
+                val current = selection.servers.find {
+                    it.getOrElse(0) { "" } == selection.currentServerUrl &&
+                            it.getOrElse(1) { "" } == selection.currentServerName
+                }
+
+                if (current != null) {
+                    updateState { it.copy(
+                        login = current.getOrElse(2) { "" },
+                        password = current.getOrElse(3) { "" }
+                    ) }
+                }
+            }
+            .launchIn(viewModelScope)
     }
 
     private fun onLoginChanged(newLogin: String) {
@@ -99,20 +119,8 @@ class LoginViewModel(
         )
 
         updateState { it.copy(loginStage = LoginStage.START_1) }
-        val isManualLogin =
-            uiState.value.currentServer?.login.isNullOrEmpty() || uiState.value.currentServer?.password.isNullOrEmpty()
-        val password: String
-        val login: String
-        if (isManualLogin) {
-            password = uiState.value.password
-            login = uiState.value.login
-        } else {
-            login = uiState.value.currentServer!!.login
-            password = uiState.value.currentServer!!.password
-        }
-
         loginUseCase.invoke(
-            login, password, device
+            uiState.value.login, uiState.value.password, device
         ).onEach { result ->
             result.fold(onSuccess = { token ->
                 // TODO Исправить показуху на нормальное отслеживание

@@ -18,7 +18,6 @@
     <string name="network_error">Ошибка сети</string>
     <string name="invalid_device_ip">IP устройства не соответствует IP Home assistant.</string>
     <string name="error">Ошибка</string>
-    <string name="login_and_password_already_saved">Логин и пароль уже сохранены и будут автоматически применены</string>
     <string name="add_new_server">Добавить сервер</string>
     <string name="server_url">Url сервера</string>
     <string name="server_name">Имя сервера</string>
