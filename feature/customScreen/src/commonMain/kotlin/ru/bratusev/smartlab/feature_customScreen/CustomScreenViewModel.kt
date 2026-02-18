@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import ru.bratusev.smartlab.domain.core.model.CustomWidget
 import ru.bratusev.smartlab.domain.core.model.CustomWidget.SensorsList
+import ru.bratusev.smartlab.domain.core.model.CustomWidget.SingleSensor
 import ru.bratusev.smartlab.domain.core.model.socket.ServiceEntity
 import ru.bratusev.smartlab.domain.core.usecase.GetCustomWidgetsUseCase
 import ru.bratusev.smartlab.domain.core.usecase.GetLoggerUseCase
@@ -150,6 +151,10 @@ class CustomScreenViewModel(
         updateWidgets(updatedWidgets)
     }
 
+    private fun onTimeOut() {
+        updateState(_uiState.value.copy(isUpdating = false, isSaving = false))
+    }
+
     fun handleEvent(event: Event) {
         when (event) {
             is Event.OnSensorStateChanged -> onSwitchUpdated(
@@ -163,7 +168,7 @@ class CustomScreenViewModel(
             )
 
             is Event.ChosenSingleSwitchChange -> updateWidget(
-                CustomWidget.SingleSensor(
+                SingleSensor(
                     sensorId = event.chosenId, id = event.widgetId, title = event.title
                 )
             )
@@ -174,6 +179,7 @@ class CustomScreenViewModel(
             Event.ToggleEditMode -> toggleEditMode()
 
             is Event.EditTitle -> editWidgetTitle(event.widgetId, event.title)
+            Event.OnTimeOut -> onTimeOut()
         }
     }
 }

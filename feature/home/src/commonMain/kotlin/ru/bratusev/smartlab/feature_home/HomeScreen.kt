@@ -14,11 +14,12 @@ fun HomeScreen(
     navigationApi: NavigationApi,
 ) {
     val state = vm.uiState.collectAsState()
-    LoadingIndicator(state.value.isUpdating)
+    LoadingIndicator(state.value.isUpdating, onTimeOut = { vm.handleEvent(Event.OnUpdateTimeOut) })
     if (state.value.sensorCardGridPagerUiData.sensors.isNotEmpty()) {
         SensorCardGridPager(
             uiData = state.value.sensorCardGridPagerUiData,
-            onSensorCardClicked = { vm.handleEvent(Event.OnSwitchUpdated(it)) }
+            onSensorCardClicked = { vm.handleEvent(Event.OnSwitchUpdated(it)) },
+            onUpdateTimeOut = { vm.handleEvent(Event.OnUpdateTimeOut) }
         )
     }
 }

@@ -1,6 +1,8 @@
 package ru.bratusev.smartlab.domain.core.model
 
 data class ServerSelection(
-    val servers: Map<String, String>,
-    val currentServerUrl: String?
+    // url, name, login, password
+    val servers: List<List<String>>,
+    val currentServerUrl: String?,
+    val currentServerName: String?
 )

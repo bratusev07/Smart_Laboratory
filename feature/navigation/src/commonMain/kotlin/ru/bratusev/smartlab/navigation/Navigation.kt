@@ -125,7 +125,9 @@ private fun AppNavHost(
                 val state = allAreasScreenViewModel.uiState.collectAsState()
                 AllAreasScreen(
                     areas = state.value.areas,
-                    navigateToArea = navigationApi::navigateToDetailedArea
+                    isLoading = state.value.isLoading,
+                    navigateToArea = navigationApi::navigateToDetailedArea,
+                    onLoadingTimeOut = { allAreasScreenViewModel.handleEvent(ru.bratusev.smartlab.feature_areas.models.Event.OnTimeOut) }
                 )
             }
             composable<Screen.Areas.Detailed> { backStackEntry ->

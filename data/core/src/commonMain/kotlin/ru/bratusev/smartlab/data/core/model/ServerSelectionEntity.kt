@@ -5,13 +5,28 @@ import ru.bratusev.smartlab.domain.core.model.ServerSelection
 
 @Serializable
 data class ServerSelectionEntity(
-    val servers: Map<String, String>,
-    val currentServerUrl: String?
+    val servers: List<Server>, val currentServerUrl: String?, val currentServerName: String?
 ) {
-    fun toDomain(): ServerSelection = ServerSelection(servers, currentServerUrl)
+    @Serializable
+    data class Server(
+        val url: String, val name: String, val login: String, val password: String
+    )
+
+    fun toDomain(): ServerSelection = ServerSelection(buildList {
+        servers.forEach { server ->
+            add(listOf(server.url, server.name, server.login, server.password))
+        }
+    }, currentServerUrl, currentServerName)
 
     companion object {
         fun fromDomain(domainModel: ServerSelection): ServerSelectionEntity =
-            ServerSelectionEntity(domainModel.servers, domainModel.currentServerUrl)
+            ServerSelectionEntity(domainModel.servers.map { serverArr ->
+                Server(
+                    url = serverArr[0],
+                    name = serverArr[1],
+                    login = serverArr[2],
+                    password = serverArr[3]
+                )
+            }, domainModel.currentServerUrl, domainModel.currentServerName)
     }
 }

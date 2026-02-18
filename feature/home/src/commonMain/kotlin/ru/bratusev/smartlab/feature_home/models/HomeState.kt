@@ -21,6 +21,7 @@ data class HomeState(
 sealed class Event {
     data object OnBackClicked : Event()
     data object OnCustomButtonClicked : Event()
+    data object OnUpdateTimeOut : Event()
     data class OnButtonTextUpdated(val text: String) : Event()
     data class OnSwitchUpdated(val switchId: String) : Event()
 }

@@ -20,7 +20,8 @@ class ServerSelectionRepositoryImpl(
     private val json = Json { ignoreUnknownKeys = true; isLenient = true }
 
     private val defaultServerSelection = ServerSelection(
-        servers = emptyMap(), currentServerUrl = null
+        servers = emptyList(), currentServerUrl = null,
+        currentServerName = null
     )
 
     private var isCachedBaseUrlUpToDate: Boolean = false

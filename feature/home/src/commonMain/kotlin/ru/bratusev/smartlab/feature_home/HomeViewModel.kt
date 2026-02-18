@@ -79,10 +79,15 @@ class HomeViewModel(
         }
     }
 
+    private fun onUpdateTimeOut() {
+        updateState(_uiState.value.copy(isUpdating = false))
+    }
+
     internal fun handleEvent(event: Event) {
         when (event) {
             Event.OnBackClicked -> Unit
             Event.OnCustomButtonClicked -> onCustomButtonClicked()
+            Event.OnUpdateTimeOut -> onUpdateTimeOut()
             is Event.OnButtonTextUpdated -> onButtonTextUpdated(event.text)
             is Event.OnSwitchUpdated -> onSwitchUpdated(event.switchId)
         }

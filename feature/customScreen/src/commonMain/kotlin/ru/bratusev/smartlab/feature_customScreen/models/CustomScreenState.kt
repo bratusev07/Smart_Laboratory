@@ -52,4 +52,5 @@ sealed class Event {
     ): Event()
 
     data object LoadData : Event()
+    object OnTimeOut : Event()
 }

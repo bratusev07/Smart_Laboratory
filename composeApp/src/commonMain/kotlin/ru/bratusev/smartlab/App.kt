@@ -32,7 +32,8 @@ fun App(vm: AppViewModel = koinViewModel()) {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     LoadingIndicator(
                         state.isLoadingSettings,
-                        stringResource(smartlaboratory.ui.core.generated.resources.Res.string.loading_settings)
+                        stringResource(smartlaboratory.ui.core.generated.resources.Res.string.loading_settings),
+                        onTimeOut = {}
                     )
                 }
             } else {

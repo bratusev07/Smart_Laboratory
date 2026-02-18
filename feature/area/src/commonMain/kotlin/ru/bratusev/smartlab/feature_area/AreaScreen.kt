@@ -61,7 +61,10 @@ fun AreaScreen(
                 }
             }
         } else {
-            LoadingIndicator(!state.value.areaDevices.isEmpty(), stringResource(Res.string.loading))
+            LoadingIndicator(
+                !state.value.areaDevices.isEmpty(), stringResource(Res.string.loading),
+                onTimeOut = { vm.handleEvent(Event.OnLoadingTimeOut) }
+            )
         }
     }
 }

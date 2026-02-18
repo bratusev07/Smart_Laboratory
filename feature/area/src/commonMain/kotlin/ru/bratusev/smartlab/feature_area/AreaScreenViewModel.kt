@@ -41,15 +41,25 @@ class AreaScreenViewModel(
         getAreaDevicesJob = getAreaDeviceUseCase.invoke(areaId)
             .onEach {
                 logger.d("AreaScreenViewModel/getAreaDeviceUseCase", "Got devices: $it")
-                updateState(_uiState.value.copy(
-                    areaDevices = it.map { service -> service.mapToUi() },
-                    isLoading = false,
-                    errorMessage = null
-                ))
+                updateState(
+                    _uiState.value.copy(
+                        areaDevices = it.map { service -> service.mapToUi() },
+                        isLoading = false,
+                        errorMessage = null
+                    )
+                )
             }
             .catch { e ->
-                logger.e("AreaScreenViewModel/getAreaDeviceUseCase", "Error getting devices: ${e.message}")
-                updateState(_uiState.value.copy(errorMessage = "Error loading devices: ${e.message}", isLoading = false))
+                logger.e(
+                    "AreaScreenViewModel/getAreaDeviceUseCase",
+                    "Error getting devices: ${e.message}"
+                )
+                updateState(
+                    _uiState.value.copy(
+                        errorMessage = "Error loading devices: ${e.message}",
+                        isLoading = false
+                    )
+                )
             }.launchIn(viewModelScope)
     }
 
@@ -59,12 +69,18 @@ class AreaScreenViewModel(
         }
     }
 
+    private fun onLoadingTimeOut() {
+        updateState(_uiState.value.copy(isLoading = false))
+    }
+
     fun handleEvent(event: Event) {
         when (event) {
             Event.ToggleDropDownMenu -> {}
             is Event.FetchData -> {
                 _areaId.value = event.areaId
             }
+
+            Event.OnLoadingTimeOut -> onLoadingTimeOut()
         }
     }
 }

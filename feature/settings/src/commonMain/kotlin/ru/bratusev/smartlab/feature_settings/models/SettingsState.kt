@@ -19,5 +19,6 @@ data class SettingsState(
 sealed class Event {
     data class ChangeLanguage(val localeName: StringResource) : Event()
     data class ChangeTheme(val localName: StringResource): Event()
+    object OnTimeOut: Event()
     object Confirm : Event()
 }

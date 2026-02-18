@@ -61,9 +61,20 @@ import androidx.compose.ui.unit.times
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import ru.bratusev.smartlab.ui.core.models.ServerSelectionUi
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
+import smartlaboratory.ui.core.generated.resources.Res
+import smartlaboratory.ui.core.generated.resources.add_new_server
+import smartlaboratory.ui.core.generated.resources.cant_be_empty
+import smartlaboratory.ui.core.generated.resources.login
+import smartlaboratory.ui.core.generated.resources.login_must_be_filled_when_password_filled
+import smartlaboratory.ui.core.generated.resources.password
+import smartlaboratory.ui.core.generated.resources.save_server
+import smartlaboratory.ui.core.generated.resources.select_server
+import smartlaboratory.ui.core.generated.resources.server_name
+import smartlaboratory.ui.core.generated.resources.server_url
 
 private val ITEM_HEIGHT = 56.dp
 private val ITEMS_SPACED_BY = 8.dp
@@ -73,11 +84,11 @@ private val ITEMS_SPACED_BY = 8.dp
 fun ServerSelectionDropDown(
     modifier: Modifier = Modifier,
     uiData: ServerSelectionUi,
-    onSelect: (url: String) -> Unit,
+    onSelect: (ServerSelectionUi.ServerInfoUi) -> Unit,
     onExpand: () -> Unit = {},
     onClose: () -> Unit = {},
-    onDelete: (url: String) -> Unit,
-    onAddServer: (url: String, name: String) -> Unit,
+    onDelete: (ServerSelectionUi.ServerInfoUi) -> Unit,
+    onAddServer: (url: String, name: String, login: String, password: String) -> Unit,
 ) {
     val density = LocalDensity.current
     var dropdownWidth by remember { mutableStateOf(0.dp) }
@@ -85,18 +96,21 @@ fun ServerSelectionDropDown(
     val transitionState = remember { MutableTransitionState(uiData.expanded) }
     transitionState.targetState = uiData.expanded
 
-    val orderedItems = remember(uiData.serverList, uiData.currentServerUrl) {
-        val list = uiData.serverList.keys.toMutableList()
-        val selected = uiData.currentServerUrl
-        if (selected != null && list.contains(selected)) {
-            list.remove(selected)
-            list.add(0, selected)
+    val orderedItems = remember(uiData.serverList, uiData.currentServer) {
+        val list = uiData.serverList.toMutableList()
+        val selectedItem = uiData.currentServer
+
+        // We use object equality here, which handles duplicate URLs correctly
+        if (selectedItem != null && list.contains(selectedItem)) {
+            list.remove(selectedItem)
+            list.add(0, selectedItem)
         }
         list.toList()
     }
 
     val windowHeight = rememberWindowHeight()
-    val contentHeight = (orderedItems.size + 1) * ITEM_HEIGHT + (orderedItems.size+1) * ITEMS_SPACED_BY
+    val contentHeight =
+        (orderedItems.size + 1) * ITEM_HEIGHT + (orderedItems.size + 1) * ITEMS_SPACED_BY
     val expandedHeight = min(contentHeight, windowHeight * 0.5f)
 
     val heightAnim by animateDpAsState(
@@ -108,13 +122,15 @@ fun ServerSelectionDropDown(
     Box(
         modifier = modifier.fillMaxWidth().height(ITEM_HEIGHT)
             .onGloballyPositioned { dropdownWidth = with(density) { it.size.width.toDp() } }) {
+
         ServerItemContent(
-            url = uiData.currentServerUrl ?: "",
-            name = uiData.serverList[uiData.currentServerUrl] ?: "Select Server",
+            url = uiData.currentServer?.url ?: "",
+            name = uiData.currentServer?.name ?: stringResource(Res.string.select_server),
+            login = uiData.currentServer?.login ?: "",
             selected = true,
             isExpanded = false,
             onClick = onExpand,
-            modifier = Modifier.matchParentSize()
+            modifier = Modifier.matchParentSize(),
         )
 
         if (transitionState.currentState || transitionState.targetState) {
@@ -135,23 +151,31 @@ fun ServerSelectionDropDown(
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.spacedBy(ITEMS_SPACED_BY),
                         contentPadding = PaddingValues(
-                            top = if (uiData.currentServerUrl == null) 8.dp else 0.dp,
+                            top = if (uiData.currentServer == null) 8.dp else 0.dp,
                             bottom = 8.dp,
                         )
                     ) {
                         items(
-                            items = orderedItems, key = { it }) { url ->
-                            val isSelected = url == uiData.currentServerUrl
+                            items = orderedItems,
+                            key = { "${it.url}_${it.name}_${it.login}" }
+                        ) { serverInfo ->
+                            val isSelected = serverInfo == uiData.currentServer
 
                             Box(modifier = Modifier.animateItem()) {
                                 SwipeableServerItemWrapper(
-                                    isDeletable = true, onDelete = { onDelete(url) }) {
+                                    isDeletable = true,
+                                    onDelete = {
+                                        onDelete(serverInfo)
+                                    }) {
                                     ServerItemContent(
-                                        url = url,
-                                        name = uiData.serverList[url] ?: "Unknown",
+                                        url = serverInfo.url,
+                                        name = serverInfo.name,
+                                        login = serverInfo.login,
                                         selected = isSelected,
                                         isExpanded = isSelected && uiData.expanded,
-                                        onClick = { if (isSelected) onClose() else onSelect(url) })
+                                        onClick = {
+                                            if (isSelected) onClose() else onSelect(serverInfo)
+                                        })
                                 }
                             }
                         }
@@ -174,6 +198,7 @@ fun ServerSelectionDropDown(
 private fun ServerItemContent(
     url: String,
     name: String,
+    login: String,
     selected: Boolean,
     isExpanded: Boolean,
     onClick: () -> Unit,
@@ -196,7 +221,7 @@ private fun ServerItemContent(
     ) {
         Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.Center) {
             Text(
-                text = name,
+                text = if (login.isNotEmpty()) "$name - $login" else name,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = contentColor,
@@ -263,7 +288,7 @@ private fun SwipeableServerItemWrapper(
 }
 
 @Composable
-private fun AddServerItem(onAddServer: (url: String, name: String) -> Unit) {
+private fun AddServerItem(onAddServer: (url: String, name: String, login: String, password: String) -> Unit) {
     var isAddServerDialogOpen by remember { mutableStateOf(false) }
 
     Row(
@@ -275,7 +300,7 @@ private fun AddServerItem(onAddServer: (url: String, name: String) -> Unit) {
         Icon(Icons.Default.Add, null, tint = MaterialTheme.colorScheme.primary)
         Spacer(Modifier.width(8.dp))
         Text(
-            "Add New Server",
+            text = stringResource(Res.string.add_new_server),
             color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.SemiBold
         )
@@ -283,40 +308,45 @@ private fun AddServerItem(onAddServer: (url: String, name: String) -> Unit) {
     AddServerDialog(
         isOpen = isAddServerDialogOpen,
         onClose = { isAddServerDialogOpen = false },
-        onConfirm = { url, name ->
+        onConfirm = { url, name, login, password ->
             isAddServerDialogOpen = false
-            onAddServer(url, name)
+            onAddServer(url, name, login, password)
         }
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun AddServerDialog(
     modifier: Modifier = Modifier,
     isOpen: Boolean,
     onClose: () -> Unit,
-    onConfirm: (url: String, name: String) -> Unit
+    onConfirm: (url: String, name: String, login: String, password: String) -> Unit
 ) {
     var url by remember { mutableStateOf("") }
     var name by remember { mutableStateOf("") }
+    var login by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
 
     var showUrlError by remember { mutableStateOf(false) }
     var showNameError by remember { mutableStateOf(false) }
+    var showLoginError by remember { mutableStateOf(false) }
+    var showPasswordError by remember { mutableStateOf(false) }
+
     if (isOpen) {
         Dialog(
             onDismissRequest = onClose,
         ) {
             Card(modifier = modifier, shape = MaterialTheme.shapes.large) {
                 Column(
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     TextField(
                         value = url,
-                        label = { Text("Server url") },
+                        label = { Text(text = stringResource(Res.string.server_url)) },
                         supportingText = {
                             if (showUrlError) {
-                                Text("Can't be empty", color = MaterialTheme.colorScheme.error)
+                                Text(text = stringResource(Res.string.cant_be_empty))
                             }
                         },
                         isError = showUrlError,
@@ -325,26 +355,47 @@ private fun AddServerDialog(
                     )
                     TextField(
                         value = name,
-                        label = { Text("Server name") },
+                        label = { Text(text = stringResource(Res.string.server_name)) },
                         supportingText = {
                             if (showNameError) {
-                                Text("Can't be empty", color = MaterialTheme.colorScheme.error)
+                                Text(text = stringResource(Res.string.cant_be_empty))
                             }
                         },
                         isError = showNameError,
                         onValueChange = { name = it },
                         singleLine = true
                     )
+                    TextField(
+                        value = login,
+                        label = { Text(text = stringResource(Res.string.login)) },
+                        supportingText = {
+                            if (showLoginError) {
+                                Text(text = stringResource(Res.string.login_must_be_filled_when_password_filled))
+                            }
+                        },
+                        isError = showLoginError,
+                        onValueChange = { login = it },
+                        singleLine = true
+                    )
+                    TextField(
+                        value = password,
+                        label = { Text(text = stringResource(Res.string.password)) },
+                        onValueChange = { password = it },
+                        singleLine = true
+                    )
                     Button(
+                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                         onClick = {
                             showUrlError = url.isEmpty()
                             showNameError = name.isEmpty()
-                            if (!showNameError && !showUrlError) {
-                                onConfirm(url, name)
+                            showLoginError = login.isEmpty() && password.isNotEmpty()
+                            if (!showNameError && !showUrlError && !showLoginError) {
+                                onConfirm(url, name, login, password)
+                                url = ""; name = ""; login = ""; password = ""
                             }
                         }
                     ) {
-                        Text("Save server")
+                        Text(text = stringResource(Res.string.save_server))
                     }
                 }
             }
@@ -362,48 +413,49 @@ private fun rememberWindowHeight(): Dp {
 }
 
 @Composable
-@Preview(
-    showBackground = true
-)
+@Preview(showBackground = true)
 private fun PreviewServerSelectionExpanded() {
+    val sampleList = listOf(
+        ServerSelectionUi.ServerInfoUi("255.255.255.255", "Preview", "", ""),
+        ServerSelectionUi.ServerInfoUi("254.254.254.254", "Preview2", "", "")
+    )
     AppTheme {
         ServerSelectionDropDown(
             uiData = ServerSelectionUi(
-                serverList = mapOf("255.255.255.255" to "Preview", "254.254.254.254" to "Preview2"),
-                currentServerUrl = "254.254.254.254",
+                serverList = sampleList,
+                currentServer = sampleList[1], // Passed Object
                 expanded = true
-            ), onSelect = {}, onDelete = {},
-            onAddServer = { _, _ -> }
+            ),
+            onSelect = {},
+            onDelete = { _ -> },
+            onAddServer = { _, _, _, _ -> }
         )
     }
 }
 
 @Composable
-@Preview(
-    showBackground = true
-)
+@Preview(showBackground = true)
 private fun PreviewServerSelectionNotExpanded() {
+    val sampleList = listOf(
+        ServerSelectionUi.ServerInfoUi("255.255.255.255", "Preview", "", ""),
+        ServerSelectionUi.ServerInfoUi("254.254.254.254", "Preview2", "", "")
+    )
     AppTheme {
         ServerSelectionDropDown(
             uiData = ServerSelectionUi(
-                serverList = mapOf(
-                    "255.255.255.255" to "Preview",
-                    "254.254.254.254" to "Preview2",
-                    "254.254.254.253" to "Preview3",
-                    "254.254.254.254" to "Preview4",
-                    "254.254.254.255" to "Preview5",
-                    "254.254.254.256" to "Preview6",
-                ), currentServerUrl = "254.254.254.254", expanded = false
-            ), onSelect = {}, onDelete = {},
-            onAddServer = { _, _ -> }
+                serverList = sampleList,
+                currentServer = sampleList[1], // Passed Object
+                expanded = false
+            ),
+            onSelect = {},
+            onDelete = { _ -> },
+            onAddServer = { _, _, _, _ -> }
         )
     }
 }
 
 @Composable
-@Preview(
-    showBackground = true
-)
+@Preview(showBackground = true)
 private fun PreviewServerItem() {
     AppTheme {
         ServerItemContent(
@@ -412,6 +464,7 @@ private fun PreviewServerItem() {
             selected = false,
             onClick = {},
             isExpanded = false,
+            login = "PreviewLogin"
         )
     }
 }

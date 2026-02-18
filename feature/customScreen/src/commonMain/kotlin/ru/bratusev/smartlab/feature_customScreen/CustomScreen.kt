@@ -109,7 +109,8 @@ fun CustomScreen(
                 state.value.isUpdating || state.value.isSaving,
                 if (state.value.isUpdating) stringResource(Res.string.updating) else stringResource(
                     Res.string.saving
-                )
+                ),
+                onTimeOut = {vm.handleEvent(Event.OnTimeOut)}
             )
         }
     }

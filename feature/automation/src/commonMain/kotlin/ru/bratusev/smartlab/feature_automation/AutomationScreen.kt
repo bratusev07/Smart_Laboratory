@@ -44,7 +44,10 @@ fun AutomationScreen(
 
     var showAddAutomationSheet by remember { mutableStateOf(false) }
 
-    LoadingIndicator(state.value.isAutomationLoading)
+    LoadingIndicator(
+        state.value.isAutomationLoading,
+        onTimeOut = {vm.handleEvent(Event.OnTimeOut)}
+    )
 
     if (showAddAutomationSheet && state.value.sensors.isNotEmpty()) {
         AutomationSetupBottomSheet(

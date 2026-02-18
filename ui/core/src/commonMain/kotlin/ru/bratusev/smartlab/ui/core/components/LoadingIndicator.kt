@@ -22,10 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.dropShadow
@@ -44,14 +41,14 @@ fun LoadingIndicator(
     show: Boolean,
     text: String = stringResource(Res.string.loading),
     modifier: Modifier = Modifier,
+    onTimeOut: () -> Unit,
+    timeOutDelay: Long = 10000
 ) {
-    var shouldShow by mutableStateOf(false)
-
-    LaunchedEffect(show, text) {
+    LaunchedEffect(show) {
         if (show) {
-            shouldShow = true
-            delay(10000)
-            shouldShow = false
+            delay(timeOutDelay)
+            println("Loading timeout")
+            onTimeOut()
         }
     }
 
@@ -128,6 +125,9 @@ fun LoadingIndicator(
 @Composable
 private fun LoadingIndicatorPreview() {
     AppTheme {
-        LoadingIndicator(show = true)
+        LoadingIndicator(
+            show = true,
+            onTimeOut = {}
+        )
     }
 }
