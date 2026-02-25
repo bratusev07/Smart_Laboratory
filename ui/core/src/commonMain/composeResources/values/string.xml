@@ -26,6 +26,8 @@
     <string name="login_must_be_filled_when_password_filled">Логин не может быть пустым, если есть пароль</string>
     <string name="select_server">Выберите сервер</string>
     <string name="save_server">Сохранить сервер</string>
+    <string name="unnecessary">Необязательно</string>
+    <string name="add_server_bottom_text">Поля логин и пароль будут автоматически заполнены при выборе сервера, если указаны здесь</string>
 
     <!-- LOGCAT -->
     <string name="nothing_found">Ничего не найдено</string>

@@ -18,6 +18,16 @@
     <string name="network_error">Network error</string>
     <string name="invalid_device_ip">The device IP does not match the Home Assistant IP.</string>
     <string name="error">Error</string>
+    <string name="add_new_server">Add server</string>
+    <string name="server_url">Server URL</string>
+    <string name="server_name">Server name</string>
+    <string name="cant_be_empty">Cannot be empty</string>
+    <string name="error_server_exists">This server has already been added</string>
+    <string name="login_must_be_filled_when_password_filled">Login cannot be empty if a password is provided</string>
+    <string name="select_server">Select server</string>
+    <string name="save_server">Save server</string>
+    <string name="unnecessary">Optional</string>
+    <string name="add_server_bottom_text">Login and password fields will be automatically filled when selecting a server if they are specified here</string>
 
     <!-- LOGCAT -->
     <string name="nothing_found">Nothing found</string>
@@ -76,8 +86,9 @@
     <string name="theme_dark">Dark</string>
 
     <!-- LANGUAGES -->
-    <!-- only language_system changes -->
     <string name="language_system">System</string>
+    <string name="language_russian">Russian</string>
+    <string name="language_english">English</string>
 
     <!-- WIDGET -->
     <string name="widget_id_is">widget id: </string>
@@ -95,5 +106,4 @@
     <string name="sensor_state_off">Off</string>
     <string name="sensor_state_disabled">Disabled</string>
     <string name="sensor_state_value">Sensor value</string>
-
 </resources>

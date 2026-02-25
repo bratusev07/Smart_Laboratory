@@ -47,6 +47,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -67,14 +68,15 @@ import ru.bratusev.smartlab.ui.core.models.ServerSelectionUi
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
 import smartlaboratory.ui.core.generated.resources.Res
 import smartlaboratory.ui.core.generated.resources.add_new_server
+import smartlaboratory.ui.core.generated.resources.add_server_bottom_text
 import smartlaboratory.ui.core.generated.resources.cant_be_empty
 import smartlaboratory.ui.core.generated.resources.login
-import smartlaboratory.ui.core.generated.resources.login_must_be_filled_when_password_filled
 import smartlaboratory.ui.core.generated.resources.password
 import smartlaboratory.ui.core.generated.resources.save_server
 import smartlaboratory.ui.core.generated.resources.select_server
 import smartlaboratory.ui.core.generated.resources.server_name
 import smartlaboratory.ui.core.generated.resources.server_url
+import smartlaboratory.ui.core.generated.resources.unnecessary
 
 private val ITEM_HEIGHT = 56.dp
 private val ITEMS_SPACED_BY = 8.dp
@@ -100,7 +102,6 @@ fun ServerSelectionDropDown(
         val list = uiData.serverList.toMutableList()
         val selectedItem = uiData.currentServer
 
-        // We use object equality here, which handles duplicate URLs correctly
         if (selectedItem != null && list.contains(selectedItem)) {
             list.remove(selectedItem)
             list.add(0, selectedItem)
@@ -122,7 +123,6 @@ fun ServerSelectionDropDown(
     Box(
         modifier = modifier.fillMaxWidth().height(ITEM_HEIGHT)
             .onGloballyPositioned { dropdownWidth = with(density) { it.size.width.toDp() } }) {
-
         ServerItemContent(
             url = uiData.currentServer?.url ?: "",
             name = uiData.currentServer?.name ?: stringResource(Res.string.select_server),
@@ -329,8 +329,6 @@ private fun AddServerDialog(
 
     var showUrlError by remember { mutableStateOf(false) }
     var showNameError by remember { mutableStateOf(false) }
-    var showLoginError by remember { mutableStateOf(false) }
-    var showPasswordError by remember { mutableStateOf(false) }
 
     if (isOpen) {
         Dialog(
@@ -343,6 +341,12 @@ private fun AddServerDialog(
                 ) {
                     TextField(
                         value = url,
+                        placeholder = {
+                            Text(
+                                text = "https://www.home-assistant.io/",
+                                color = Color.LightGray
+                            )
+                        },
                         label = { Text(text = stringResource(Res.string.server_url)) },
                         supportingText = {
                             if (showUrlError) {
@@ -368,28 +372,27 @@ private fun AddServerDialog(
                     TextField(
                         value = login,
                         label = { Text(text = stringResource(Res.string.login)) },
-                        supportingText = {
-                            if (showLoginError) {
-                                Text(text = stringResource(Res.string.login_must_be_filled_when_password_filled))
-                            }
-                        },
-                        isError = showLoginError,
+                        supportingText = { Text(text = stringResource(Res.string.unnecessary)) },
                         onValueChange = { login = it },
                         singleLine = true
                     )
                     TextField(
                         value = password,
                         label = { Text(text = stringResource(Res.string.password)) },
+                        supportingText = { Text(text = stringResource(Res.string.unnecessary)) },
                         onValueChange = { password = it },
                         singleLine = true
+                    )
+                    Text(
+                        text = stringResource(Res.string.add_server_bottom_text),
+                        style = MaterialTheme.typography.labelMedium
                     )
                     Button(
                         modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                         onClick = {
                             showUrlError = url.isEmpty()
                             showNameError = name.isEmpty()
-                            showLoginError = login.isEmpty() && password.isNotEmpty()
-                            if (!showNameError && !showUrlError && !showLoginError) {
+                            if (!showNameError && !showUrlError) {
                                 onConfirm(url, name, login, password)
                                 url = ""; name = ""; login = ""; password = ""
                             }
