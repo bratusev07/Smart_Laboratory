@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -25,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.backhandler.BackHandler
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -43,6 +45,7 @@ import ru.bratusev.smartlab.ui.core.theme.AppTheme
 import smartlaboratory.ui.core.generated.resources.Res
 import smartlaboratory.ui.core.generated.resources.add_widget
 import smartlaboratory.ui.core.generated.resources.edit_mode
+import smartlaboratory.ui.core.generated.resources.empty_custom_screen_message
 import smartlaboratory.ui.core.generated.resources.saving
 import smartlaboratory.ui.core.generated.resources.updating
 
@@ -95,7 +98,15 @@ fun CustomScreen(
             contentPadding = PaddingValues(top = 16.dp, start = 12.dp, end = 12.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            items(state.value.widgetsUi) {
+            if (state.value.widgetsUi.isEmpty()) {
+                item {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = stringResource(Res.string.empty_custom_screen_message),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            } else items(state.value.widgetsUi) {
                 CustomWidget(
                     uiData = it.copy(isEditMode = state.value.isEditMode), onEvent = { event ->
                         vm.handleEvent(getVmEvent(it, event))
@@ -110,7 +121,7 @@ fun CustomScreen(
                 if (state.value.isUpdating) stringResource(Res.string.updating) else stringResource(
                     Res.string.saving
                 ),
-                onTimeOut = {vm.handleEvent(Event.OnTimeOut)}
+                onTimeOut = { vm.handleEvent(Event.OnTimeOut) }
             )
         }
     }

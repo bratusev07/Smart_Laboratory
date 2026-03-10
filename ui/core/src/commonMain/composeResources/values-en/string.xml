@@ -74,6 +74,7 @@
     <string name="saving">Saving</string>
     <string name="confirm_delete">Confirm deletion</string>
     <string name="confirm_action">Confirm action</string>
+    <string name="empty_custom_screen_message">Press 3 dots on the top right to add elements.</string>
 
     <!-- SETTINGS SCREEN -->
     <string name="confirm_changes">Apply changes</string>
@@ -87,7 +88,7 @@
 
     <!-- LANGUAGES -->
     <string name="language_system">System</string>
-    <string name="language_russian">Russian</string>
+    <string name="language_russian">Русский</string>
     <string name="language_english">English</string>
 
     <!-- WIDGET -->

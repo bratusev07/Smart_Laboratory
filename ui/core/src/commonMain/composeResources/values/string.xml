@@ -75,6 +75,7 @@
     <string name="saving">Сохранение</string>
     <string name="confirm_delete">Подтвердите удаление</string>
     <string name="confirm_action">Подтвердите выбор</string>
+    <string name="empty_custom_screen_message">Нажмите три точки сверху справа экрана, чтобы добавить элементы.</string>
 
     <!-- SETTINGS SCREEN -->
     <string name="confirm_changes">Принять изменения</string>

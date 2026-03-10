@@ -120,7 +120,12 @@ private fun WidgetItem(onAccept: () -> Unit, title: String, content: @Composable
             })
         }
     }
-    Surface(onClick = { isDialogOpen = true }) {
+    Surface(
+        modifier = Modifier.padding(top = 16.dp, start = 12.dp, end = 12.dp),
+        onClick = { isDialogOpen = true },
+        tonalElevation = 2.dp,
+        shape = MaterialTheme.shapes.extraLarge
+    ) {
         Box {
             Column(
                 modifier = Modifier.padding(12.dp),

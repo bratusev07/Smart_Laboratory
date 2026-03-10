@@ -27,10 +27,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.SwipeToDismissBox
@@ -53,6 +56,8 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
@@ -376,12 +381,29 @@ private fun AddServerDialog(
                         onValueChange = { login = it },
                         singleLine = true
                     )
+                    var hidePassword by remember { mutableStateOf(true) }
+                    val passwordTransformation = if (hidePassword) {
+                        PasswordVisualTransformation()
+                    } else VisualTransformation.None
+
                     TextField(
                         value = password,
                         label = { Text(text = stringResource(Res.string.password)) },
                         supportingText = { Text(text = stringResource(Res.string.unnecessary)) },
                         onValueChange = { password = it },
-                        singleLine = true
+                        singleLine = true,
+                        visualTransformation = passwordTransformation,
+                        trailingIcon = {
+                            IconButton(
+                                onClick = {
+                                    hidePassword = !hidePassword
+                                }) {
+                                Icon(
+                                    if (hidePassword) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                                    contentDescription = null
+                                )
+                            }
+                        },
                     )
                     Text(
                         text = stringResource(Res.string.add_server_bottom_text),

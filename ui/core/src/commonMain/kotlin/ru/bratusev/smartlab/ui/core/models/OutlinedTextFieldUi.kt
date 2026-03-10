@@ -6,7 +6,7 @@ data class OutlinedTextFieldUi(
     val value: String,
     val placeholder: String,
     val singleLine: Boolean = true,
-    val isSecret: Boolean = false,
+    val enableHidingPassword: Boolean = false,
     val shape: Shape? = null,
     val onValueChange: (String) -> Unit
 )

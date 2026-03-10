@@ -1,5 +1,6 @@
 package ru.bratusev.smartlab.feature_login.models
 
+import androidx.compose.runtime.Stable
 import org.jetbrains.compose.resources.StringResource
 import ru.bratusev.smartlab.ui.core.models.AnimatedLoadUi
 
@@ -13,6 +14,7 @@ internal data class InternalLoginState(
     val addServerError: StringResource? = null
 )
 
+@Stable
 data class LoginState(
     val screenName: String = "Login Screen",
     val login: String,
