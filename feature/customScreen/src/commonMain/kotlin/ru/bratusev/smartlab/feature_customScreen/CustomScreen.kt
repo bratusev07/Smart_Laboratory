@@ -39,6 +39,7 @@ import ru.bratusev.smartlab.feature_customScreen.models.Event.OnSensorStateChang
 import ru.bratusev.smartlab.ui.core.components.CustomWidget
 import ru.bratusev.smartlab.ui.core.components.LoadingIndicator
 import ru.bratusev.smartlab.ui.core.components.utils.RegisterTopBar
+import ru.bratusev.smartlab.ui.core.components.utils.TopBarState
 import ru.bratusev.smartlab.ui.core.models.CustomWidgetEvent
 import ru.bratusev.smartlab.ui.core.models.CustomWidgetUi
 import ru.bratusev.smartlab.ui.core.theme.AppTheme
@@ -53,7 +54,7 @@ import smartlaboratory.ui.core.generated.resources.updating
 @Composable
 fun CustomScreen(
     vm: CustomScreenViewModel = koinViewModel(),
-    setTopBarComposable: (@Composable (RowScope.() -> Unit)) -> Unit,
+    topBarState: TopBarState,
     goToAddWidgetScreen: () -> Unit,
 ) {
     val state = vm.uiState.collectAsState()
@@ -68,7 +69,7 @@ fun CustomScreen(
         }
     }
 
-    RegisterTopBar(setTopBarComposable) {
+    RegisterTopBar(topBarState = topBarState) {
         Box {
             IconButton(onClick = { vm.handleEvent(Event.ToggleDropDownMenu) }) {
                 Icon(

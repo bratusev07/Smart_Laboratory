@@ -9,10 +9,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.backhandler.BackHandler
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -38,6 +36,7 @@ import ru.bratusev.smartlab.feature_login.LoginScreen
 import ru.bratusev.smartlab.feature_settings.SettingsScreen
 import ru.bratusev.smartlab.navigation.api.NavigationApi
 import ru.bratusev.smartlab.navigation.api.Screen
+import ru.bratusev.smartlab.ui.core.components.utils.TopBarState
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
@@ -46,10 +45,7 @@ fun AppNavigation(navController: NavHostController) {
     val navigationApi = NavigationApiImpl(navController)
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
-    var topBarComposable by remember { mutableStateOf<@Composable RowScope.() -> Unit>({}) }
-    val setTopBarComposable: (@Composable (RowScope.() -> Unit)) -> Unit = { newComposable ->
-        topBarComposable = newComposable
-    }
+    val topBarState = remember { TopBarState() }
 
     val isDrawerHidden by remember(navBackStackEntry) {
         derivedStateOf {
@@ -68,6 +64,7 @@ fun AppNavigation(navController: NavHostController) {
             }
         }
     }
+
     NavigationDrawer(
         drawerScope = drawerScope,
         drawerState = drawerState,
@@ -77,9 +74,9 @@ fun AppNavigation(navController: NavHostController) {
             navigationApi.navigateTo(screen = screen)
         },
         navigationHierarchy = navBackStackEntry?.destination?.hierarchy,
-        topContent = topBarComposable
+        topContent = { topBarState.currentContent?.invoke(this) }
     ) {
-        AppNavHost(navController, navigationApi, setTopBarComposable)
+        AppNavHost(navController, navigationApi, topBarState)
     }
 }
 
@@ -88,7 +85,7 @@ fun AppNavigation(navController: NavHostController) {
 private fun AppNavHost(
     navController: NavHostController,
     navigationApi: NavigationApi,
-    setTopBarComposable: (@Composable (RowScope.() -> Unit)) -> Unit,
+    topBarState: TopBarState,
 ) {
     NavHost(
         navController = navController, startDestination = Screen.Login
@@ -110,7 +107,7 @@ private fun AppNavHost(
                     goToAddWidgetScreen = {
                         navigationApi.navigateToAddWidgetCustomScreen()
                     },
-                    setTopBarComposable = setTopBarComposable,
+                    topBarState = topBarState,
                 )
             }
             composable<Screen.CustomScreen.AddWidget> {
