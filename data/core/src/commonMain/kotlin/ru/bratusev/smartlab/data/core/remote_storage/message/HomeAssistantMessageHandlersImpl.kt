@@ -164,13 +164,17 @@ class HomeAssistantMessageHandlersImpl(
                             }
                         }
                     } catch (e: Exception) {
+                        println(e.printStackTrace())
                         emitError("Failed to decode Result object: ${e.message}")
                     }
                 }
 
-                else -> {println("АААА не знаю")}
+                else -> {
+                    println("АААА не знаю")
+                }
             }
         } catch (e: Exception) {
+            e.printStackTrace()
             emitError("Result handler error: ${e.message}")
         }
     }
@@ -201,11 +205,16 @@ class HomeAssistantMessageHandlersImpl(
                 }
                 eventObj.containsKey("c") -> {
                     val pair = mapJsonToEventPair(jsonElement.toString())
+                    if (pair.second == "null"){
+                        return
+                    }
                     val updatedServiceEntities = getServiceEntitiesCopy().map {
                         if (it.id == pair.first) {
                             it.copy(state = json.parseToJsonElement(pair.second))
                         } else it
                     }
+
+
                     if (emitServiceEntities(updatedServiceEntities)) {
                         setServiceEntitiesCopy(updatedServiceEntities)
                     }

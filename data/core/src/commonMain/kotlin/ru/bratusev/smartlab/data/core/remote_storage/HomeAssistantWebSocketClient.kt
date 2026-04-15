@@ -16,6 +16,8 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.channels.ClosedReceiveChannelException
+import kotlinx.coroutines.channels.onClosed
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
@@ -47,7 +49,9 @@ class HomeAssistantWebSocketClient(
             requestTimeoutMillis = 10_000
             socketTimeoutMillis = 30_000
         }
-        install(WebSockets)
+        install(WebSockets) {
+            pingIntervalMillis = 20_000
+        }
     }
 
     private val json = Json {
@@ -100,39 +104,54 @@ class HomeAssistantWebSocketClient(
         job?.cancel()
 
         job = clientScope.launch {
+            println("SOCKET IS TRYING TO CONNECT")
             try {
                 val rawUrl = serverSelectionRepository.getCurrentBaseUrl() ?: ""
                 val wsUrl = rawUrl.replace(Regex("^http"), "ws") + "/api/websocket"
 
                 client.webSocket(wsUrl) {
                     session = this
-                    for (frame in incoming) {
-                        if (frame is Frame.Text) {
-                            handleTextMessage(frame.readText())
+                    while (true) {
+                        val message = incoming.receiveCatching().onClosed {
+                            if (accessToken != null) {
+                                println("Can not receive: the channel is closed")
+                                break
+                            }
+                        }.getOrNull() as? Frame.Text
+                        message?.let {
+                            handleTextMessage(it.readText())
                         }
                     }
                 }
             } catch (e: CancellationException) {
+                println("SOCKET GOT CANCELED: ${e.stackTraceToString()}")
                 throw e // Нормальное закрытие корутины
+            } catch (e: ClosedReceiveChannelException) {
+                println("SOCKET WAS CLOSED.")
+                throw e
             } catch (e: Exception) {
-                e.printStackTrace()
+                println("SOCKET GOT ERROR: ${e.stackTraceToString()}")
                 _socketResponseFlow.tryEmit(
                     SocketResponseModel.ErrorMessage(listOf(Error("WebSocket error: ${e.message}")))
                 )
             } finally {
+                println("SOCKET CLOSED IN FINALLY")
                 session?.close(CloseReason(CloseReason.Codes.NORMAL, "Closed by client"))
                 session = null
+                println("SOCKET IS TRYING TO RECONNECT")
+                connect() // пытаемся заново подключиться
             }
         }
-    }
-
-    internal suspend fun disconnect() {
-        job?.cancel() // finally блок внутри connect() сам закроет сессию
     }
 
     private fun handleTextMessage(text: String) {
         try {
             val jsonElement = json.parseToJsonElement(text)
+
+            println(
+                "================================================================\nSocket got message: $text\n================================================================"
+            )
+
             val type =
                 runCatching { jsonElement.jsonObject["type"]?.jsonPrimitive?.content }.getOrNull()
                     ?: return
