@@ -62,7 +62,13 @@ fun SettingsScreen(
             )
         }
     }
-    LoadingIndicator(state.value.isLoading)
-    LoadingIndicator(state.value.isSaving, text = stringResource(Res.string.saving))
+    LoadingIndicator(
+        state.value.isLoading,
+        onTimeOut = { vm.handleEvent(Event.OnTimeOut) }
+    )
+    LoadingIndicator(
+        state.value.isSaving, text = stringResource(Res.string.saving),
+        onTimeOut = { vm.handleEvent(Event.OnTimeOut) }
+    )
 }
 

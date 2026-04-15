@@ -10,7 +10,7 @@ val iosDataModule = module {
     single<DataStoreFactory> { DataStoreFactory() }
     single<Logger> { Logger() }
 
-    single<NetworkRepository> { NetworkRepositoryImpl() }
+    single<NetworkRepository> { NetworkRepositoryImpl(get()) }
 
     single { DatabaseFactory() }
 }

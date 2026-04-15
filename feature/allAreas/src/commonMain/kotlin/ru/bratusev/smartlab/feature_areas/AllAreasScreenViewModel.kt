@@ -32,7 +32,7 @@ class AllAreasScreenViewModel(
         logger.d("AreasScreenViewModel/onAreasUpdate", "Loaded ares: $domainAreas")
         updateState(
             _uiState.value.copy(
-            areas = domainAreas.map { it.toDomain() }
+            areas = domainAreas.map { it.toDomain() }, isLoading = false
         ))
     }
 
@@ -42,9 +42,14 @@ class AllAreasScreenViewModel(
         }
     }
 
+    private fun onTimeOut(){
+        updateState(_uiState.value.copy(isLoading = false))
+    }
+
     fun handleEvent(event: Event) {
         when (event) {
             Event.ToggleDropDownMenu -> {}
+            Event.OnTimeOut -> onTimeOut()
         }
     }
 }

@@ -12,5 +12,6 @@ data class AreaScreenState(
 
 sealed class Event {
     data object ToggleDropDownMenu : Event()
+    data object OnLoadingTimeOut: Event()
     data class FetchData(val areaId: String): Event()
 }

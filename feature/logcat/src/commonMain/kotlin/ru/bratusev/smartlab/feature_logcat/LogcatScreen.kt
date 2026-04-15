@@ -88,7 +88,6 @@ fun LogcatScreen(
                 }
             }
 
-            // 2. Loading State (Overlay)
             if (state.isLoading) {
                 Box(
                     modifier = Modifier
@@ -100,7 +99,6 @@ fun LogcatScreen(
                 }
             }
 
-            // 3. Empty State
             if (!state.isLoading && state.messages.isEmpty()) {
                 Column(
                     modifier = Modifier

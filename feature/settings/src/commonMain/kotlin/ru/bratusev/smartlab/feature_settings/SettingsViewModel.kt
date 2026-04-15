@@ -80,11 +80,16 @@ class SettingsViewModel(
         }
     }
 
+    private fun onTimeOut(){
+        updateState(_uiState.value.copy(isSaving = false, isLoading = false))
+    }
+
     internal fun handleEvent(event: Event) {
         when (event) {
             is Event.ChangeLanguage -> changeLanguage(event.localeName)
             is Event.ChangeTheme -> changeTheme(event.localName)
             is Event.Confirm -> saveSettings()
+            is Event.OnTimeOut -> onTimeOut()
         }
     }
 }

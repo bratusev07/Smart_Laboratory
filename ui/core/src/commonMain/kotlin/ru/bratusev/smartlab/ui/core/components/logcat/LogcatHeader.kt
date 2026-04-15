@@ -73,9 +73,7 @@ private fun FilterIconToggle(
     onClick: () -> Unit
 ) {
     val style = getLogStyle(type)
-    // Animate scale when toggled
     val scale by animateFloatAsState(if (isSelected) 1.1f else 1f)
-    // Animate color
     val backgroundColor by animateColorAsState(
         if (isSelected) style.color else MaterialTheme.colorScheme.surfaceVariant
     )

@@ -1,14 +1,17 @@
 package ru.bratusev.smartlab.data.core.repository
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
+import ru.bratusev.smartlab.data.core.mapper.AreaEntityMapper
 import ru.bratusev.smartlab.data.core.mapper.mapToDomain
 import ru.bratusev.smartlab.data.core.model.SocketResponseModel
 import ru.bratusev.smartlab.data.core.remote_storage.HomeAssistantWebSocketClient
@@ -18,13 +21,15 @@ import ru.bratusev.smartlab.domain.core.repository.SocketRepository
 
 class SocketRepositoryImpl(
     private val webSocketClient: HomeAssistantWebSocketClient,
-    private val scope: CoroutineScope
+    private val scope: CoroutineScope,
+    private val areaEntityMapper: AreaEntityMapper
 ) : SocketRepository {
 
-    private val servicesFlow by lazy {
+    // Явное указание типа SharedFlow помогает компилятору
+    private val servicesFlow: SharedFlow<List<ServiceEntity>> by lazy {
         webSocketClient.socketResponseFlow
-            .filterIsInstance<SocketResponseModel.DeviceEntity>()
-            .map { it.services.map { s -> s.mapToDomain() } }
+            .filter { it is SocketResponseModel.DeviceEntity }
+            .map { (it as SocketResponseModel.DeviceEntity).services.map { s -> s.mapToDomain() } }
             .shareIn(scope, SharingStarted.WhileSubscribed(5000), replay = 1)
     }
 
@@ -35,8 +40,8 @@ class SocketRepositoryImpl(
     override fun observeAreaDevices(areaId: String): Flow<List<ServiceEntity>> =
         areaDevicesFlows.getOrPut(areaId) {
             webSocketClient.socketResponseFlow
-                .filterIsInstance<SocketResponseModel.AreaDeviceEntity>()
-                .map { it.areaDevices.map { d -> d.mapToDomain() } }
+                .filter { it is SocketResponseModel.AreaDeviceEntity }
+                .map { (it as SocketResponseModel.AreaDeviceEntity).areaDevices.map { d -> d.mapToDomain() } }
                 .shareIn(scope, SharingStarted.WhileSubscribed(5000), replay = 1)
                 .also {
                     scope.launch {
@@ -45,10 +50,11 @@ class SocketRepositoryImpl(
                 }
         }
 
-    private val areasFlow by lazy {
+    // Явное указание типа SharedFlow
+    private val areasFlow: SharedFlow<List<Area>> by lazy {
         webSocketClient.socketResponseFlow
-            .filterIsInstance<SocketResponseModel.AreasEntity>()
-            .map { it.areas.map { a -> a.mapToDomain() } }
+            .filter { it is SocketResponseModel.AreasEntity }
+            .map { (it as SocketResponseModel.AreasEntity).areas.map { a -> areaEntityMapper.mapToDomain(a) } }
             .shareIn(scope, SharingStarted.WhileSubscribed(5000), replay = 1)
             .also {
                 scope.launch {
@@ -61,8 +67,8 @@ class SocketRepositoryImpl(
 
     override fun observeSocketErrors(): Flow<List<Error>> =
         webSocketClient.socketResponseFlow
-            .filterIsInstance<SocketResponseModel.ErrorMessage>()
-            .map { it.errors }
+            .filter { it is SocketResponseModel.ErrorMessage }
+            .map { (it as SocketResponseModel.ErrorMessage).errors }
 
     override fun updateSensor(sensorId: String): Boolean {
         val sensor = webSocketClient.serviceEntityCopy
@@ -75,21 +81,31 @@ class SocketRepositoryImpl(
         } else false
     }
 
-    override suspend fun fetchAutomation(): String {
+    // Явное указание async<String> для компилятора
+    override suspend fun fetchAutomation(): String = coroutineScope {
+        val deferredResponse = async<String> {
+            webSocketClient.socketResponseFlow
+                .filter { it is SocketResponseModel.AutomationUrl }
+                .map { (it as SocketResponseModel.AutomationUrl).url }
+                .first()
+        }
+
         webSocketClient.sender.fetchAutomations()
 
-        return webSocketClient.socketResponseFlow
-            .filterIsInstance<SocketResponseModel.AutomationUrl>()
-            .map { it.url }
-            .first()
+        deferredResponse.await()
     }
 
-    override suspend fun fetchIngressSessionId(): String {
+    // Явное указание async<String> для компилятора
+    override suspend fun fetchIngressSessionId(): String = coroutineScope {
+        val deferredResponse = async<String> {
+            webSocketClient.socketResponseFlow
+                .filter { it is SocketResponseModel.IngressSessionId }
+                .map { (it as SocketResponseModel.IngressSessionId).id }
+                .first()
+        }
+
         webSocketClient.sender.fetchIngressSessionId()
 
-        return webSocketClient.socketResponseFlow
-            .filterIsInstance<SocketResponseModel.IngressSessionId>()
-            .map { it.id }
-            .first()
+        deferredResponse.await()
     }
 }

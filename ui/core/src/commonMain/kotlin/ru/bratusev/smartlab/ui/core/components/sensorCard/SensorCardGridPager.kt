@@ -36,6 +36,7 @@ fun SensorCardGridPager(
     modifier: Modifier = Modifier,
     uiData: SensorCardGridPagerUi,
     onSensorCardClicked: (String) -> Unit,
+    onUpdateTimeOut: () -> Unit
 ) {
     val sensorsByDomain: Map<String, List<SensorCardUi.Tile>> by remember(uiData) {
         derivedStateOf {
@@ -48,7 +49,7 @@ fun SensorCardGridPager(
     val pagerState: PagerState = rememberPagerState(pageCount = { sensorsByDomain.keys.size })
     val pagerScope: CoroutineScope = rememberCoroutineScope()
 
-    LoadingIndicator(uiData.isUpdating)
+    LoadingIndicator(uiData.isUpdating, onTimeOut = onUpdateTimeOut)
     Column(
         modifier = modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)
     ) {
@@ -123,7 +124,8 @@ private fun SensorCardGridPagerPreview() {
         SensorCardGridPager(
             uiData = SensorCardGridPagerUi(
                 sensors = mockData, verticalGridsAtOneScreen = 1, isUpdating = false
-            )
+            ),
+            onSensorCardClicked = {}
         ) {}
     }
 }

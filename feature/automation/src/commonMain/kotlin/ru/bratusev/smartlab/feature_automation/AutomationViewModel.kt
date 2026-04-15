@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.bratusev.smartlab.domain.core.model.automation.ActionWrapper
 import ru.bratusev.smartlab.domain.core.model.automation.Automation
@@ -68,10 +67,12 @@ class AutomationViewModel(
         }.launchIn(viewModelScope)
 
         serviceEntitiesUseCase.invoke().onEach { entities ->
-            updateState(_uiState.value.copy(
-                sensors = entities.map { it.mapToUi() },
-                isServiceLoading = false
-            ))
+            updateState(
+                _uiState.value.copy(
+                    sensors = entities.map { it.mapToUi() },
+                    isServiceLoading = false
+                )
+            )
         }.launchIn(viewModelScope)
     }
 
@@ -83,7 +84,7 @@ class AutomationViewModel(
 
     private fun deleteAutomation(id: String) {
         val automations = uiState.value.automation.automationList.filter { it.id != id }
-        updateState(uiState.value.copy(automation = AutomationUi(automationList = automations),))
+        updateState(uiState.value.copy(automation = AutomationUi(automationList = automations)))
     }
 
     private fun updateAutomation(automation: AutomationItemUi) {
@@ -97,7 +98,7 @@ class AutomationViewModel(
             } else it
         }
 
-        updateState(uiState.value.copy(automation = AutomationUi(automationList = automations),))
+        updateState(uiState.value.copy(automation = AutomationUi(automationList = automations)))
     }
 
     private fun addAutomation(automation: AutomationItemUi) {
@@ -143,12 +144,23 @@ class AutomationViewModel(
         }
     }
 
+    private fun onTimeOut() {
+        updateState(
+            _uiState.value.copy(
+                isLoading = false,
+                isAutomationLoading = false,
+                isServiceLoading = false
+            )
+        )
+    }
+
     internal fun handleEvent(event: Event) {
         when (event) {
             is Event.OnDeleteAutomationClicked -> deleteAutomation(event.id)
             is Event.OnUpdateAutomationClicked -> updateAutomation(event.automation)
             is Event.OnSaveAutomation -> saveAutomations()
             is Event.AddAutomation -> addAutomation(event.automation)
+            Event.OnTimeOut -> onTimeOut()
         }
     }
 }

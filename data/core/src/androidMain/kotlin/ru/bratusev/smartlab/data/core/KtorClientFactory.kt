@@ -14,23 +14,27 @@ import kotlinx.serialization.json.Json
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import ru.bratusev.smartlab.data.core.local_storage.dataStore.AuthTokensStore
-import ru.bratusev.smartlab.data.core.remote_storage.Constants
+import ru.bratusev.smartlab.domain.core.repository.ServerSelectionRepository
 
-actual class KtorClientFactory : KoinComponent {
+actual class KtorClientFactory actual constructor(
+    private val serverSelectionRepository: ServerSelectionRepository,
+    private val authTokensStore: AuthTokensStore
+) :
+    KoinComponent {
     actual fun createClient(): HttpClient {
         val dataStore: DataStore<Preferences> by inject()
         return HttpClient(Android) {
             install(Auth) {
                 bearer {
                     loadTokens {
-                        AuthTokensStore.loadTokens(dataStore)
+                        authTokensStore.loadTokens(dataStore)
                     }
                     refreshTokens {
-                        AuthTokensStore.refreshTokens(client, dataStore)
+                        authTokensStore.refreshTokens(client, dataStore)
                     }
                     sendWithoutRequest { request ->
                         // Send Authorization header for API endpoints
-                        request.url.host == java.net.URL(Constants.BASE_URL).host
+                        request.url.host == java.net.URL(serverSelectionRepository.getCurrentBaseUrl()).host
                     }
                 }
             }
@@ -47,4 +51,4 @@ actual class KtorClientFactory : KoinComponent {
             }
         }
     }
-} 
+}

@@ -14,9 +14,11 @@ import ru.bratusev.smartlab.ui.core.theme.AppTheme
 @Composable
 fun AllAreasScreen(
     areas: List<AreaCardUi>,
-    navigateToArea: (areaId: String, friendlyName: String?, pictureUrl: String?) -> Unit
+    isLoading: Boolean,
+    navigateToArea: (areaId: String, friendlyName: String?, pictureUrl: String?) -> Unit,
+    onLoadingTimeOut: () -> Unit
 ) {
-    LoadingIndicator(show = areas.isEmpty())
+    LoadingIndicator(show = isLoading, onTimeOut = onLoadingTimeOut)
     LazyColumn(verticalArrangement = Arrangement.spacedBy(20.dp)) {
         items(areas, key = { it.areaId }) {
             AreaCard(uiData = it, onClick = navigateToArea)
@@ -99,7 +101,9 @@ private fun AreasScreenPreview() {
     AppTheme {
         AllAreasScreen(
             areas = previewAreasList,
-            navigateToArea = { _, _, _ -> {} }
+            navigateToArea = { _, _, _ -> },
+            onLoadingTimeOut = {},
+            isLoading = false
         )
     }
 }

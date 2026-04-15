@@ -19,11 +19,12 @@ import platform.posix.AF_INET
 import platform.posix.INET_ADDRSTRLEN
 import platform.posix.sockaddr
 import platform.posix.sockaddr_in
-import ru.bratusev.smartlab.data.core.Constants
 import ru.bratusev.smartlab.domain.core.model.NetworkStatus
 import ru.bratusev.smartlab.domain.core.repository.NetworkRepository
 
-actual class NetworkRepositoryImpl : NetworkRepository {
+actual class NetworkRepositoryImpl(
+    val serverSelectionRepositoryImpl: ServerSelectionRepositoryImpl
+) : NetworkRepository {
     @OptIn(ExperimentalForeignApi::class)
     actual override fun getNetworkStatus(): NetworkStatus {
         var foundIp: String? = null
@@ -75,15 +76,13 @@ actual class NetworkRepositoryImpl : NetworkRepository {
 
         return NetworkStatus(
             ip = foundIp ?: "0.0.0.0",
-            baseUrl = Constants.BASE_URL,
+            baseUrl = serverSelectionRepositoryImpl.getCurrentBaseUrl() ?: "",
             isVpnActive = isVpn
         )
     }
 
     @OptIn(ExperimentalForeignApi::class)
     private fun getIpString(sa: CPointer<sockaddr>): String {
-        // INET_ADDRSTRLEN is usually 16.
-        // We generally use a slightly larger buffer or the constant to be safe.
         val buffer = ByteArray(INET_ADDRSTRLEN)
 
         val ipv4Addr = sa.reinterpret<sockaddr_in>()

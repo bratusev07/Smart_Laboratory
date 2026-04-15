@@ -26,8 +26,7 @@ data class UiSettings(
         val isoLanguage: String,
     ) {
         SYSTEM(Res.string.language_system, "system"), RU(
-            Res.string.language_russian,
-            "ru"
+            Res.string.language_russian, "ru"
         ),
         EN(Res.string.language_english, "en");
 
