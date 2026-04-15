@@ -1,8 +1,10 @@
 package ru.bratusev.smartlab.ui.core.models.sensorCard
 
 import androidx.compose.ui.graphics.Color
-import org.jetbrains.compose.resources.DrawableResource
+import androidx.compose.ui.graphics.painter.Painter
 import org.jetbrains.compose.resources.StringResource
+import ru.bratusev.smartlab.ui.core.components.utils.AppIcon
+import ru.bratusev.smartlab.ui.core.components.utils.getIconFromMdi
 import ru.bratusev.smartlab.ui.core.theme.SensorCardCommonColors
 import smartlaboratory.ui.core.generated.resources.Res
 import smartlaboratory.ui.core.generated.resources.light_bulb
@@ -20,36 +22,43 @@ sealed class SensorCardUi {
     abstract val id: String
     abstract val state: SensorState
     abstract val domain: SensorDomain
-    abstract val drawableResource: DrawableResource
-
+    abstract val mdiIcon: String
     abstract val tints: SensorCardTints
+
+    abstract val icon: AppIcon
 
     data class Row(
         val title: String,
         override val id: String,
         override val state: SensorState,
         override val domain: SensorDomain,
-        override val drawableResource: DrawableResource,
+        override val mdiIcon: String,
         override val tints: SensorCardTints,
-    ) : SensorCardUi()
+    ) : SensorCardUi() {
+        override val icon: AppIcon = getIconFromMdi(mdiIcon)
+    }
 
     sealed class Tile : SensorCardUi() {
         class Small(
             override val id: String,
             override val state: SensorState,
             override val domain: SensorDomain,
-            override val drawableResource: DrawableResource,
+            override val mdiIcon: String,
             override val tints: SensorCardTints,
-        ) : Tile()
+        ) : Tile() {
+            override val icon: AppIcon = getIconFromMdi(mdiIcon)
+        }
 
         data class Medium(
             val title: String,
             override val id: String,
             override val state: SensorState,
             override val domain: SensorDomain,
-            override val drawableResource: DrawableResource,
+            override val mdiIcon: String,
             override val tints: SensorCardTints,
-        ) : Tile()
+        ) : Tile() {
+            override val icon: AppIcon = getIconFromMdi(mdiIcon)
+        }
 
         data class Large(
             val title: String,
@@ -57,9 +66,11 @@ sealed class SensorCardUi {
             override val id: String,
             override val state: SensorState,
             override val domain: SensorDomain,
-            override val drawableResource: DrawableResource,
+            override val mdiIcon: String,
             override val tints: SensorCardTints,
-        ) : Tile()
+        ) : Tile() {
+            override val icon: AppIcon = getIconFromMdi(mdiIcon)
+        }
 
         data class Sensor(
             val title: String,
@@ -67,9 +78,11 @@ sealed class SensorCardUi {
             override val id: String,
             override val state: SensorState.SensorValue,
             override val domain: SensorDomain,
-            override val drawableResource: DrawableResource,
+            override val mdiIcon: String,
             override val tints: SensorCardTints,
-        ) : Tile()
+        ) : Tile() {
+            override val icon: AppIcon = getIconFromMdi(mdiIcon)
+        }
     }
 
     sealed class Widget : SensorCardUi() {
@@ -78,9 +91,11 @@ sealed class SensorCardUi {
             override val id: String,
             override val state: SensorState,
             override val domain: SensorDomain,
-            override val drawableResource: DrawableResource,
+            override val mdiIcon: String,
             override val tints: SensorCardTints,
-        ) : Widget()
+        ) : Widget() {
+            override val icon: AppIcon = getIconFromMdi(mdiIcon)
+        }
     }
 
     data class Modal(
@@ -88,9 +103,11 @@ sealed class SensorCardUi {
         override val id: String,
         override val state: SensorState,
         override val domain: SensorDomain,
-        override val drawableResource: DrawableResource,
+        override val mdiIcon: String,
         override val tints: SensorCardTints = SensorCardTints.SingleColor(Color.Gray),
-    ) : SensorCardUi()
+    ) : SensorCardUi() {
+        override val icon: AppIcon = getIconFromMdi(mdiIcon)
+    }
 }
 
 open class SensorCardTints(
@@ -160,3 +177,4 @@ object SensorCardRes {
     val lightBulb = Res.drawable.light_bulb
     val thermometer = Res.drawable.thermometer
 }
+

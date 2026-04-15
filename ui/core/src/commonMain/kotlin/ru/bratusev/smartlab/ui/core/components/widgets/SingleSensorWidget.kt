@@ -50,7 +50,7 @@ fun SingleSensorWidget(
                 ),
                 state = uiData.sensor.state,
                 domain = uiData.sensor.domain,
-                drawableResource = uiData.sensor.drawableResource,
+                mdiIcon = uiData.sensor.mdiIcon,
                 tints = uiData.sensor.tints
             ),
             onClick = {

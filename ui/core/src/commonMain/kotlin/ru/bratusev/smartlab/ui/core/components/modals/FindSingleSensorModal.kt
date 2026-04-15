@@ -102,7 +102,7 @@ private fun SensorModalItem(
             id = sensor.id,
             state = sensor.state,
             domain = sensor.domain,
-            drawableResource = sensor.drawableResource,
+            mdiIcon = sensor.mdiIcon,
             tints = sensor.tints
         ), buttonContent = {
             RadioButton(
@@ -138,7 +138,7 @@ private fun FindSenorModalContent() {
                     title = "Preview",
                     id = "Id$i",
                     domain = SensorDomain.SWITCH,
-                    drawableResource = SensorCardRes.lightBulb,
+                    mdiIcon = "no_icon",
                 )
             )
         }

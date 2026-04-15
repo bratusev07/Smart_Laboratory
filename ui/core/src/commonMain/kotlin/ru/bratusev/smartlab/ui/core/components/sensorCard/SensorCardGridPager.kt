@@ -100,7 +100,7 @@ private fun SensorCardGridPagerPreview() {
                         id = "Id$i",
                         state = SensorState.On,
                         domain = SensorDomain.entries.random(),
-                        drawableResource = SensorCardRes.thermometer,
+                        mdiIcon = "no icon",
                         tints = SensorCardTints.Common.Thermometer
                     )
                 )
@@ -112,7 +112,7 @@ private fun SensorCardGridPagerPreview() {
                         id = "Id$i",
                         state = SensorState.On,
                         domain = SensorDomain.entries.random(),
-                        drawableResource = SensorCardRes.lightBulb,
+                        mdiIcon = "no icon",
                         tints = SensorCardTints.Common.LightBulb
                     )
                 )

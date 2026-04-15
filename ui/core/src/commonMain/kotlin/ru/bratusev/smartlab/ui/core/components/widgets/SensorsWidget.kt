@@ -58,7 +58,7 @@ fun ManySensorsWidget(
                         id = sensor.id,
                         state = sensor.state,
                         domain = sensor.domain,
-                        drawableResource = sensor.drawableResource,
+                        mdiIcon = sensor.mdiIcon,
                         tints = sensor.tints
                     ), buttonContent = {
                         Switch(
@@ -91,7 +91,7 @@ private fun SensorsWidgetPreview() {
                         id = "Id$i",
                         state = SensorState.On,
                         domain = SensorDomain.SWITCH,
-                        drawableResource = SensorCardRes.lightBulb,
+                        mdiIcon = "no icon",
                         tints = SensorCardTints.Common.LightBulb
                     )
                 )
@@ -105,7 +105,7 @@ private fun SensorsWidgetPreview() {
                         id = "Id$i",
                         state = SensorState.On,
                         domain = SensorDomain.SWITCH,
-                        drawableResource = SensorCardRes.lightBulb,
+                        mdiIcon = "no icon",
                         tints = SensorCardTints.Common.LightBulb
                     )
                 )

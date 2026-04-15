@@ -33,7 +33,7 @@ private fun ServiceEntity.mapDefaultToUi() = SensorCardUi.Tile.Small(
     id = id.orEmpty(),
     state = SensorState.fromString(state),
     domain = SensorDomain.fromString(domain.orEmpty()),
-    drawableResource = SensorCardRes.lightBulb,
+    mdiIcon = attributes?.icon.also { print("icon = ${attributes?.icon}") }.toString(),
     tints = SensorCardTints(
         SensorCardCommonColors.LightBulb.On,
         SensorCardCommonColors.LightBulb.Off,
@@ -48,7 +48,7 @@ private fun ServiceEntity.mapSensorToUi(): SensorCardUi.Tile.Sensor {
         id = id.orEmpty(),
         state = SensorState.SensorValue.floatFromString(state),
         domain = SensorDomain.fromString(domain.orEmpty()),
-        drawableResource = SensorCardRes.thermometer,
+        mdiIcon = attributes?.icon.also { print("icon = ${attributes?.icon}") }.toString(),
         tints = SensorCardTints.Common.Thermometer,
     )
 }
@@ -58,7 +58,7 @@ private fun ServiceEntity.mapSwitchToUi() = SensorCardUi.Tile.Medium(
     id = id.orEmpty(),
     state = SensorState.fromString(state),
     domain = SensorDomain.fromString(domain.orEmpty()),
-    drawableResource = SensorCardRes.lightBulb,
+    mdiIcon = attributes?.icon.also { print("icon = ${attributes?.icon}") }.toString(),
     tints = SensorCardTints(
         SensorCardCommonColors.LightBulb.On,
         SensorCardCommonColors.LightBulb.Off,
@@ -71,7 +71,7 @@ private fun ServiceEntity.mapButtonToUi() = SensorCardUi.Tile.Medium(
     id = id.orEmpty(),
     state = SensorState.fromString(state),
     domain = SensorDomain.fromString(domain.orEmpty()),
-    drawableResource = SensorCardRes.lightBulb,
+    mdiIcon = attributes?.icon.also { print("icon = ${attributes?.icon}") }.toString(),
     tints = SensorCardTints(
         SensorCardCommonColors.LightBulb.Off,
         SensorCardCommonColors.LightBulb.Off,

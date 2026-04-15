@@ -250,8 +250,8 @@ private fun SensorListPreview() {
                         id = "Id$i",
                         state = SensorState.On,
                         domain = SensorDomain.entries.random(),
-                        drawableResource = SensorCardRes.lightBulb,
-                        tints = SensorCardTints.Common.LightBulb
+                        tints = SensorCardTints.Common.LightBulb,
+                        mdiIcon = "no icon"
                     )
                 )
             }
@@ -264,7 +264,7 @@ private fun SensorListPreview() {
                         id = "Id$i",
                         state = SensorState.On,
                         domain = SensorDomain.entries.random(),
-                        drawableResource = SensorCardRes.lightBulb,
+                        mdiIcon = "no icon",
                         tints = SensorCardTints.Common.LightBulb
                     )
                 )

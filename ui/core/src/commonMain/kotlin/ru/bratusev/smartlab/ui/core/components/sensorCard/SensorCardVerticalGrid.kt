@@ -59,7 +59,7 @@ private fun SensorCardVerticalGridLightBulbs() {
                         id = "Id$i",
                         state = SensorState.On,
                         domain = SensorDomain.SWITCH,
-                        drawableResource = SensorCardRes.lightBulb,
+                        mdiIcon = "no icon",
                         tints = SensorCardTints.Common.LightBulb
                     )
                 )
@@ -88,7 +88,7 @@ private fun SensorCardVerticalGridThermometers() {
                         id = "Id$i",
                         state = SensorState.On,
                         domain = SensorDomain.SWITCH,
-                        drawableResource = SensorCardRes.thermometer,
+                        mdiIcon = "no icon",
                         tints = SensorCardTints.Common.Thermometer
                     )
                 )

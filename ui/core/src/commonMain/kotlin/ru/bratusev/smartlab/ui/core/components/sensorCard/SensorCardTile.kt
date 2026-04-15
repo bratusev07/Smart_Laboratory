@@ -25,6 +25,8 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import ru.bratusev.smartlab.ui.core.components.utils.AppIcon
+import ru.bratusev.smartlab.ui.core.components.utils.asPainter
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardRes
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardTints
 import ru.bratusev.smartlab.ui.core.models.sensorCard.SensorCardUi
@@ -87,7 +89,7 @@ private fun SmallCardContent(sensorCardUi: SensorCardUi.Tile.Small) {
     ) {
         SensorCardIconImage(
             modifier = Modifier.fillMaxWidth(),
-            drawableRes = sensorCardUi.drawableResource,
+            icon = sensorCardUi.icon,
             state = sensorCardUi.state,
             tints = sensorCardUi.tints
         )
@@ -102,7 +104,7 @@ private fun MediumCardContent(sensorCardUi: SensorCardUi.Tile.Medium) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         SensorCardIconImage(
-            sensorCardUi.drawableResource, sensorCardUi.state, tints = sensorCardUi.tints
+            sensorCardUi.icon, sensorCardUi.state, tints = sensorCardUi.tints
         )
         Text(
             text = sensorCardUi.title,
@@ -127,7 +129,7 @@ private fun SensorContent(sensorCardUi: SensorCardUi.Tile.Sensor) {
         ) {
             SensorCardIconImage(
                 modifier = Modifier.size(48.dp),
-                drawableRes = sensorCardUi.drawableResource,
+                icon = sensorCardUi.icon,
                 state = sensorCardUi.state,
                 tints = sensorCardUi.tints
             )
@@ -156,7 +158,7 @@ private fun LargeCardContent(sensorCardUi: SensorCardUi.Tile.Large) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         SensorCardIconImage(
-            sensorCardUi.drawableResource, sensorCardUi.state, tints = sensorCardUi.tints
+            sensorCardUi.icon, sensorCardUi.state, tints = sensorCardUi.tints
         )
         Text(
             text = sensorCardUi.title,
@@ -173,7 +175,7 @@ private fun LargeCardContent(sensorCardUi: SensorCardUi.Tile.Large) {
 
 @Composable
 internal fun SensorCardIconImage(
-    drawableRes: DrawableResource,
+    icon: AppIcon,
     state: SensorState,
     tints: SensorCardTints,
     modifier: Modifier = Modifier,
@@ -187,7 +189,7 @@ internal fun SensorCardIconImage(
 
     Image(
         modifier = modifier,
-        painter = painterResource(drawableRes),
+        painter = icon.asPainter(),
         contentDescription = null,
         colorFilter = ColorFilter.tint(tint),
     )
@@ -202,7 +204,7 @@ private fun SmallCardPreview() {
         id = "0",
         state = SensorState.Off,
         domain = SensorDomain.SWITCH,
-        drawableResource = SensorCardRes.lightBulb,
+        mdiIcon = "no icon",
         tints = SensorCardTints.Common.LightBulb
     )
 
@@ -221,7 +223,7 @@ private fun MediumCardPreview() {
         state = SensorState.On,
         domain = SensorDomain.SWITCH,
         title = "Свет 208",
-        drawableResource = SensorCardRes.lightBulb,
+        mdiIcon = "no icon",
         tints = SensorCardTints.Common.LightBulb
     )
 
@@ -241,7 +243,7 @@ private fun LargeCardPreview() {
         domain = SensorDomain.SWITCH,
         title = "Давление",
         description = "200 Па",
-        drawableResource = SensorCardRes.lightBulb,
+        mdiIcon = "no icon",
         tints = SensorCardTints.Common.LightBulb
     )
 
@@ -260,7 +262,7 @@ private fun SensorCardPreview() {
         state = SensorState.SensorValue(15f),
         domain = SensorDomain.SWITCH,
         title = "Давление",
-        drawableResource = SensorCardRes.lightBulb,
+        mdiIcon = "no icon",
         tints = SensorCardTints.Common.Thermometer,
         measurementUnit = "%"
     )

@@ -21,7 +21,7 @@ fun CustomWidget.toUi(sensors: List<ServiceEntity>, id: Int): CustomWidgetUi {
                         id = switch.id!!,
                         state = SensorState.fromString(switch.state),
                         domain = SensorDomain.fromString(switch.domain),
-                        drawableResource = SensorCardRes.lightBulb,
+                        mdiIcon = switch.attributes?.icon.toString(),
                         tints = SensorCardTints.Common.LightBulb
                     )
                 },
@@ -32,7 +32,7 @@ fun CustomWidget.toUi(sensors: List<ServiceEntity>, id: Int): CustomWidgetUi {
                         id = switch.id!!,
                         state = SensorState.fromString(switch.state),
                         domain = SensorDomain.fromString(switch.domain),
-                        drawableResource = SensorCardRes.lightBulb,
+                        mdiIcon = switch.attributes?.icon.toString(),
                         tints = SensorCardTints.Common.LightBulb
                     )
                 },
@@ -50,7 +50,7 @@ fun CustomWidget.toUi(sensors: List<ServiceEntity>, id: Int): CustomWidgetUi {
                             id = sensorId,
                             state = SensorState.fromString(it.state),
                             domain = SensorDomain.fromString(it.domain),
-                            drawableResource = SensorCardRes.lightBulb,
+                            mdiIcon = it.attributes?.icon.toString(),
                             tints = SensorCardTints.Common.LightBulb
                         )
                     } ?: Switch(
@@ -58,7 +58,7 @@ fun CustomWidget.toUi(sensors: List<ServiceEntity>, id: Int): CustomWidgetUi {
                         id = CustomWidgetUi.SingleSensor.NO_SENSOR_ID,
                         state = SensorState.Unavailable,
                         domain = SensorDomain.SWITCH,
-                        drawableResource = SensorCardRes.lightBulb,
+                        mdiIcon = "no_icon",
                         tints = SensorCardTints.Common.LightBulb
                     ),
                 id = id,
@@ -68,7 +68,7 @@ fun CustomWidget.toUi(sensors: List<ServiceEntity>, id: Int): CustomWidgetUi {
                         id = switch.id!!,
                         state = SensorState.fromString(switch.state),
                         domain = SensorDomain.fromString(switch.domain),
-                        drawableResource = SensorCardRes.lightBulb,
+                        mdiIcon = switch.attributes?.icon.toString(),
                         tints = SensorCardTints.Common.LightBulb
                     )
                 },

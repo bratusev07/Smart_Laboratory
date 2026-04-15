@@ -153,7 +153,7 @@ private fun SingleSensorWidgetPreview() {
         id = "id",
         state = SensorState.On,
         domain = SensorDomain.SWITCH,
-        drawableResource = SensorCardRes.lightBulb,
+        mdiIcon = "no icon",
         tints = SensorCardTints.Common.LightBulb
     )
     val data2 = buildList {
@@ -164,7 +164,7 @@ private fun SingleSensorWidgetPreview() {
                     id = "Id$i",
                     state = SensorState.On,
                     domain = SensorDomain.SWITCH,
-                    drawableResource = SensorCardRes.lightBulb,
+                    mdiIcon = "no icon",
                     tints = SensorCardTints.Common.LightBulb
                 )
             )
@@ -189,7 +189,7 @@ private fun ManySensorsListWidgetPreview() {
                     id = "Id$i",
                     state = SensorState.On,
                     domain = SensorDomain.SWITCH,
-                    drawableResource = SensorCardRes.lightBulb,
+                    mdiIcon = "no icon",
                     tints = SensorCardTints.Common.LightBulb
                 )
             )
@@ -203,7 +203,7 @@ private fun ManySensorsListWidgetPreview() {
                     id = "Id$i",
                     state = SensorState.On,
                     domain = SensorDomain.SWITCH,
-                    drawableResource = SensorCardRes.lightBulb,
+                    mdiIcon = "no icon",
                     tints = SensorCardTints.Common.LightBulb
                 )
             )

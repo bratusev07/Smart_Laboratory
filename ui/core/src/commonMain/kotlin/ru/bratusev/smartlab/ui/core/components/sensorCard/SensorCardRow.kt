@@ -47,7 +47,7 @@ fun SensorCardRow(
         ) {
             SensorCardIconImage(
                 modifier = Modifier.height(35.dp),
-                drawableRes = uiData.drawableResource, state = uiData.state, tints = uiData.tints
+                icon = uiData.icon, state = uiData.state, tints = uiData.tints
             )
             Column(modifier = Modifier.weight(1f)) {
                 Text(
@@ -92,7 +92,7 @@ private fun SensorCardRowPreview() {
                 id = "0",
                 state = currentState,
                 domain = SensorDomain.SWITCH,
-                drawableResource = SensorCardRes.lightBulb,
+                mdiIcon = "no-icon",
                 tints = SensorCardTints.Common.LightBulb,
             ),
             buttonContent = {

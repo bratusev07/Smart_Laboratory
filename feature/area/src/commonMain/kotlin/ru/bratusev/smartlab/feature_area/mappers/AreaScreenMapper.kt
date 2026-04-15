@@ -29,6 +29,6 @@ internal fun ServiceEntity.mapToUi() = SensorCardUi.Row(
     id = id ?: "empty id",
     state = SensorState.fromString(state),
     domain = SensorDomain.fromString(domain),
-    drawableResource = SensorCardRes.lightBulb,
+    mdiIcon = attributes?.icon.toString(),
     tints = SensorCardTints.Common.LightBulb
 )

@@ -15,6 +15,9 @@ import ru.bratusev.smartlab.domain.core.model.socket.ServiceEntity as DomainServ
 import ru.bratusev.smartlab.domain.core.model.socket.ServiceEntityAttributes as DomainServiceEntityAttributes
 
 internal fun mapJsonToServiceEntityList(jsonString: String): List<ServiceEntity> {
+    // Нужно чтобы выводить все используемые mdi изображения в виде mdi:<картинка>
+    val icons = emptySet<String>().toMutableSet()
+
     val json = Json {
         isLenient = true
         ignoreUnknownKeys = true
@@ -22,14 +25,21 @@ internal fun mapJsonToServiceEntityList(jsonString: String): List<ServiceEntity>
     val root = json.parseToJsonElement(jsonString).jsonObject
     val event = root["event"]?.jsonObject ?: error("Field 'event' not found in JSON")
     val entities = event["a"]?.jsonObject ?: error("Field 'event.a' not found in JSON")
-    return entities.map { (key, value) ->
+    val result = entities.map { (key, value) ->
         val entity = json.decodeFromJsonElement<ServiceEntity>(value)
         val attributes = json.decodeFromJsonElement<ServiceEntityAttributes>(entity.rawAttributes!!)
         val resultEntity =
             entity.copy(id = key, domain = key.split(".")[0], attributes = attributes)
-        println("result entity: $resultEntity")
+        println("result entity: $entity")
+        val icon = entity.rawAttributes.jsonObject["icon"].toString()
+        icons.add(icon)
         resultEntity
     }
+    println("All icons")
+    icons.forEach {
+        println("$it -> ")
+    }
+    return result
 }
 
 

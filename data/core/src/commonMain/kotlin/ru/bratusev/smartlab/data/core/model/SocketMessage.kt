@@ -113,7 +113,7 @@ data class ServiceEntity(
 
 @Serializable
 data class ServiceEntityAttributes(
-    val icon: String? = null,
+    @SerialName("icon") val icon: String? = null,
     @SerialName("friendly_name") val friendlyName: String? = null,
     @SerialName("device_class") val deviceClass: String? = null,
     @SerialName("unit_of_measurement") val measurementUnit: String? = null
