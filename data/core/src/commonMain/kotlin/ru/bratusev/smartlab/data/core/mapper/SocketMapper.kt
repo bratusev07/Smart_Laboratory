@@ -15,7 +15,7 @@ import ru.bratusev.smartlab.domain.core.model.socket.ServiceEntity as DomainServ
 import ru.bratusev.smartlab.domain.core.model.socket.ServiceEntityAttributes as DomainServiceEntityAttributes
 
 internal fun mapJsonToServiceEntityList(jsonString: String): List<ServiceEntity> {
-    // Нужно чтобы выводить все используемые mdi изображения в виде mdi:<картинка>
+    // Нужно, чтобы выводить все используемые mdi изображения в виде mdi:<картинка>
     val icons = emptySet<String>().toMutableSet()
 
     val json = Json {

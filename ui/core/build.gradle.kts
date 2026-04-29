@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.symbolCraft)
 }
 
 kotlin {
@@ -31,6 +32,7 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor3)
+            implementation(libs.coil.svg)
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -79,4 +81,32 @@ android {
 
 dependencies {
     debugImplementation(compose.uiTooling)
+}
+
+symbolCraft {
+    outputDirectory.set("src/commonMain/kotlin")
+    cacheEnabled.set(true)
+    packageName.set("ru.bratusev.smartlab.ui.core.generated")
+
+    externalIcons(
+        "dots-square",
+        "zigbee",
+        "home",
+        "solar-panel-large",
+        "battery-30",
+        "battery-minus",
+        "battery",
+        "wifi-off",
+        "map",
+        "cellphone",
+        "battery-60",
+        "battery-20",
+        "human-greeting-proximity",
+        "battery-charging-60",
+        "battery-plus",
+        "usb-port",
+        libraryName = "mdi"
+    ) {
+        urlTemplate = "https://esm.sh/@mdi/svg@latest/svg/{name}.svg"
+    }
 }

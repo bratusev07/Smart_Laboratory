@@ -32,11 +32,13 @@ uiBackhandler = "1.9.0"
 room = "2.7.2"
 sqlite = "2.5.2"
 ksp = "2.2.0-2.0.2"
+symbolCraft = "0.3.4"
 
 [libraries]
 androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 coil-network-ktor3 = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coilCompose" }
+coil-svg = { module = "io.coil-kt.coil3:coil-svg", version.ref = "coilCompose" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferences" }
 kaml = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
@@ -102,3 +104,4 @@ androidKotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.lib
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 androidx-room = { id = "androidx.room", version.ref = "room" }
+symbolCraft = { id = "io.github.kingsword09.symbolcraft", version.ref = "symbolCraft" }
